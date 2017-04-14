@@ -86,6 +86,7 @@ public class AccelerationServer extends Service {
     private Handler mBroadcastHandler;
     private Runnable mBroadcastRunnable;
 
+    // Using the BC
     static {
         Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
     }
