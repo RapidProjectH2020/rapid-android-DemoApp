@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/accelerationClient/accelerationClient.iml" filepath="$PROJECT_DIR$/accelerationClient/accelerationClient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/accelerationServer/accelerationServer.iml" filepath="$PROJECT_DIR$/accelerationServer/accelerationServer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rapid-android-studio.iml" filepath="$PROJECT_DIR$/rapid-android-studio.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rapidDemoApp/rapidDemoApp.iml" filepath="$PROJECT_DIR$/rapidDemoApp/rapidDemoApp.iml" />
+    </modules>
+  </component>
+</project>

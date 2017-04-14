@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="core-1.51.0.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/accelerationServer/libs/core-1.51.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

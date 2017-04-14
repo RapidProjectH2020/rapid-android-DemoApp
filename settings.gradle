@@ -1,0 +1,3 @@
+include ':accelerationClient'
+include ':rapidDemoApp'
+include ':accelerationServer'
