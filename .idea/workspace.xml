@@ -9,180 +9,7 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2be1151e-faef-4b0c-9c45-87abddbf4e84" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rapid-android-ac/build.gradle" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rapid-android-ac/build/intermediates/incremental/mergeDebugAndroidTestResources/compile-file-map.properties" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rapid-android-ac/build/intermediates/incremental/packageDebugResources/compile-file-map.properties" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rapid-android-ac/build/intermediates/incremental/packageReleaseResources/compile-file-map.properties" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/rapid_common_0_1_1.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/accelerationClient/build.gradle" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/accelerationClient/build/intermediates/incremental/mergeDebugAndroidTestResources/compile-file-map.properties" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/accelerationClient/build/intermediates/incremental/packageDebugResources/compile-file-map.properties" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/accelerationClient/build/intermediates/incremental/packageReleaseResources/compile-file-map.properties" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/accelerationClient/build/outputs/aar/accelerationClient-debug.aar" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/accelerationClient/build/outputs/aar/accelerationClient-release.aar" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-20-17-55-29-499.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-20-17-55-30-466.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-20-17-56-04-443.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-20-17-56-43-798.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-20-17-56-45-335.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-20-17-58-02-884.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-20-17-58-03-875.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-20-17-58-27-261.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-20-17-58-27-870.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-20-18-03-29-896.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-20-19-42-59-746.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-20-20-03-40-119.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-20-20-07-05-401.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-20-20-15-17-578.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-20-20-15-41-469.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-20-20-16-04-454.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-20-21-31-55-932.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-20-22-15-58-162.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-20-23-26-15-740.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-22-14-04-23-724.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-03-22-14-17-29-187.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-13-11-49-53-310.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-13-11-50-03-577.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-13-19-12-26-833.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-13-19-12-34-123.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-13-19-15-54-935.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-13-19-15-56-483.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-13-21-00-07-174.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-13-21-00-08-943.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-13-21-00-25-582.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-13-21-00-26-691.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-13-21-01-18-405.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-13-21-01-19-477.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-13-21-02-32-973.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-13-21-04-01-387.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-13-21-07-04-660.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-13-21-07-06-609.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-14-07-39-46-305.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-14-07-39-49-908.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-14-14-14-29-829.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-14-14-14-37-235.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-14-14-26-12-038.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-14-14-26-13-960.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-14-15-07-38-284.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-14-15-07-40-497.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-14-15-57-27-969.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-14-15-57-30-960.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-14-15-58-38-558.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/build/android-profile/profile-2017-04-14-15-58-40-957.rawproto" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/local.properties" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/accelerationClient.iml" afterPath="$PROJECT_DIR$/rapid-android-ac/rapid-android-ac.iml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/build/generated/source/buildConfig/androidTest/debug/eu/project/rapid/ac/test/BuildConfig.java" afterPath="$PROJECT_DIR$/rapid-android-ac/build/generated/source/buildConfig/androidTest/debug/eu/project/rapid/ac/test/BuildConfig.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/build/generated/source/buildConfig/debug/eu/project/rapid/ac/BuildConfig.java" afterPath="$PROJECT_DIR$/rapid-android-ac/build/generated/source/buildConfig/debug/eu/project/rapid/ac/BuildConfig.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/build/generated/source/r/androidTest/debug/eu/project/rapid/ac/R.java" afterPath="$PROJECT_DIR$/rapid-android-ac/build/generated/source/r/androidTest/debug/eu/project/rapid/ac/R.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/build/intermediates/bundles/debug/AndroidManifest.xml" afterPath="$PROJECT_DIR$/rapid-android-ac/build/intermediates/bundles/debug/AndroidManifest.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/build/intermediates/bundles/default/AndroidManifest.xml" afterPath="$PROJECT_DIR$/rapid-android-ac/build/intermediates/bundles/default/AndroidManifest.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/build/intermediates/incremental/compileDebugAidl/dependency.store" afterPath="$PROJECT_DIR$/rapid-android-ac/build/intermediates/incremental/compileDebugAidl/dependency.store" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/build/intermediates/incremental/compileDebugAndroidTestAidl/dependency.store" afterPath="$PROJECT_DIR$/rapid-android-ac/build/intermediates/incremental/compileDebugAndroidTestAidl/dependency.store" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/build/intermediates/incremental/compileReleaseAidl/dependency.store" afterPath="$PROJECT_DIR$/rapid-android-ac/build/intermediates/incremental/compileReleaseAidl/dependency.store" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/build/intermediates/incremental/mergeDebugAndroidTestResources/merger.xml" afterPath="$PROJECT_DIR$/rapid-android-ac/build/intermediates/incremental/mergeDebugAndroidTestResources/merger.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/build/intermediates/incremental/mergeDebugAssets/merger.xml" afterPath="$PROJECT_DIR$/rapid-android-ac/build/intermediates/incremental/mergeDebugAssets/merger.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/build/intermediates/incremental/mergeDebugShaders/merger.xml" afterPath="$PROJECT_DIR$/rapid-android-ac/build/intermediates/incremental/mergeDebugShaders/merger.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/build/intermediates/incremental/mergeReleaseAssets/merger.xml" afterPath="$PROJECT_DIR$/rapid-android-ac/build/intermediates/incremental/mergeReleaseAssets/merger.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/build/intermediates/incremental/mergeReleaseShaders/merger.xml" afterPath="$PROJECT_DIR$/rapid-android-ac/build/intermediates/incremental/mergeReleaseShaders/merger.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/build/intermediates/incremental/packageDebugResources/merger.xml" afterPath="$PROJECT_DIR$/rapid-android-ac/build/intermediates/incremental/packageDebugResources/merger.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/build/intermediates/incremental/packageReleaseResources/merger.xml" afterPath="$PROJECT_DIR$/rapid-android-ac/build/intermediates/incremental/packageReleaseResources/merger.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/build/intermediates/manifest/androidTest/debug/AndroidManifest.xml" afterPath="$PROJECT_DIR$/rapid-android-ac/build/intermediates/manifest/androidTest/debug/AndroidManifest.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/build/intermediates/manifests/aapt/debug/AndroidManifest.xml" afterPath="$PROJECT_DIR$/rapid-android-ac/build/intermediates/manifests/aapt/debug/AndroidManifest.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/build/intermediates/manifests/aapt/release/AndroidManifest.xml" afterPath="$PROJECT_DIR$/rapid-android-ac/build/intermediates/manifests/aapt/release/AndroidManifest.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/build/intermediates/res/resources-debug-androidTest.ap_" afterPath="$PROJECT_DIR$/rapid-android-ac/build/intermediates/res/resources-debug-androidTest.ap_" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/AndroidManifest.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/DFE.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/DFE.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/DSE.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/DSE.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/QoS.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/QoS.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/RapidSettingsActivity.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/RapidSettingsActivity.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/Remote.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/Remote.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/Remoteable.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/Remoteable.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/ResultContainer.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/ResultContainer.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/d2d/D2DClientService.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/d2d/D2DClientService.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/d2d/D2DMessage.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/d2d/D2DMessage.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/d2d/PhoneSpecs.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/d2d/PhoneSpecs.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/db/DBCache.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/db/DBCache.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/db/DBEntry.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/db/DBEntry.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/profilers/DeviceProfiler.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/profilers/DeviceProfiler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/profilers/LocationProfiler.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/profilers/LocationProfiler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/profilers/LogRecord.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/profilers/LogRecord.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/profilers/NetworkBWRecord.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/profilers/NetworkBWRecord.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/profilers/NetworkProfiler.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/profilers/NetworkProfiler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/profilers/Profiler.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/profilers/Profiler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/profilers/ProgramProfiler.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/profilers/ProgramProfiler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/profilers/phone/Phone.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/profilers/phone/Phone.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/profilers/phone/PhoneAlcatelOneTouchPixi.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/profilers/phone/PhoneAlcatelOneTouchPixi.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/profilers/phone/PhoneFactory.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/profilers/phone/PhoneFactory.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/profilers/phone/PhoneHtcDream.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/profilers/phone/PhoneHtcDream.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/profilers/phone/PhoneMotorolaMotoG.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/profilers/phone/PhoneMotorolaMotoG.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/utils/Constants.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/utils/Constants.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/utils/Utils.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/utils/Utils.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/ac/utils/ZipHandler.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/ac/utils/ZipHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/gvirtusfe/Buffer.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/gvirtusfe/Buffer.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/gvirtusfe/CudaDr_context.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/gvirtusfe/CudaDr_context.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/gvirtusfe/CudaDr_device.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/gvirtusfe/CudaDr_device.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/gvirtusfe/CudaDr_execution.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/gvirtusfe/CudaDr_execution.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/gvirtusfe/CudaDr_initialization.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/gvirtusfe/CudaDr_initialization.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/gvirtusfe/CudaDr_memory.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/gvirtusfe/CudaDr_memory.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/gvirtusfe/CudaDr_module.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/gvirtusfe/CudaDr_module.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/gvirtusfe/CudaRt_device.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/gvirtusfe/CudaRt_device.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/gvirtusfe/CudaRt_memory.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/gvirtusfe/CudaRt_memory.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/gvirtusfe/Frontend.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/gvirtusfe/Frontend.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/gvirtusfe/Result.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/gvirtusfe/Result.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/java/eu/project/rapid/gvirtusfe/dim3.java" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/java/eu/project/rapid/gvirtusfe/dim3.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/resources/eu/project/rapid/ac/d2d/ac-d2d.png" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/resources/eu/project/rapid/ac/d2d/ac-d2d.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/resources/eu/project/rapid/ac/d2d/ac-d2d.ucls" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/resources/eu/project/rapid/ac/d2d/ac-d2d.ucls" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/resources/eu/project/rapid/ac/db/dse-db.png" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/resources/eu/project/rapid/ac/db/dse-db.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/resources/eu/project/rapid/ac/db/dse-db.ucls" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/resources/eu/project/rapid/ac/db/dse-db.ucls" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/resources/eu/project/rapid/ac/db/dse-dbcache.png" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/resources/eu/project/rapid/ac/db/dse-dbcache.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/resources/eu/project/rapid/ac/db/dse-dbcache.ucls" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/resources/eu/project/rapid/ac/db/dse-dbcache.ucls" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/resources/eu/project/rapid/ac/dfe-class-diagram.png" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/resources/eu/project/rapid/ac/dfe-class-diagram.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/resources/eu/project/rapid/ac/dfe-class-diagram.ucls" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/resources/eu/project/rapid/ac/dfe-class-diagram.ucls" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/resources/eu/project/rapid/ac/dse-class-diagram.png" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/resources/eu/project/rapid/ac/dse-class-diagram.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/resources/eu/project/rapid/ac/dse-class-diagram.ucls" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/resources/eu/project/rapid/ac/dse-class-diagram.ucls" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/resources/eu/project/rapid/ac/profilers/phone/phone.png" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/resources/eu/project/rapid/ac/profilers/phone/phone.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/resources/eu/project/rapid/ac/profilers/phone/phone.ucls" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/resources/eu/project/rapid/ac/profilers/phone/phone.ucls" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/resources/eu/project/rapid/ac/profilers/profilers-class-diagram.png" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/resources/eu/project/rapid/ac/profilers/profilers-class-diagram.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/accelerationClient/src/main/resources/eu/project/rapid/ac/profilers/profilers-class-diagram.ucls" afterPath="$PROJECT_DIR$/rapid-android-ac/src/main/resources/eu/project/rapid/ac/profilers/profilers-class-diagram.ucls" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/fileHashes.bin" afterPath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/fileHashes.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/fileSnapshots.bin" afterPath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/fileSnapshots.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/taskArtifacts.bin" afterPath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/taskArtifacts.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/taskArtifacts.lock" afterPath="$PROJECT_DIR$/.gradle/3.3/taskArtifacts/taskArtifacts.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/tasks/_accelerationClient_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" afterPath="$PROJECT_DIR$/.gradle/3.3/tasks/_accelerationClient_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/tasks/_accelerationClient_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.bin" afterPath="$PROJECT_DIR$/.gradle/3.3/tasks/_accelerationClient_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/tasks/_accelerationClient_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" afterPath="$PROJECT_DIR$/.gradle/3.3/tasks/_accelerationClient_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/tasks/_accelerationClient_compileReleaseJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" afterPath="$PROJECT_DIR$/.gradle/3.3/tasks/_accelerationClient_compileReleaseJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/tasks/_accelerationClient_compileReleaseJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.bin" afterPath="$PROJECT_DIR$/.gradle/3.3/tasks/_accelerationClient_compileReleaseJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/tasks/_accelerationClient_compileReleaseJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" afterPath="$PROJECT_DIR$/.gradle/3.3/tasks/_accelerationClient_compileReleaseJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/tasks/_accelerationServer_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" afterPath="$PROJECT_DIR$/.gradle/3.3/tasks/_accelerationServer_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/tasks/_accelerationServer_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.bin" afterPath="$PROJECT_DIR$/.gradle/3.3/tasks/_accelerationServer_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/tasks/_accelerationServer_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" afterPath="$PROJECT_DIR$/.gradle/3.3/tasks/_accelerationServer_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/tasks/_rapidDemoApp_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" afterPath="$PROJECT_DIR$/.gradle/3.3/tasks/_rapidDemoApp_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/tasks/_rapidDemoApp_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.bin" afterPath="$PROJECT_DIR$/.gradle/3.3/tasks/_rapidDemoApp_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/3.3/tasks/_rapidDemoApp_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" afterPath="$PROJECT_DIR$/.gradle/3.3/tasks/_rapidDemoApp_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/generated/mockable-android-25.jar" afterPath="$PROJECT_DIR$/build/generated/mockable-android-25.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/accelerationServer/accelerationServer.iml" afterPath="$PROJECT_DIR$/accelerationServer/accelerationServer.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/accelerationServer/build.gradle" afterPath="$PROJECT_DIR$/accelerationServer/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/accelerationServer/build/intermediates/incremental/mergeDebugAndroidTestResources/compile-file-map.properties" afterPath="$PROJECT_DIR$/accelerationServer/build/intermediates/incremental/mergeDebugAndroidTestResources/compile-file-map.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/accelerationServer/build/intermediates/incremental/mergeDebugResources/compile-file-map.properties" afterPath="$PROJECT_DIR$/accelerationServer/build/intermediates/incremental/mergeDebugResources/compile-file-map.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/accelerationServer/build/intermediates/incremental/mergeDebugResources/merger.xml" afterPath="$PROJECT_DIR$/accelerationServer/build/intermediates/incremental/mergeDebugResources/merger.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/accelerationServer/build/outputs/logs/manifest-merger-debug-report.txt" afterPath="$PROJECT_DIR$/accelerationServer/build/outputs/logs/manifest-merger-debug-report.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.gradle" afterPath="$PROJECT_DIR$/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/intermediates/dex-cache/cache.xml" afterPath="$PROJECT_DIR$/build/intermediates/dex-cache/cache.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rapidDemoApp/build.gradle" afterPath="$PROJECT_DIR$/rapidDemoApp/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rapidDemoApp/build/intermediates/incremental/mergeDebugAndroidTestResources/compile-file-map.properties" afterPath="$PROJECT_DIR$/rapidDemoApp/build/intermediates/incremental/mergeDebugAndroidTestResources/compile-file-map.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rapidDemoApp/build/intermediates/incremental/mergeDebugResources/compile-file-map.properties" afterPath="$PROJECT_DIR$/rapidDemoApp/build/intermediates/incremental/mergeDebugResources/compile-file-map.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rapidDemoApp/build/intermediates/incremental/mergeDebugResources/merger.xml" afterPath="$PROJECT_DIR$/rapidDemoApp/build/intermediates/incremental/mergeDebugResources/merger.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rapidDemoApp/build/outputs/logs/manifest-merger-debug-report.txt" afterPath="$PROJECT_DIR$/rapidDemoApp/build/outputs/logs/manifest-merger-debug-report.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rapidDemoApp/rapidDemoApp.iml" afterPath="$PROJECT_DIR$/rapidDemoApp/rapidDemoApp.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/settings.gradle" afterPath="$PROJECT_DIR$/settings.gradle" />
-    </list>
+    <list default="true" id="2be1151e-faef-4b0c-9c45-87abddbf4e84" name="Default" comment="" />
     <ignored path="AccelerationClient.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -4812,7 +4639,14 @@
       <option name="project" value="LOCAL" />
       <updated>1492179427786</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Testing commiting from android studio.">
+      <created>1492260116568</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1492260116568</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -5132,6 +4966,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
           <caret line="70" column="28" selection-start-line="70" selection-start-column="28" selection-end-line="70" selection-end-column="28" />
+          <folding>
+            <element signature="e#0#942#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#7627#7628#0" expanded="false" />
+            <element signature="e#7654#7655#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
