@@ -8,8 +8,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/accelerationClient" />
             <option value="$PROJECT_DIR$/accelerationServer" />
+            <option value="$PROJECT_DIR$/rapid-android-ac" />
             <option value="$PROJECT_DIR$/rapidDemoApp" />
           </set>
         </option>

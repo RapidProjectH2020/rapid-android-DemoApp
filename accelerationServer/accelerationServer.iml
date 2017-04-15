@@ -88,7 +88,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="core-1.51.0.0" level="project" />
     <orderEntry type="library" exported="" name="prov-1.51.0.0" level="project" />
-    <orderEntry type="module" module-name="accelerationClient" exported="" />
-    <orderEntry type="library" exported="" name="rapid-common-0.1.1" level="project" />
+    <orderEntry type="module" module-name="rapid-android-ac" exported="" />
   </component>
 </module>

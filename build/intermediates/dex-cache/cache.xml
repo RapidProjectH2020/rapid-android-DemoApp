@@ -2,58 +2,58 @@
 <items version="2" >
 
     <item
-        is-multidex="true"
-        jar="/Users/sokol/Dropbox/git/rapid-android-studio/rapidDemoApp/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
-        jumboMode="true"
+        is-multidex="false"
+        jar="/Users/sokol/Dropbox/git/rapid-android-studio/accelerationClient/build/intermediates/bundles/default/classes.jar"
+        jumboMode="false"
         optimize="true"
-        revision="25.0.0"
-        sha1="c82741bc129dd5f99f11a4ab8666ae24262053b6">
-        <dex dex="/Users/sokol/Dropbox/git/rapid-android-studio/rapidDemoApp/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_f71af5ee629861f5204868dd610cee4ed3bb8ac5/classes.dex" />
+        revision="25.0.2"
+        sha1="de4ae9b02d1343a657711a2a0cb989704fcc2796">
+        <dex dex="/Users/sokol/Dropbox/git/rapid-android-studio/accelerationServer/build/intermediates/pre-dexed/debug/classes_48033811924058a81e65a181ddccf8ad292de6e2.jar" />
     </item>
     <item
-        is-multidex="true"
+        is-multidex="false"
+        jar="/Users/sokol/.gradle/caches/modules-2/files-2.1/eu.project.rapid/rapid-common/0.1.1/8bed1904dd84d97e2b77db7ccd4443fb602e9fc1/rapid-common-0.1.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="8bed1904dd84d97e2b77db7ccd4443fb602e9fc1">
+        <dex dex="/Users/sokol/Dropbox/git/rapid-android-studio/rapidDemoApp/build/intermediates/pre-dexed/debug/rapid-common-0.1.1_1cfc2a2ff18a39ab4afc3c1ab59dc9bb1614a273.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/sokol/Dropbox/git/rapid-android-studio/rapidDemoApp/libs/core-1.51.0.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="0f642963312ea0e615ad65f28adc5a5b3a2a0862">
+        <dex dex="/Users/sokol/Dropbox/git/rapid-android-studio/rapidDemoApp/build/intermediates/pre-dexed/debug/core-1.51.0.0_636cd92623fd074c1dfb10358501801f31e6bd0f.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="/Users/sokol/Dropbox/git/rapid-android-studio/rapidDemoApp/libs/prov-1.51.0.0.jar"
-        jumboMode="true"
+        jumboMode="false"
         optimize="true"
         revision="25.0.0"
         sha1="6755081df770180856ca48694b40cd34c2208128">
-        <dex dex="/Users/sokol/Dropbox/git/rapid-android-studio/rapidDemoApp/build/intermediates/transforms/dex/debug/folders/1000/2/prov-1.51.0.0_844915b79b2fcc8570753ce16c04f85fa226b86c/classes.dex" />
+        <dex dex="/Users/sokol/Dropbox/git/rapid-android-studio/rapidDemoApp/build/intermediates/pre-dexed/debug/prov-1.51.0.0_844915b79b2fcc8570753ce16c04f85fa226b86c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/sokol/.gradle/caches/modules-2/files-2.1/eu.project.rapid/rapid-common/0.1.1/8bed1904dd84d97e2b77db7ccd4443fb602e9fc1/rapid-common-0.1.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="8bed1904dd84d97e2b77db7ccd4443fb602e9fc1">
+        <dex dex="/Users/sokol/Dropbox/git/rapid-android-studio/accelerationServer/build/intermediates/pre-dexed/debug/rapid-common-0.1.1_1cfc2a2ff18a39ab4afc3c1ab59dc9bb1614a273.jar" />
     </item>
     <item
         is-multidex="false"
         jar="/Users/sokol/Dropbox/git/rapid-android-studio/accelerationClient/build/intermediates/bundles/default/classes.jar"
         jumboMode="false"
         optimize="true"
-        revision="25.0.2"
-        sha1="7bdd6bb329a288ca184a06ee525ea8b739703f3f">
-        <dex dex="/Users/sokol/Dropbox/git/rapid-android-studio/accelerationServer/build/intermediates/pre-dexed/debug/classes_48033811924058a81e65a181ddccf8ad292de6e2.jar" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/sokol/Dropbox/git/rapid-android-studio/rapidDemoApp/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
-        jumboMode="true"
-        optimize="true"
         revision="25.0.0"
-        sha1="3ee79b0ed31ffa24486c7c2755a88f1a9456da3a">
-        <dex dex="/Users/sokol/Dropbox/git/rapid-android-studio/rapidDemoApp/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_ac2a9bbc6b01a2eb5e3cd03a3c00060437dae854/classes.dex" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/sokol/Dropbox/git/rapid-android-studio/rapidCommon/build/libs/rapidCommon.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.2"
-        sha1="24cbdbc5ec49860e514f0b27c0e4e40e347311f1">
-        <dex dex="/Users/sokol/Dropbox/git/rapid-android-studio/accelerationServer/build/intermediates/pre-dexed/debug/rapidCommon_22e0de41cfb93c12a5a5ef6e66a0f9c8e2d59da2.jar" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/sokol/Dropbox/git/rapid-android-studio/rapidDemoApp/libs/core-1.51.0.0.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.0"
-        sha1="0f642963312ea0e615ad65f28adc5a5b3a2a0862">
-        <dex dex="/Users/sokol/Dropbox/git/rapid-android-studio/rapidDemoApp/build/intermediates/transforms/dex/debug/folders/1000/2/core-1.51.0.0_636cd92623fd074c1dfb10358501801f31e6bd0f/classes.dex" />
+        sha1="de4ae9b02d1343a657711a2a0cb989704fcc2796">
+        <dex dex="/Users/sokol/Dropbox/git/rapid-android-studio/rapidDemoApp/build/intermediates/pre-dexed/debug/classes_48033811924058a81e65a181ddccf8ad292de6e2.jar" />
     </item>
     <item
         is-multidex="false"
@@ -65,15 +65,6 @@
         <dex dex="/Users/sokol/Dropbox/git/rapid-android-studio/accelerationServer/build/intermediates/pre-dexed/debug/core-1.51.0.0_3eea0c1acdf7885f92ac66abe39c16896f119b86.jar" />
     </item>
     <item
-        is-multidex="true"
-        jar="/Users/sokol/Dropbox/git/rapid-android-studio/rapidDemoApp/libs/commons-compress-1.9.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="25.0.0"
-        sha1="cc18955ff1e36d5abd39a14bfe82b19154330a34">
-        <dex dex="/Users/sokol/Dropbox/git/rapid-android-studio/rapidDemoApp/build/intermediates/transforms/dex/debug/folders/1000/2/commons-compress-1.9_e224f4dba84d1d2316842456b29ab5bdb42c2156/classes.dex" />
-    </item>
-    <item
         is-multidex="false"
         jar="/Users/sokol/Dropbox/git/rapid-android-studio/accelerationServer/libs/prov-1.51.0.0.jar"
         jumboMode="false"
@@ -81,6 +72,15 @@
         revision="25.0.2"
         sha1="6755081df770180856ca48694b40cd34c2208128">
         <dex dex="/Users/sokol/Dropbox/git/rapid-android-studio/accelerationServer/build/intermediates/pre-dexed/debug/prov-1.51.0.0_b6b0564fb7b514c1ff2fd183df139187ec9368e1.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/sokol/Dropbox/git/rapid-android-studio/rapidDemoApp/libs/commons-compress-1.9.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="cc18955ff1e36d5abd39a14bfe82b19154330a34">
+        <dex dex="/Users/sokol/Dropbox/git/rapid-android-studio/rapidDemoApp/build/intermediates/pre-dexed/debug/commons-compress-1.9_e224f4dba84d1d2316842456b29ab5bdb42c2156.jar" />
     </item>
 
 </items>

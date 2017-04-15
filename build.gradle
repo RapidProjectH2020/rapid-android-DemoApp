@@ -3,19 +3,30 @@ buildscript {
     repositories {
         jcenter()
         maven {
-            url  "http://dl.bintray.com/gjigandi/rapid"
+            url  "http://dl.bintray.com/rapidprojecth2020/rapid"
         }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.1'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+    }
+
+    subprojects {
+        tasks.withType(Javadoc).all { enabled = false }
     }
 }
+
+//plugins {
+//    id "com.jfrog.bintray" version "1.7.3"
+//    id "com.github.dcendents.android-maven" version "1.5"
+//}
 
 allprojects {
     repositories {
         jcenter()
         maven {
-            url  "http://dl.bintray.com/gjigandi/rapid"
+            url  "http://dl.bintray.com/rapidprojecth2020/rapid"
         }
     }
 }
