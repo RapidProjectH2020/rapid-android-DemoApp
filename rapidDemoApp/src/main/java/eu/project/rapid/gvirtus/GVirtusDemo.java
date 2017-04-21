@@ -1,9 +1,10 @@
 
-package eu.project.rapid.demo;
+package eu.project.rapid.gvirtus;
+
+import android.util.Log;
 
 import java.io.IOException;
 
-import android.util.Log;
 import eu.project.rapid.ac.DFE;
 import eu.project.rapid.ac.utils.Utils;
 import eu.project.rapid.gvirtusfe.CudaDr_context;

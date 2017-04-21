@@ -17,6 +17,8 @@
  *******************************************************************************/
 package eu.project.rapid.ac.profilers;
 
+import eu.project.rapid.common.RapidConstants;
+
 /**
  * Log record of the profiler.
  * 
@@ -33,7 +35,7 @@ package eu.project.rapid.ac.profilers;
 public class LogRecord {
 	public String appName;
 	public String methodName;
-	public String execLocation;
+	public RapidConstants.ExecLocation execLocation;
 	public long prepareDataDuration;
 	public long execDuration;
 	public long pureDuration;
@@ -128,9 +130,10 @@ public class LogRecord {
 
 		String netProfilerRecord = " , , , , , , ";
 
-		if (execLocation == "REMOTE")
+		if (execLocation.equals("REMOTE")) {
 			netProfilerRecord = networkType + ", " + networkSubtype + "," + rtt
 					+ "," + ulRate + "," + dlRate + "," + rxBytes + "," + txBytes;
+		}
 
 		String devProfilerRecord = "" + batteryVoltageChange;
 		

@@ -19,7 +19,6 @@
 
 <resources>
 
-    <string name="delimitator">------------------------------------------</string>
     <string name="app_name">RAPID Offloading Framework</string>
     <string name="cpuLoader1">Test 1</string>
     <string name="cpuLoader2">Test 2</string>
@@ -37,17 +36,24 @@
     <string name="faceDetection">Face Detection</string>
     <string name="virusScanning">Virus Scanning</string>
     <string name="sudoku">Solve Sudoku</string>
-    <string name="eightQueens">Solve NQueens</string>
+
+    <string name="nrQueens">Nr. of Queens:</string>
+    <string name="nQueensButton">Solve NQueens</string>
+    <string name="nQueensDescription">Solve the NQueens puzzle.
+        The higher the number of queens, the higher the execution time.</string>
+    <string name="nQueensLocalCount">Nr. local exec.:</string>
+    <string name="nQueensLocalTime">Avg. local (ms):</string>
+    <string name="nQueensRemoteCount">Nr. remote exec.:</string>
+    <string name="nQueensRemoteTime">Avg. remote (ms):</string>
+
     <string name="radioButtonStaticLocal">Always Local</string>
     <string name="radioButtonStaticRemote">Always Remote</string>
-    <string name="radioButtonHybrid">Hybrid</string>
     <string name="radioButtonEnergy">Energy</string>
     <string name="radioButtonTime">Delay (Execution Time + Communication)</string>
     <string name="radioButtonTimeEnergy">Energy and Delay</string>
     <string name="textLocalFraction">Local fraction [0, 1]</string>
     <string name="allExperiments">Run All Experiments</string>
     <string name="nrClones">Number of VMs:</string>
-    <string name="nrQueens">Number of Queens:</string>
     <string name="nrPhotos">Number of Photos:</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="action_settings">Settings</string>

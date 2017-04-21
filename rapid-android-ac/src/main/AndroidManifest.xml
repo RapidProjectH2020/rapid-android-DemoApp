@@ -22,21 +22,16 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <application
-        android:debuggable="true"
-        android:enabled="true"
-        android:persistent="true" >
-        
-        <!-- Can't start the service if is not declared in the app manifest -->
-        <!-- <service android:name="eu.project.rapid.ac.d2d.D2DService"></service> -->
-    </application>
-
-    <uses-sdk
-        android:minSdkVersion="14"
-        android:targetSdkVersion="23" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+
+    <application
+        android:enabled="true"
+        android:persistent="true" >
+
+        <!-- Can't start the service if is not declared in the app manifest -->
+        <!-- <service android:name="eu.project.rapid.ac.d2d.D2DService"></service> -->
+    </application>
 
 </manifest>

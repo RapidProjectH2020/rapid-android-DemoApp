@@ -25,16 +25,12 @@ import java.io.Serializable;
  * 
  */
 public class ResultContainer implements Serializable {
-
-	/**
-     * 
-     */
 	private static final long serialVersionUID = 6289277906217259082L;
 
-	public Object objState;
+	Object objState;
 	public Object functionResult;
-	public Long getObjectDuration;
-	public Long pureExecutionDuration;
+	private Long getObjectDuration;
+	Long pureExecutionDuration;
 
 	/**
 	 * Wrapper of results returned by remote server - state of the object the
@@ -56,7 +52,7 @@ public class ResultContainer implements Serializable {
 	 * Used when an exception happens, to return the exception as a result of
 	 * remote invocation
 	 * 
-	 * @param result
+	 * @param result The result of the execution.
 	 */
 	public ResultContainer(Object result, Long getObjectDuration) {
 		objState = null;

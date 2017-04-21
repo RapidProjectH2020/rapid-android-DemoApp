@@ -82,7 +82,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="10" language="java" name="eu.project.rapid.demo.GVirtusDemo" project="Rapid-DemoApp" 
+  <class id="10" language="java" name="eu.project.rapid.gvirtus.GVirtusDemo" project="Rapid-DemoApp"
     file="/Rapid-DemoApp/src/eu/project/rapid/demo/GVirtusDemo.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="984" y="344"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 

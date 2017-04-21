@@ -15,67 +15,62 @@
  *******************************************************************************/
 package eu.project.rapid.synthBenchmark;
 
+import android.util.Log;
+
 import java.lang.reflect.Method;
 
-import android.util.Log;
 import eu.project.rapid.ac.DFE;
 import eu.project.rapid.ac.Remoteable;
 
 public class JniTest extends Remoteable {
+    private static final long serialVersionUID = 7407706990063388777L;
 
-  /**
-   * 
-   */
-  private static final long serialVersionUID = 7407706990063388777L;
+    private transient DFE dfe;
 
-  private transient DFE dfe;
-
-  public int temp = 0;
-
-  public JniTest(DFE dfe) {
-    this.dfe = dfe;
-  }
-
-  /*
-   * A native method that is implemented by the 'hello-jni' native library, which is packaged with
-   * this application.
-   */
-  public native String stringFromJNI();
-
-  static {
-    try {
-      System.loadLibrary("hello-jni");
-    } catch (UnsatisfiedLinkError e) {
-      Log.i("JniTest", "Could not load native library, maybe this is running on the clone.");
+    public JniTest(DFE dfe) {
+        this.dfe = dfe;
     }
-  }
 
-  public String jniCaller() {
-    Method toExecute;
-    String result = null;
-    try {
-      toExecute = this.getClass().getDeclaredMethod("localjniCaller", (Class[]) null);
-      result = (String) dfe.execute(toExecute, this);
-    } catch (SecurityException e) {
-      // Should never get here
-      e.printStackTrace();
-      throw e;
-    } catch (NoSuchMethodException e) {
-      // Should never get here
-      e.printStackTrace();
-    } catch (Throwable e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+    /*
+     * A native method that is implemented by the 'hello-jni' native library, which is packaged with
+     * this application.
+     */
+    public native String stringFromJNI();
+
+    static {
+        try {
+            System.loadLibrary("hello-jni");
+        } catch (UnsatisfiedLinkError e) {
+            Log.i("JniTest", "Could not load native library, maybe this is running on the VM.");
+        }
     }
-    return result;
-  }
 
-  public String localjniCaller() {
-    return stringFromJNI();
-  }
+    public String jniCaller() {
+        Method toExecute;
+        String result = null;
+        try {
+            toExecute = this.getClass().getDeclaredMethod("localjniCaller", (Class[]) null);
+            result = (String) dfe.execute(toExecute, this);
+        } catch (SecurityException e) {
+            // Should never get here
+            e.printStackTrace();
+            throw e;
+        } catch (NoSuchMethodException e) {
+            // Should never get here
+            e.printStackTrace();
+        } catch (Throwable e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return result;
+    }
 
-  @Override
-  public void copyState(Remoteable arg0) {
-    // TODO Auto-generated method stub
-  }
+    public String localjniCaller() {
+        return stringFromJNI();
+    }
+
+    @Override
+    public void copyState(Remoteable arg0) {
+        // TODO Auto-generated method stub
+    }
 }

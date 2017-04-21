@@ -31,7 +31,7 @@ import dalvik.system.DexClassLoader;
  * 
  */
 public class DynamicObjectInputStream extends ObjectInputStream {
-  private static final String TAG = "DynamicObjectInputStream";
+  private static final String TAG = "DObjectInputStream";
 
   private ClassLoader mCurrent = null;
   private DexClassLoader mCurrentDexLoader = null;
@@ -44,10 +44,10 @@ public class DynamicObjectInputStream extends ObjectInputStream {
    * Server side only. Need to have the server's classloaders otherwise if the classloaders are
    * initialized here it doesn't work correctly.
    * 
-   * @param classLoader
-   * @param dexClassLoader
+   * @param classLoader The classloader of the project.
+   * @param dexClassLoader The classloader created using the dex file of the new application.
    */
-  public void setClassLoaders(ClassLoader classLoader, DexClassLoader dexClassLoader) {
+  void setClassLoaders(ClassLoader classLoader, DexClassLoader dexClassLoader) {
     mCurrent = classLoader;
     mCurrentDexLoader = dexClassLoader;
   }
@@ -58,7 +58,9 @@ public class DynamicObjectInputStream extends ObjectInputStream {
   @Override
   protected Class<?> resolveClass(ObjectStreamClass desc)
       throws IOException, ClassNotFoundException {
-    // Log.i(TAG, "Resolving class: " + desc.getName());
+//     Log.i(TAG, "Resolving class: " + desc.getName());
+//     Log.i(TAG, "mCurrent classloader: " + mCurrent);
+//     Log.i(TAG, "mCurrentDexLoader classloader: " + mCurrentDexLoader);
 
     try {
       try {
@@ -80,7 +82,7 @@ public class DynamicObjectInputStream extends ObjectInputStream {
    * 
    * @param apkFile the apk package
    */
-  public DexClassLoader addDex(final File apkFile) {
+  DexClassLoader addDex(final File apkFile) {
 
     if (mCurrentDexLoader == null) {
       mCurrentDexLoader = new DexClassLoader(apkFile.getAbsolutePath(),

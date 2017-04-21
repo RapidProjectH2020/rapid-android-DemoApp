@@ -27,7 +27,7 @@ import eu.project.rapid.ac.Remoteable;
 public class TestRemoteable extends Remoteable {
   private static final long serialVersionUID = 1L;
 
-  public transient DFE dfe;
+  private transient DFE dfe;
 
   public TestRemoteable(DFE dfe) {
     this.dfe = dfe;

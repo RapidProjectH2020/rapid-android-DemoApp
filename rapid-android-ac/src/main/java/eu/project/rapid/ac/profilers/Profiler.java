@@ -15,141 +15,141 @@
  *******************************************************************************/
 package eu.project.rapid.ac.profilers;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import android.util.Log;
 import eu.project.rapid.ac.db.DBCache;
 import eu.project.rapid.ac.db.DBEntry;
 import eu.project.rapid.ac.profilers.phone.Phone;
 import eu.project.rapid.ac.profilers.phone.PhoneFactory;
 import eu.project.rapid.ac.utils.Constants;
+import eu.project.rapid.common.RapidConstants;
 
 
 public class Profiler {
 
-  private static final String TAG = "Profiler";
+    private static final String TAG = "Profiler";
 
-  Phone phone;
+    Phone phone;
 
-  private ProgramProfiler progProfiler;
-  private NetworkProfiler netProfiler;
-  private DeviceProfiler devProfiler;
-  private int mRegime;
-  public static final int REGIME_CLIENT = 1;
-  public static final int REGIME_SERVER = 2;
+    private ProgramProfiler progProfiler;
+    private NetworkProfiler netProfiler;
+    private DeviceProfiler devProfiler;
+    private int mRegime;
+    public static final int REGIME_CLIENT = 1;
+    public static final int REGIME_SERVER = 2;
 
-  private static FileWriter logFileWriter;
+    private static FileWriter logFileWriter;
 
-  private String mLocation;
+    private RapidConstants.ExecLocation mLocation;
 
-  private LogRecord lastLogRecord;
+    private LogRecord lastLogRecord;
 
-  public Profiler(int regime, ProgramProfiler progProfiler, NetworkProfiler netProfiler,
-      DeviceProfiler devProfiler) {
-    this.progProfiler = progProfiler;
-    this.netProfiler = netProfiler;
-    this.devProfiler = devProfiler;
-    this.mRegime = regime;
+    public Profiler(int regime, ProgramProfiler progProfiler, NetworkProfiler netProfiler,
+                    DeviceProfiler devProfiler) {
+        this.progProfiler = progProfiler;
+        this.netProfiler = netProfiler;
+        this.devProfiler = devProfiler;
+        this.mRegime = regime;
 
-    if (mRegime == REGIME_CLIENT) {
-      // this.devProfiler.trackBatteryLevel();
-    }
-  }
-
-  public void startExecutionInfoTracking() {
-
-    if (netProfiler != null) {
-      netProfiler.startTransmittedDataCounting();
-      mLocation = "REMOTE";
-    } else {
-      mLocation = "LOCAL";
-    }
-    Log.d(TAG, mLocation + " " + progProfiler.methodName);
-    progProfiler.startExecutionInfoTracking();
-
-    if (mRegime == REGIME_CLIENT) {
-      devProfiler.startDeviceProfiling();
-    }
-  }
-
-  private void stopProfilers() {
-
-    if (mRegime == REGIME_CLIENT) {
-      devProfiler.stopAndCollectDeviceProfiling();
-    }
-
-    progProfiler.stopAndCollectExecutionInfoTracking();
-
-    if (netProfiler != null) {
-      netProfiler.stopAndCollectTransmittedData();
-    }
-  }
-
-  /**
-   * Stop running profilers and discard current information
-   * 
-   */
-  public void stopAndDiscardExecutionInfoTracking() {
-    stopProfilers();
-  }
-
-  /**
-   * Stop running profilers and log current information
-   * 
-   */
-  public void stopAndLogExecutionInfoTracking(long prepareDataDuration, Long pureExecTime) {
-
-    stopProfilers();
-
-    lastLogRecord = new LogRecord(progProfiler, netProfiler, devProfiler);
-    lastLogRecord.prepareDataDuration = prepareDataDuration;
-    lastLogRecord.pureDuration = pureExecTime;
-    lastLogRecord.execLocation = mLocation;
-
-    if (mRegime == REGIME_CLIENT) {
-      phone = PhoneFactory.getPhone(devProfiler, netProfiler, progProfiler);
-      phone.estimateEnergyConsumption();
-      lastLogRecord.energyConsumption = phone.getTotalEstimatedEnergy();
-      lastLogRecord.cpuEnergy = phone.getEstimatedCpuEnergy();
-      lastLogRecord.screenEnergy = phone.getEstimatedScreenEnergy();
-      lastLogRecord.wifiEnergy = phone.getEstimatedWiFiEnergy();
-      lastLogRecord.threeGEnergy = phone.getEstimated3GEnergy();
-
-      Log.d(TAG, "Log record - " + lastLogRecord.toString());
-
-      try {
-        synchronized (this) {
-          if (logFileWriter == null) {
-            File logFile = new File(Constants.LOG_FILE_NAME);
-            // Try creating new, if doesn't exist
-            boolean logFileCreated = logFile.createNewFile();
-            logFileWriter = new FileWriter(logFile, true);
-            if (logFileCreated) {
-              logFileWriter.append(LogRecord.LOG_HEADERS + "\n");
-            }
-          }
-
-          logFileWriter.append(lastLogRecord.toString() + "\n");
-          logFileWriter.flush();
+        if (mRegime == REGIME_CLIENT) {
+            // this.devProfiler.trackBatteryLevel();
         }
-      } catch (IOException e) {
-        Log.w(TAG, "Not able to create the logFile " + Constants.LOG_FILE_NAME + ": " + e);
-      }
-
-      updateDbCache();
     }
-  }
 
-  private void updateDbCache() {
-    DBCache dbCache = DBCache.getDbCache();
-    // public DBEntry(String appName, String methodName, String execLocation, String networkType,
-    // String networkSubType, int ulRate, int dlRate, long execDuration, long execEnergy)
-    DBEntry dbEntry =
-        new DBEntry(lastLogRecord.appName, lastLogRecord.methodName, lastLogRecord.execLocation,
-            lastLogRecord.networkType, lastLogRecord.networkSubtype, lastLogRecord.ulRate,
-            lastLogRecord.dlRate, lastLogRecord.execDuration, lastLogRecord.energyConsumption);
-    dbCache.insertEntry(dbEntry);
-  }
+    public void startExecutionInfoTracking() {
+
+        if (netProfiler != null) {
+            netProfiler.startTransmittedDataCounting();
+            mLocation = RapidConstants.ExecLocation.REMOTE;
+        } else {
+            mLocation = RapidConstants.ExecLocation.LOCAL;
+        }
+        Log.d(TAG, mLocation + " " + progProfiler.methodName);
+        progProfiler.startExecutionInfoTracking();
+
+        if (mRegime == REGIME_CLIENT) {
+            devProfiler.startDeviceProfiling();
+        }
+    }
+
+    private void stopProfilers() {
+
+        if (mRegime == REGIME_CLIENT) {
+            devProfiler.stopAndCollectDeviceProfiling();
+        }
+
+        progProfiler.stopAndCollectExecutionInfoTracking();
+
+        if (netProfiler != null) {
+            netProfiler.stopAndCollectTransmittedData();
+        }
+    }
+
+    /**
+     * Stop running profilers and discard current information
+     */
+    public void stopAndDiscardExecutionInfoTracking() {
+        stopProfilers();
+    }
+
+    /**
+     * Stop running profilers and log current information
+     */
+    public void stopAndLogExecutionInfoTracking(long prepareDataDuration, Long pureExecTime) {
+
+        stopProfilers();
+
+        lastLogRecord = new LogRecord(progProfiler, netProfiler, devProfiler);
+        lastLogRecord.prepareDataDuration = prepareDataDuration;
+        lastLogRecord.pureDuration = pureExecTime;
+        lastLogRecord.execLocation = mLocation;
+
+        if (mRegime == REGIME_CLIENT) {
+            phone = PhoneFactory.getPhone(devProfiler, netProfiler, progProfiler);
+            phone.estimateEnergyConsumption();
+            lastLogRecord.energyConsumption = phone.getTotalEstimatedEnergy();
+            lastLogRecord.cpuEnergy = phone.getEstimatedCpuEnergy();
+            lastLogRecord.screenEnergy = phone.getEstimatedScreenEnergy();
+            lastLogRecord.wifiEnergy = phone.getEstimatedWiFiEnergy();
+            lastLogRecord.threeGEnergy = phone.getEstimated3GEnergy();
+
+            Log.d(TAG, "Log record - " + lastLogRecord.toString());
+
+            try {
+                synchronized (this) {
+                    if (logFileWriter == null) {
+                        File logFile = new File(Constants.LOG_FILE_NAME);
+                        // Try creating new, if doesn't exist
+                        boolean logFileCreated = logFile.createNewFile();
+                        logFileWriter = new FileWriter(logFile, true);
+                        if (logFileCreated) {
+                            logFileWriter.append(LogRecord.LOG_HEADERS + "\n");
+                        }
+                    }
+
+                    logFileWriter.append(lastLogRecord.toString() + "\n");
+                    logFileWriter.flush();
+                }
+            } catch (IOException e) {
+                Log.w(TAG, "Not able to create the logFile " + Constants.LOG_FILE_NAME + ": " + e);
+            }
+
+            updateDbCache();
+        }
+    }
+
+    private void updateDbCache() {
+        DBCache dbCache = DBCache.getDbCache();
+        // public DBEntry(String appName, String methodName, String execLocation, String networkType,
+        // String networkSubType, int ulRate, int dlRate, long execDuration, long execEnergy)
+        DBEntry dbEntry =
+                new DBEntry(lastLogRecord.appName, lastLogRecord.methodName, lastLogRecord.execLocation,
+                        lastLogRecord.networkType, lastLogRecord.networkSubtype, lastLogRecord.ulRate,
+                        lastLogRecord.dlRate, lastLogRecord.execDuration, lastLogRecord.energyConsumption);
+        dbCache.insertEntry(dbEntry);
+    }
 }

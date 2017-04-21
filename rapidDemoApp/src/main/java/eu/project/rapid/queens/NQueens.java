@@ -15,9 +15,10 @@
  *******************************************************************************/
 package eu.project.rapid.queens;
 
+import android.util.Log;
+
 import java.lang.reflect.Method;
 
-import android.util.Log;
 import eu.project.rapid.ac.DFE;
 import eu.project.rapid.ac.Remote;
 import eu.project.rapid.ac.Remoteable;
@@ -94,7 +95,7 @@ public class NQueens extends Remoteable {
       // cloneId == 0 if this is the main clone
       // or [1, nrClones-1] otherwise
       int cloneId = Utils.readCloneHelperId();
-      int howManyCols = (int) ((N) / nrClones); // Integer division, we may
+      int howManyCols = (N) / nrClones; // Integer division, we may
                                                 // loose some columns.
       start = cloneId * howManyCols; // cloneId == 0 if this is the main clone
       end = start + howManyCols;
@@ -114,26 +115,26 @@ public class NQueens extends Remoteable {
         for (int k = 0; k < N; k++) {
           for (int l = 0; l < N; l++) {
             if (N == 4) {
-              countSolutions += setAndCheckBoard(board, new int[] {i, j, k, l});
+              countSolutions += setAndCheckBoard(board, i, j, k, l);
               continue;
             }
             for (int m = 0; m < N; m++) {
               if (N == 5) {
-                countSolutions += setAndCheckBoard(board, new int[] {i, j, k, l, m});
+                countSolutions += setAndCheckBoard(board, i, j, k, l, m);
                 continue;
               }
               for (int n = 0; n < N; n++) {
                 if (N == 6) {
-                  countSolutions += setAndCheckBoard(board, new int[] {i, j, k, l, m, n});
+                  countSolutions += setAndCheckBoard(board, i, j, k, l, m, n);
                   continue;
                 }
                 for (int o = 0; o < N; o++) {
                   if (N == 7) {
-                    countSolutions += setAndCheckBoard(board, new int[] {i, j, k, l, m, n, o});
+                    countSolutions += setAndCheckBoard(board, i, j, k, l, m, n, o);
                     continue;
                   }
                   for (int p = 0; p < N; p++) {
-                    countSolutions += setAndCheckBoard(board, new int[] {i, j, k, l, m, n, o, p});
+                    countSolutions += setAndCheckBoard(board, i, j, k, l, m, n, o, p);
                   }
                 }
               }
@@ -157,9 +158,9 @@ public class NQueens extends Remoteable {
    */
   public int localSolveNQueensReduce(int[] params) {
     int solutions = 0;
-    for (int i = 0; i < params.length; i++) {
-      Log.i(TAG, "Adding " + params[i] + " partial solutions.");
-      solutions += params[i];
+    for (int param : params) {
+      Log.i(TAG, "Adding " + param + " partial solutions.");
+      solutions += param;
     }
     return solutions;
   }
@@ -236,7 +237,6 @@ public class NQueens extends Remoteable {
     }
     return sum <= 1;
   }
-
 
   private void printBoard(byte[][] board) {
     for (int i = 0; i < N; i++) {

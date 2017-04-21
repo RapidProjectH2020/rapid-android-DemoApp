@@ -18,6 +18,7 @@ package eu.project.rapid.as;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
@@ -219,12 +220,18 @@ public class AccelerationServer extends Service {
             vmIp = waitForNetworkToBeUp();
             Log.i(TAG, "My IP: " + vmIp);
 
-            if (vmIp.startsWith("10.0")) {
+//            if (vmIp.startsWith("10.0")) {
+            Log.i(TAG, "Build.hardware=" + Build.HARDWARE);
+            if (isEmulator()) {
                 Log.i(TAG, "Running on VM on the cloud under VPN, trying to connect to VMM and DS...");
                 if (registerWithVmmAndDs()) {
                     startClientListeners();
                 } else {
                     Log.e(TAG, "Could not register with the VMM and DS, not starting the listeners.");
+
+                    Log.e(TAG, "######################## FIXME: Starting the listeners for testing anyway ########################");
+                    startClientListeners();
+                    Log.e(TAG, "######################## END FIXME ########################");
                 }
             } else {
                 Log.i(TAG, "Running on a phone for D2D offloading, starting the listeners");
@@ -562,5 +569,17 @@ public class AccelerationServer extends Service {
                 }
             }.start();
         }
+    }
+
+    public static boolean isEmulator() {
+        return Build.FINGERPRINT.startsWith("generic")
+                || Build.FINGERPRINT.startsWith("unknown")
+                || Build.MODEL.contains("google_sdk")
+                || Build.MODEL.contains("Emulator")
+                || Build.MODEL.contains("Android SDK built for x86")
+                || Build.MANUFACTURER.contains("Genymotion")
+                || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
+                || "google_sdk".equals(Build.PRODUCT)
+                || Build.HARDWARE.contains("android_x86");
     }
 }
