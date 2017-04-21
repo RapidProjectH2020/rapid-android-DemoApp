@@ -305,10 +305,11 @@ public class AppHandler {
             fDfe.setAccessible(true);
 
             Class<?> dfeType = fDfe.getType();
-            Constructor<?> cons = dfeType.getConstructor((Class[]) null);
+            Constructor<?> cons = dfeType.getDeclaredConstructor();
+            cons.setAccessible(true);
             Object dfe = null;
             try {
-                dfe = cons.newInstance((Object[]) null);
+                dfe = cons.newInstance();
             } catch (InstantiationException e) {
                 // too bad. still try to carry on.
                 e.printStackTrace();

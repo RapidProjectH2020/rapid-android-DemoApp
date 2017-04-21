@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Locale;
 
 import eu.project.rapid.ac.DFE;
 import eu.project.rapid.common.Clone;
@@ -56,9 +57,9 @@ public class StartExecution extends Activity implements DFE.DfeCallback {
     private DFE dfe;
 
     private int nQueensLocalNr;
-    private long nQueensLocalDur;
+    private double nQueensLocalTotDur;
     private int nQueensRemoteNr;
-    private long nQueensRemoteDur;
+    private double nQueensRemoteTotDur;
     private TextView nQueensLocalNrText;
     private TextView nQueensLocalDurText;
     private TextView nQueensRemoteNrText;
@@ -91,10 +92,10 @@ public class StartExecution extends Activity implements DFE.DfeCallback {
 
         textViewVmConnected = (TextView) findViewById(R.id.textVmConnectionStatus);
 
-        nQueensLocalNrText = (TextView) findViewById(R.id.textNQueensLocalNr);
-        nQueensLocalDurText = (TextView) findViewById(R.id.textNQueensLocalTime);
-        nQueensRemoteNrText = (TextView) findViewById(R.id.textNQueensRemoteNr);
-        nQueensRemoteDurText = (TextView) findViewById(R.id.textNQueensRemoteTime);
+        nQueensLocalNrText = (TextView) findViewById(R.id.valNQueensLocalNr);
+        nQueensLocalDurText = (TextView) findViewById(R.id.valNQueensLocalTime);
+        nQueensRemoteNrText = (TextView) findViewById(R.id.valNQueensRemoteNr);
+        nQueensRemoteDurText = (TextView) findViewById(R.id.valNQueensRemoteTime);
 
         // If we don't specify the IP of the VM, we assume that we are using the Rapid infrastructure,
         // i.e. the DS, the VMM, the SLAM, etc., which means that the DFE will select automatically a
@@ -203,6 +204,15 @@ public class StartExecution extends Activity implements DFE.DfeCallback {
                 pd.dismiss();
             }
             Log.i(TAG, nrQueens + "-Queens solved, solutions: " + result);
+            if (dfe.getLastExecLocation(getPackageName(), "localSolveNQueens").equals(RapidConstants.ExecLocation.LOCAL)) {
+                nQueensLocalNrText.setText(String.format(Locale.ENGLISH, "%d", ++nQueensLocalNr));
+                nQueensLocalTotDur += dfe.getLastExecDuration(getPackageName(), "localSolveNQueens");
+                nQueensLocalDurText.setText(String.format(Locale.ENGLISH, "%.2f", nQueensLocalTotDur / nQueensLocalNr / 1000000));
+            } else {
+                nQueensRemoteNrText.setText(String.format(Locale.ENGLISH, "%d", ++nQueensRemoteNr));
+                nQueensRemoteTotDur += dfe.getLastExecDuration(getPackageName(), "localSolveNQueens");
+                nQueensRemoteDurText.setText(String.format(Locale.ENGLISH, "%.2f", nQueensRemoteTotDur / nQueensRemoteNr / 1000000));
+            }
         }
     }
 

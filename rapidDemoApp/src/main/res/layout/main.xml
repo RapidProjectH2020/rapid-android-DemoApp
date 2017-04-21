@@ -154,7 +154,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:padding="5dp"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
                         android:text="@string/nQueensLocalCount"
                         android:textSize="14sp" />
 
@@ -177,7 +178,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:padding="5dp"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
                         android:text="@string/nQueensLocalTime"
                         android:textSize="14sp" />
 
@@ -207,7 +209,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:padding="5dp"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
                         android:text="@string/nQueensRemoteCount"
                         android:textSize="14sp" />
 
@@ -230,7 +233,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:padding="5dp"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
                         android:text="@string/nQueensRemoteTime"
                         android:textSize="14sp" />
 

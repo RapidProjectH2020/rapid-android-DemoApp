@@ -41,8 +41,6 @@ public class DBCache {
         }
     }
 
-    ;
-
     public static DBCache getDbCache() {
         if (dbCache == null) {
             Log.i(TAG, "Creating the dbCache object");

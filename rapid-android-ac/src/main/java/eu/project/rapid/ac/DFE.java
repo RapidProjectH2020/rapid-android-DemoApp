@@ -86,10 +86,10 @@ import eu.project.rapid.common.Clone;
 import eu.project.rapid.common.Configuration;
 import eu.project.rapid.common.RapidConstants;
 import eu.project.rapid.common.RapidConstants.COMM_TYPE;
+import eu.project.rapid.common.RapidConstants.ExecLocation;
 import eu.project.rapid.common.RapidMessages;
 import eu.project.rapid.common.RapidMessages.AnimationMsg;
 import eu.project.rapid.common.RapidUtils;
-import eu.project.rapid.common.RapidConstants.ExecLocation;
 import eu.project.rapid.gvirtusfe.Frontend;
 
 /**
@@ -124,7 +124,6 @@ public class DFE {
 
     static boolean onLineClear = false;
     static boolean onLineSSL = false;
-    private static boolean dfeReady = false;
     private int nrClones;
     private DSE mDSE;
     private NetworkProfiler netProfiler;
@@ -192,8 +191,12 @@ public class DFE {
         String vmmIp = prefs.getString(Constants.PREV_VMM_IP, "");
 
         mDSE = DSE.getInstance(userChoice);
-
         netProfiler = new NetworkProfiler(mContext, config);
+
+        start();
+    }
+
+    private void start() {
         netProfiler.registerNetworkStateTrackers();
 
         // Start the thread that will deal with the D2D communication
@@ -202,10 +205,6 @@ public class DFE {
         // Show a spinning dialog while connecting to the Manager and to the clone.
         this.pd = ProgressDialog.show(mContext, "Working...", "Initial network tasks...", true, false);
         (new InitialNetworkTasks()).execute(sClone);
-    }
-
-    private void start() {
-
     }
 
     /**
@@ -235,16 +234,17 @@ public class DFE {
         // Joshua Bloch "Effective Java, Second Edition", p. 283-284
         DFE result = instance;
 
-        if (result == null) {
-            synchronized (DFE.class) {
+        synchronized (DFE.class) {
+            if (result == null) {
                 result = instance;
                 if (result == null) {
                     DFE.commType = commType;
-                    DFE.usePrevVm = usePrevVm;
+                    DFE.usePrevVm = connectToPrevVm;
                     instance = result = new DFE(appName, pManager, context, clone);
                 }
             }
         }
+
 
         return result;
     }
@@ -430,7 +430,6 @@ public class DFE {
         @Override
         protected void onPostExecute(Void result) {
             Log.i(TAG, "Finished initial network tasks");
-            dfeReady = true;
             if (pd != null) {
                 pd.dismiss();
             }
@@ -609,11 +608,11 @@ public class DFE {
 
     public void onDestroy() {
         Log.d(TAG, "onDestroy");
-        dfeReady = false;
         DeviceProfiler.onDestroy();
         netProfiler.onDestroy();
         DBCache.saveDbCache();
         closeConnection();
+        instance = null;
         // FIXME Should I also stop the D2D listening service here or should I leave it running?
         RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_INITIAL_IMG);
     }
@@ -869,7 +868,7 @@ public class DFE {
         ExecLocation execLocation = findExecLocation(m.getName());
 
         ExecutorService executor = Executors.newFixedThreadPool(2);
-         if (execLocation.equals(ExecLocation.LOCAL) || execLocation.equals(ExecLocation.REMOTE)) {
+        if (execLocation.equals(ExecLocation.LOCAL) || execLocation.equals(ExecLocation.REMOTE)) {
             Future<Object> futureTotalResult =
                     executor.submit(new TaskRunner(execLocation, m, pValues, o));
 
@@ -878,8 +877,7 @@ public class DFE {
             } catch (InterruptedException | ExecutionException e) {
                 Log.e(TAG, "Error on FutureTask while trying to run the method remotely or locally: " + e);
             }
-        }
-        else { // (execLocation.equals(ExecLocation.HYBRID)) {
+        } else { // (execLocation.equals(ExecLocation.HYBRID)) {
             Future<Object> futureLocalResult =
                     executor.submit(new TaskRunner(ExecLocation.LOCAL, m, pValues, o));
             Future<Object> futureRemoteResult =

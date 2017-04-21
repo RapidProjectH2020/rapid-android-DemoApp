@@ -18,6 +18,7 @@ package eu.project.rapid.ac;
 import android.util.Log;
 
 import java.util.Deque;
+import java.util.Iterator;
 
 import eu.project.rapid.ac.db.DBCache;
 import eu.project.rapid.ac.db.DBEntry;
@@ -70,9 +71,8 @@ class DSE {
      * @return The type of execution: LOCAL, REMOTE, HYBRID
      */
     ExecLocation findExecLocation(String appName, String methodName) {
-
+        Log.v(TAG, "execLoc: " + DFE.onLineClear + ", " + DFE.onLineSSL + ", " + userChoice);
         if (!DFE.onLineClear && !DFE.onLineSSL || userChoice.equals(ExecLocation.LOCAL)) {
-            // if (userChoice == Constants.LOCATION_LOCAL) {
             return ExecLocation.LOCAL;
         } else if (userChoice.equals(ExecLocation.REMOTE)) {
             return ExecLocation.REMOTE;
@@ -110,16 +110,15 @@ class DSE {
 
         // Variables needed for the local executions
         int nrLocalExec;
-        long meanDurLocal = 0, meanEnergyLocal = 0;
+        double meanDurLocal = 0, meanEnergyLocal = 0;
 
         // Variables needed for the remote executions
         int nrRemoteExec;
-        long meanDurRemote1 = 0, meanEnergyRemote1 = 0;
-        long meanDurRemote2, meanEnergyRemote2;
-        long meanDurRemote, meanEnergyRemote;
+        double meanDurRemote1 = 0, meanEnergyRemote1 = 0;
+        double meanDurRemote2, meanEnergyRemote2;
+        double meanDurRemote, meanEnergyRemote;
 
         // Check if the method has been executed LOCALLY in previous runs
-        // long t0 = System.currentTimeMillis();
         Deque<DBEntry> localResults = dbCache.getAllEntriesFilteredOn(appName, methodName, ExecLocation.LOCAL);
         nrLocalExec = localResults.size();
 
@@ -127,9 +126,6 @@ class DSE {
         Deque<DBEntry> remoteResults = dbCache.getAllEntriesFilteredOn(appName, methodName, ExecLocation.REMOTE,
                 NetworkProfiler.currentNetworkTypeName, NetworkProfiler.currentNetworkSubtypeName);
         nrRemoteExec = remoteResults.size();
-        //
-        // long dur = System.currentTimeMillis() - t0;
-        // Log.i(TAG, "DB access time for local and remote queries: " + dur + " ms");
 
         // DECISION 1
         // If the number of previous remote executions is zero and the current connection is good
@@ -147,14 +143,15 @@ class DSE {
         // Local part
         // Calculate the meanDurLocal and meanEnergyLocal from the previous runs.
         // Give more weight to recent measurements.
-        if (VERBOSE_LOG) {
-            Log.i(TAG, "------------ The local executions of the method:");
-        }
-
+        Log.i(TAG, "------------ The local executions of the method:");
         int i = 0;
-        for (DBEntry e : localResults) {
+        Iterator<DBEntry> it = localResults.descendingIterator();
+        while (it.hasNext()) {
+//        for (DBEntry e : localResults) {
+            DBEntry e = it.next();
             meanDurLocal += e.getExecDuration();
             meanEnergyLocal += e.getExecEnergy();
+            Log.i(TAG, "------------ LocalEnergy: " + e.getExecEnergy());
 
             i++;
             if (i > 1) {
@@ -181,7 +178,10 @@ class DSE {
         if (VERBOSE_LOG) {
             Log.i(TAG, "------------ The remote executions of the method:");
         }
-        for (DBEntry e : remoteResults) {
+        Iterator<DBEntry> itRemote = remoteResults.descendingIterator();
+//        for (DBEntry e : remoteResults) {
+        while (itRemote.hasNext()) {
+            DBEntry e = itRemote.next();
             remoteDurations[i] = e.getExecDuration();
             remoteEnergies[i] = e.getExecEnergy();
             remoteUlRates[i] = e.getUlRate();
@@ -309,12 +309,12 @@ class DSE {
 
     public ExecLocation getLastExecLocation(String appName, String methodName) {
         Deque<DBEntry> results = dbCache.getAllEntriesFilteredOn(appName, methodName);
-        return results.getLast().getExecLocation();
+        return results.getFirst().getExecLocation();
     }
 
     public long getLastExecDuration(String appName, String methodName) {
         Deque<DBEntry> results = dbCache.getAllEntriesFilteredOn(appName, methodName);
-        return results.getLast().getExecDuration();
+        return results.getFirst().getExecDuration();
     }
 
     @SuppressWarnings("unused")
