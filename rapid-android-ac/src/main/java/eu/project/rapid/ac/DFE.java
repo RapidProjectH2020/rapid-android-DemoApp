@@ -915,9 +915,8 @@ public class DFE {
     public Object execute(Method m, Object[] pValues, Object o) throws IllegalArgumentException,
             SecurityException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException {
 
-        ExecLocation execLocation = findExecLocation(m.getName());
         Object result = null;
-        Future<Object> futureResult = threadPool.submit(new TaskRunner(execLocation, m, pValues, o));
+        Future<Object> futureResult = threadPool.submit(new TaskRunner(m, pValues, o));
         try {
             result = futureResult.get();
         } catch (InterruptedException | ExecutionException e) {
@@ -928,14 +927,12 @@ public class DFE {
     }
 
     private class TaskRunner implements Callable<Object> {
-        ExecLocation execLocation;
         Method m;
         Object[] pValues;
         Object o;
         Object result;
 
-        public TaskRunner(ExecLocation execLocation, Method m, Object[] pValues, Object o) {
-            this.execLocation = execLocation;
+        public TaskRunner(Method m, Object[] pValues, Object o) {
             this.m = m;
             this.pValues = pValues;
             this.o = o;
@@ -944,6 +941,7 @@ public class DFE {
         @Override
         public Object call() {
 
+            ExecLocation execLocation = findExecLocation(m.getName());
             RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_INITIAL_IMG);
             RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_PREPARE_DATA);
             if (execLocation.equals(ExecLocation.LOCAL)) {
