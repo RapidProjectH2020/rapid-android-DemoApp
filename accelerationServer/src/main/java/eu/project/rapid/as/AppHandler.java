@@ -99,7 +99,6 @@ public class AppHandler implements Runnable {
         this.config = config;
     }
 
-
     @Override
     public void run() {
 

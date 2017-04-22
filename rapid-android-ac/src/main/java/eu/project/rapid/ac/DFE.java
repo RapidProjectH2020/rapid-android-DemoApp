@@ -38,7 +38,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
@@ -146,6 +145,7 @@ public class DFE {
     private static final int vmNrGpuCores = 1200; // FIXME
 
     private Set<PhoneSpecs> d2dSetPhones = new TreeSet<>();
+    private ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
     private ProgressDialog pd = null;
 
@@ -156,7 +156,10 @@ public class DFE {
      */
     public interface DfeCallback {
         // Send updates about the VM connection status.
-        /** get formatted name based on {@link } **/
+
+        /**
+         * get formatted name based on {@link }
+         **/
         void vmConnectionStatusUpdate(boolean isConnected, COMM_TYPE commType);
     }
 
@@ -613,6 +616,7 @@ public class DFE {
         netProfiler.onDestroy();
         DBCache.saveDbCache();
         closeConnection();
+        threadPool.shutdown();
         instance = null;
         // FIXME Should I also stop the D2D listening service here or should I leave it running?
         RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_INITIAL_IMG);
@@ -804,6 +808,53 @@ public class DFE {
         ).start();
     }
 
+    /**
+     * Send APK file to the remote server
+     */
+    private void sendApk() {
+
+        try {
+            Log.d(TAG, "Getting apk data");
+            String apkName = mPManager.getApplicationInfo(mAppName, 0).sourceDir;
+            File apkFile = new File(apkName);
+            Log.d(TAG, "Apk name - " + apkName);
+
+            sOutStream.write(RapidMessages.AC_REGISTER_AS);
+            // Send apkName and apkLength to clone.
+            // The clone will compare these information with what he has and tell
+            // if he doesn't have the apk or this one differs in size.
+            sObjOutStream.writeObject(mAppName);
+            sObjOutStream.writeInt((int) apkFile.length());
+            sObjOutStream.flush();
+            int response = sInStream.read();
+
+            if (response == RapidMessages.AS_APP_REQ_AC) {
+                // Send the APK file if needed
+
+                FileInputStream fin = new FileInputStream(apkFile);
+                BufferedInputStream bis = new BufferedInputStream(fin);
+
+                // Send the file
+                Log.d(TAG, "Sending apk");
+                int BUFFER_SIZE = 8192;
+                byte[] tempArray = new byte[BUFFER_SIZE];
+                int read = 0;
+                while ((read = bis.read(tempArray, 0, tempArray.length)) > -1) {
+                    sObjOutStream.write(tempArray, 0, read);
+                    // Log.d(TAG, "Sent " + totalRead + " of " + apkFile.length() + " bytes");
+                }
+                sObjOutStream.flush();
+                RapidUtils.closeQuietly(bis);
+            }
+        } catch (IOException e) {
+            fallBackToLocalExecution("IOException: " + e.getMessage());
+        } catch (NameNotFoundException e) {
+            fallBackToLocalExecution("Application not found: " + e.getMessage());
+        } catch (Exception e) {
+            fallBackToLocalExecution("Exception: " + e.getMessage());
+        }
+    }
+
     private void fallBackToLocalExecution(String message) {
         Log.e(TAG, message);
         onLineClear = onLineSSL = false;
@@ -844,7 +895,7 @@ public class DFE {
      * @throws Throwable
      */
     public Object execute(Method m, Object o) throws Throwable {
-        return execute(m, (Object[]) null, o);
+        return execute(m, null, o);
     }
 
     /**
@@ -855,8 +906,8 @@ public class DFE {
      * @param pValues with parameter values
      * @param o       on object
      * @return result of execution, or an exception if it happened
-     * @throws NoSuchMethodException If the method was not found in the object class.
-     * @throws ClassNotFoundException If the class of the object could not be found by the classloader.
+     * @throws NoSuchMethodException    If the method was not found in the object class.
+     * @throws ClassNotFoundException   If the class of the object could not be found by the classloader.
      * @throws IllegalAccessException
      * @throws SecurityException
      * @throws IllegalArgumentException If the arguments passed to the method are not correct.
@@ -864,51 +915,16 @@ public class DFE {
     public Object execute(Method m, Object[] pValues, Object o) throws IllegalArgumentException,
             SecurityException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException {
 
-        Object localResult, remoteResult, totalResult = null;
-
         ExecLocation execLocation = findExecLocation(m.getName());
-
-        ExecutorService executor = Executors.newFixedThreadPool(2);
-        if (execLocation.equals(ExecLocation.LOCAL) || execLocation.equals(ExecLocation.REMOTE)) {
-            Future<Object> futureTotalResult =
-                    executor.submit(new TaskRunner(execLocation, m, pValues, o));
-
-            try {
-                totalResult = futureTotalResult.get();
-            } catch (InterruptedException | ExecutionException e) {
-                Log.e(TAG, "Error on FutureTask while trying to run the method remotely or locally: " + e);
-            }
-        } else { // (execLocation.equals(ExecLocation.HYBRID)) {
-            Future<Object> futureLocalResult =
-                    executor.submit(new TaskRunner(ExecLocation.LOCAL, m, pValues, o));
-            Future<Object> futureRemoteResult =
-                    executor.submit(new TaskRunner(ExecLocation.REMOTE, m, pValues, o));
-
-            try {
-                localResult = futureLocalResult.get();
-                remoteResult = futureRemoteResult.get();
-
-                // Reduce the partial results
-                Method reduceMethod = o.getClass().getDeclaredMethod(m.getName() + "Reduce",
-                        Array.newInstance(m.getReturnType(), 2).getClass());
-                reduceMethod.setAccessible(true);
-                Object partialResults = Array.newInstance(m.getReturnType(), 2);
-                Array.set(partialResults, 0, localResult);
-                Array.set(partialResults, 1, remoteResult);
-
-                totalResult = reduceMethod.invoke(o, new Object[]{partialResults});
-            } catch (InterruptedException e) {
-                Log.e(TAG, "InterruptedException on FutureTask while trying to run the method hybrid: " + e);
-            } catch (ExecutionException e) {
-                Log.e(TAG, "ExecutionException on FutureTask while trying to run the method hybrid: " + e);
-            } catch (InvocationTargetException e) {
-                Log.e(TAG, "InvocationTargetException on FutureTask while trying to run the method hybrid: " + e);
-            }
+        Object result = null;
+        Future<Object> futureResult = threadPool.submit(new TaskRunner(execLocation, m, pValues, o));
+        try {
+            result = futureResult.get();
+        } catch (InterruptedException | ExecutionException e) {
+            Log.e(TAG, "Error on FutureTask while trying to run the method remotely or locally: " + e);
         }
 
-        executor.shutdown();
-
-        return totalResult;
+        return result;
     }
 
     private class TaskRunner implements Callable<Object> {
@@ -1058,8 +1074,8 @@ public class DFE {
          * @param pValues with parameter values
          * @param o       on object
          * @return result of execution, or an exception if it happened
-         * @throws NoSuchMethodException If the method was not found in the object class.
-         * @throws ClassNotFoundException If the class of the object could not be found by the classloader.
+         * @throws NoSuchMethodException    If the method was not found in the object class.
+         * @throws ClassNotFoundException   If the class of the object could not be found by the classloader.
          * @throws IllegalAccessException
          * @throws SecurityException
          * @throws IllegalArgumentException If the arguments passed to the method are not correct.
@@ -1119,8 +1135,8 @@ public class DFE {
         /**
          * Send the object (along with method and parameters) to the remote server for execution
          *
-         * @param o The object calling the method.
-         * @param m The method to be executed.
+         * @param o       The object calling the method.
+         * @param m       The method to be executed.
          * @param pValues The parameter values of the method to be executed.
          * @throws IOException
          */
@@ -1204,53 +1220,6 @@ public class DFE {
             Log.d(TAG, "Finished remote execution");
 
             return result;
-        }
-    }
-
-    /**
-     * Send APK file to the remote server
-     */
-    private void sendApk() {
-
-        try {
-            Log.d(TAG, "Getting apk data");
-            String apkName = mPManager.getApplicationInfo(mAppName, 0).sourceDir;
-            File apkFile = new File(apkName);
-            Log.d(TAG, "Apk name - " + apkName);
-
-            sOutStream.write(RapidMessages.AC_REGISTER_AS);
-            // Send apkName and apkLength to clone.
-            // The clone will compare these information with what he has and tell
-            // if he doesn't have the apk or this one differs in size.
-            sObjOutStream.writeObject(mAppName);
-            sObjOutStream.writeInt((int) apkFile.length());
-            sObjOutStream.flush();
-            int response = sInStream.read();
-
-            if (response == RapidMessages.AS_APP_REQ_AC) {
-                // Send the APK file if needed
-
-                FileInputStream fin = new FileInputStream(apkFile);
-                BufferedInputStream bis = new BufferedInputStream(fin);
-
-                // Send the file
-                Log.d(TAG, "Sending apk");
-                int BUFFER_SIZE = 8192;
-                byte[] tempArray = new byte[BUFFER_SIZE];
-                int read = 0;
-                while ((read = bis.read(tempArray, 0, tempArray.length)) > -1) {
-                    sObjOutStream.write(tempArray, 0, read);
-                    // Log.d(TAG, "Sent " + totalRead + " of " + apkFile.length() + " bytes");
-                }
-                sObjOutStream.flush();
-                RapidUtils.closeQuietly(bis);
-            }
-        } catch (IOException e) {
-            fallBackToLocalExecution("IOException: " + e.getMessage());
-        } catch (NameNotFoundException e) {
-            fallBackToLocalExecution("Application not found: " + e.getMessage());
-        } catch (Exception e) {
-            fallBackToLocalExecution("Exception: " + e.getMessage());
         }
     }
 
