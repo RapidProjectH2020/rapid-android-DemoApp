@@ -611,46 +611,6 @@ public class AppHandler {
                             Utils.writeCloneHelperId(cloneHelperId);
                             break;
 
-                        case RapidMessages.SEND_INT:
-                            // Used for testing how much it takes to read an int with different data rates.
-                            mObjIs.readInt();
-                            mOs.write(1);
-                            break;
-
-                        case RapidMessages.SEND_BYTES:
-                            // Used for testing how much it takes to read an object of different size with
-                            // different data rates.
-                            byte[] bytes = (byte[]) mObjIs.readObject();
-                            mOs.write(1);
-                            Log.i(TAG, "Received " + bytes.length + " bytes");
-                            break;
-
-                        case RapidMessages.RECEIVE_INT:
-                            // The phone is asking the clone to send an int
-                            // Used for measuring the costs of data receiving on the phone
-                            long s = System.nanoTime();
-                            mObjOs.writeInt((int) System.currentTimeMillis());
-                            mObjOs.flush();
-                            mIs.read();
-                            s = System.nanoTime() - s;
-                            mObjOs.writeLong(s);
-                            mObjOs.flush();
-
-                            break;
-
-                        case RapidMessages.RECEIVE_BYTES:
-                            // The phone is asking the clone to send an object of specific size
-                            // Used for measuring the costs of data receiving on the phone
-                            int size = mObjIs.readInt();
-                            s = System.nanoTime();
-                            mObjOs.writeObject(AccelerationServer.bytesToSend.get(size));
-                            mObjOs.flush();
-                            mIs.read();
-                            s = System.nanoTime() - s;
-                            mObjOs.writeLong(s);
-                            mObjOs.flush();
-
-                            break;
                     }
                 }
                 Log.d(TAG, "Client disconnected");

@@ -22,7 +22,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
-import android.util.SparseArray;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,7 +46,6 @@ import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
-import java.util.Random;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -71,17 +69,10 @@ public class AccelerationServer extends Service {
 
     private Context context;
 
-    // When doing tests about send/receive data
-    // To avoid creating the objects in the real deployment
-    private static final boolean TESTING_UL_DL_RATE = true;
-    public static SparseArray<byte[]> bytesToSend;
-
     private static final String TAG = "AccelerationServer";
     private Configuration config;
 
-    public static boolean asServiceRunning = true;
     private static long userId = -1; // The userId will be given by the VMM
-    private static long vmId = -1; // The vmId will be assigned by the DS
     private static String vmIp = ""; // The vmIp should be extracted by us
 
     private Handler mBroadcastHandler;
@@ -99,19 +90,6 @@ public class AccelerationServer extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "Server created");
-
-        if (TESTING_UL_DL_RATE) {
-            bytesToSend = new SparseArray<byte[]>();
-            byte[] b1 = new byte[1024];
-            byte[] b2 = new byte[1024 * 1024];
-            byte[] b3 = new byte[100 * 1024];
-            new Random().nextBytes(b1);
-            new Random().nextBytes(b2);
-            new Random().nextBytes(b3);
-            bytesToSend.append(1024, b1);
-            bytesToSend.append(1024 * 1024, b2);
-            bytesToSend.append(100 * 1024, b3);
-        }
     }
 
     @Override
@@ -253,12 +231,13 @@ public class AccelerationServer extends Service {
 
         private String waitForNetworkToBeUp() {
 
-            InetAddress vmIpAddress = null;
+            InetAddress vmIpAddress;
             do {
                 vmIpAddress = Utils.getIpAddress();
                 try {
                     Thread.sleep(5 * 1000);
                 } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
             }
             while (vmIpAddress == null || !RapidUtils.validateIpAddress(vmIpAddress.getHostAddress()));
@@ -281,8 +260,9 @@ public class AccelerationServer extends Service {
                                     "Trying to ping the host machine " + hostMachineAddress.getHostAddress() + "...");
                             hostMachineReachable = hostMachineAddress.isReachable(5000);
                             try {
-                                Thread.sleep(1 * 1000);
+                                Thread.sleep(1000);
                             } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
                             }
                         } catch (IOException e) {
                             Log.w(TAG, "Error while trying to ping the host machine: " + e);
@@ -371,7 +351,7 @@ public class AccelerationServer extends Service {
                 byte status = dsIn.readByte();
                 System.out.println("Return Status: " + (status == RapidMessages.OK ? "OK" : "ERROR"));
                 if (status == RapidMessages.OK) {
-                    vmId = dsIn.readLong();
+                    long vmId = dsIn.readLong();
                     Log.i(TAG, "Received vmId: " + vmId);
                     return true;
                 }
