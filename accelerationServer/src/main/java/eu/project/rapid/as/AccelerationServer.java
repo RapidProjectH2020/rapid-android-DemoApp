@@ -46,6 +46,8 @@ import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -77,6 +79,7 @@ public class AccelerationServer extends Service {
 
     private Handler mBroadcastHandler;
     private Runnable mBroadcastRunnable;
+    private ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
     // Using the BC
     static {
@@ -415,7 +418,7 @@ public class AccelerationServer extends Service {
                 while (true) {
                     Socket clientSocket = serverSocket.accept();
                     Log.i(TAG, "New client connected in clear");
-                    new AppHandler(clientSocket, context, config);
+                    threadPool.execute(new AppHandler(clientSocket, context, config));
                 }
             } catch (IOException e) {
                 Log.e(TAG, "IOException: " + e.getMessage());
@@ -477,7 +480,7 @@ public class AccelerationServer extends Service {
                     //
                     Socket clientSocket = serverSocket.accept();
                     Log.i(TAG, "New client connected using SSL");
-                    new AppHandler(clientSocket, context, config);
+                    threadPool.execute(new AppHandler(clientSocket, context, config));
                 }
 
             } catch (IOException | NoSuchAlgorithmException | KeyManagementException e1) {

@@ -56,7 +56,7 @@ import eu.project.rapid.common.RapidUtils;
  * each client. This can handle requests coming from the phone (when behaving as the main clone) or
  * requests coming from the main clone when behaving as a clone helper.
  */
-public class AppHandler {
+public class AppHandler implements Runnable {
 
     private static final String TAG = "AppHandler";
 
@@ -86,6 +86,7 @@ public class AppHandler {
     private Object[] pValues; // the values of the parameters to be passed to the method
     private Class<?> returnType; // the return type of the method
     private String apkFilePath; // the path where the apk is installed
+    private LinkedList<File> libraries;
 
     // Classloaders needed by the dynamicObjectInputStream
     private ClassLoader mCurrent = ClassLoader.getSystemClassLoader();
@@ -96,10 +97,133 @@ public class AppHandler {
         this.mClient = pClient;
         this.mContext = cW;
         this.config = config;
-
-        Executer communicator = new Executer();
-        communicator.start();
     }
+
+
+    @Override
+    public void run() {
+
+        try {
+            InputStream mIs = mClient.getInputStream();
+            OutputStream mOs = mClient.getOutputStream();
+            mObjIs = new DynamicObjectInputStream(mIs);
+            mObjOs = new ObjectOutputStream(mOs);
+
+            mObjIs.setClassLoaders(mCurrent, mCurrentDexLoader);
+
+            int request = 0;
+            while (request != -1) {
+
+                request = mIs.read();
+                Log.d(TAG, "Request - " + request);
+
+                switch (request) {
+                    case RapidMessages.AC_OFFLOAD_REQ_AS:
+
+                        // Start profiling on remote side
+                        DeviceProfiler devProfiler = new DeviceProfiler(mContext);
+                        devProfiler.startDeviceProfiling();
+
+                        Log.d(TAG, "Execute request - " + request);
+                        Object result = retrieveAndExecute(mObjIs, libraries);
+
+                        // Delete the file containing the cloneHelperId assigned to this clone
+                        // (if such file does not exist do nothing)
+                        Utils.deleteCloneHelperId();
+
+                        devProfiler.stopAndCollectDeviceProfiling();
+
+                        try {
+                            // Send back over the socket connection
+
+                            // RapidUtils.sendAnimationMsg(config, RapidMessages.AC_RESULT_REMOTE);
+                            mObjOs.writeObject(result);
+                            // Clear ObjectOutputCache - Java caching unsuitable in this case
+                            mObjOs.flush();
+                            mObjOs.reset();
+
+                            Log.d(TAG, "Result successfully sent");
+
+                        } catch (IOException e) {
+                            Log.d(TAG, "Connection failed");
+                            e.printStackTrace();
+                            return;
+                        }
+
+                        break;
+
+                    case RapidMessages.PING:
+                        Log.d(TAG, "Reply to PING");
+                        mOs.write(RapidMessages.PONG);
+                        break;
+
+                    case RapidMessages.AC_REGISTER_AS:
+                        Log.d(TAG, "Registering apk");
+                        appName = (String) mObjIs.readObject();
+                        Log.i(TAG, "apk name: " + appName);
+                        appLength = mObjIs.readInt();
+                        apkFilePath = mContext.getFilesDir().getAbsolutePath() + "/" + appName + ".apk";
+                        Log.d(TAG, "Registering apk: " + appName + " of size: " + appLength + " bytes");
+                        if (apkPresent(apkFilePath, appLength)) {
+                            Log.d(TAG, "APK present");
+                            mOs.write(RapidMessages.AS_APP_PRESENT_AC);
+                        } else {
+                            Log.d(TAG, "request APK");
+                            mOs.write(RapidMessages.AS_APP_REQ_AC);
+                            // Receive the apk file from the client
+                            receiveApk(mObjIs, apkFilePath);
+
+                            // Delete the old .dex file of this apk to avoid the crash due to dexopt:
+                            // DexOpt: source file mod time mismatch (457373af vs 457374dd)
+                            // D/dalvikvm( 3885): ODEX file is stale or bad; removing and retrying
+                            String oldDexFilePath =
+                                    mContext.getFilesDir().getAbsolutePath() + "/" + appName + ".dex";
+                            new File(oldDexFilePath).delete();
+                        }
+                        // Create the new (if needed) dex file and load the .dex file
+                        File dexFile = new File(apkFilePath);
+                        Log.d(TAG, "APK file size on disk: " + dexFile.length());
+                        libraries = addLibraries(dexFile);
+                        mCurrentDexLoader = mObjIs.addDex(dexFile);
+                        Log.d(TAG, "DEX file added.");
+
+                        break;
+
+                    case RapidMessages.CLONE_ID_SEND:
+                        cloneHelperId = mIs.read();
+                        Utils.writeCloneHelperId(cloneHelperId);
+                        break;
+
+                }
+            }
+            Log.d(TAG, "Client disconnected");
+            RapidUtils.closeQuietly(mObjOs);
+            RapidUtils.closeQuietly(mObjIs);
+            RapidUtils.closeQuietly(mClient);
+
+        } catch (SocketException e) {
+            Log.w(TAG, "Client disconnected: " + e);
+        } catch (Exception e) {
+            // We don't want any exceptions to escape from here,
+            // hide everything silently if we didn't foresee them cropping
+            // up... Since we don't want the server to die because
+            // somebody's program is misbehaving
+            Log.e(TAG, "Exception not caught properly - " + e);
+            e.printStackTrace();
+        } catch (Error e) {
+            // We don't want any exceptions to escape from here,
+            // hide everything silently if we didn't foresee them cropping
+            // up... Since we don't want the server to die because
+            // somebody's program is misbehaving
+            Log.e(TAG, "Error not caught properly - " + e);
+            e.printStackTrace();
+        } finally {
+            RapidUtils.closeQuietly(mObjOs);
+            RapidUtils.closeQuietly(mObjIs);
+            RapidUtils.closeQuietly(mClient);
+        }
+    }
+//    }
 
     /**
      * Method to retrieve an apk of an application that needs to be executed
@@ -464,15 +588,15 @@ public class AppHandler {
                 }
             }
 
-            objToExecute = null;
+//            objToExecute = null;
 
             // If this is the main clone send back also the object to execute,
             // otherwise the helper clones don't need to send it back.
             if (cloneHelperId == 0) {
                 // If we choose to also send back the object then the nr of bytes will increase.
                 // If necessary just uncomment the line below.
-                // return new ResultContainer(objToExecute, result, execDuration);
-                return new ResultContainer(null, result, getObjectDuration, execDuration);
+                return new ResultContainer(objToExecute, result, getObjectDuration, execDuration);
+//                return new ResultContainer(null, result, getObjectDuration, execDuration);
             } else {
                 return new ResultContainer(null, result, getObjectDuration, execDuration);
             }
@@ -507,138 +631,6 @@ public class AppHandler {
             }
             requestFromMainServer = command;
             pausedHelper.notifyAll();
-        }
-    }
-
-    /**
-     * The Executer of remote code, which deals with the control protocol, flow of control, etc.
-     */
-    private class Executer extends Thread {
-        private Object result;
-        private LinkedList<File> libraries;
-
-        @Override
-        public void run() {
-
-            try {
-                InputStream mIs = mClient.getInputStream();
-                OutputStream mOs = mClient.getOutputStream();
-                mObjIs = new DynamicObjectInputStream(mIs);
-                mObjOs = new ObjectOutputStream(mOs);
-
-                mObjIs.setClassLoaders(mCurrent, mCurrentDexLoader);
-
-                int request = 0;
-                while (request != -1) {
-
-                    request = mIs.read();
-                    Log.d(TAG, "Request - " + request);
-
-                    switch (request) {
-                        case RapidMessages.AC_OFFLOAD_REQ_AS:
-
-                            // Start profiling on remote side
-                            DeviceProfiler devProfiler = new DeviceProfiler(mContext);
-                            devProfiler.startDeviceProfiling();
-
-                            Log.d(TAG, "Execute request - " + request);
-                            result = retrieveAndExecute(mObjIs, libraries);
-
-                            // Delete the file containing the cloneHelperId assigned to this clone
-                            // (if such file does not exist do nothing)
-                            Utils.deleteCloneHelperId();
-
-                            devProfiler.stopAndCollectDeviceProfiling();
-
-                            try {
-                                // Send back over the socket connection
-
-                                // RapidUtils.sendAnimationMsg(config, RapidMessages.AC_RESULT_REMOTE);
-                                mObjOs.writeObject(result);
-                                // Clear ObjectOutputCache - Java caching unsuitable in this case
-                                mObjOs.flush();
-                                mObjOs.reset();
-
-                                Log.d(TAG, "Result successfully sent");
-
-                            } catch (IOException e) {
-                                Log.d(TAG, "Connection failed");
-                                e.printStackTrace();
-                                return;
-                            }
-
-                            break;
-
-                        case RapidMessages.PING:
-                            Log.d(TAG, "Reply to PING");
-                            mOs.write(RapidMessages.PONG);
-                            break;
-
-                        case RapidMessages.AC_REGISTER_AS:
-                            Log.d(TAG, "Registering apk");
-                            appName = (String) mObjIs.readObject();
-                            Log.i(TAG, "apk name: " + appName);
-                            appLength = mObjIs.readInt();
-                            apkFilePath = mContext.getFilesDir().getAbsolutePath() + "/" + appName + ".apk";
-                            Log.d(TAG, "Registering apk: " + appName + " of size: " + appLength + " bytes");
-                            if (apkPresent(apkFilePath, appLength)) {
-                                Log.d(TAG, "APK present");
-                                mOs.write(RapidMessages.AS_APP_PRESENT_AC);
-                            } else {
-                                Log.d(TAG, "request APK");
-                                mOs.write(RapidMessages.AS_APP_REQ_AC);
-                                // Receive the apk file from the client
-                                receiveApk(mObjIs, apkFilePath);
-
-                                // Delete the old .dex file of this apk to avoid the crash due to dexopt:
-                                // DexOpt: source file mod time mismatch (457373af vs 457374dd)
-                                // D/dalvikvm( 3885): ODEX file is stale or bad; removing and retrying
-                                String oldDexFilePath =
-                                        mContext.getFilesDir().getAbsolutePath() + "/" + appName + ".dex";
-                                new File(oldDexFilePath).delete();
-                            }
-                            // Create the new (if needed) dex file and load the .dex file
-                            File dexFile = new File(apkFilePath);
-                            Log.d(TAG, "APK file size on disk: " + dexFile.length());
-                            libraries = addLibraries(dexFile);
-                            mCurrentDexLoader = mObjIs.addDex(dexFile);
-                            Log.d(TAG, "DEX file added.");
-
-                            break;
-
-                        case RapidMessages.CLONE_ID_SEND:
-                            cloneHelperId = mIs.read();
-                            Utils.writeCloneHelperId(cloneHelperId);
-                            break;
-
-                    }
-                }
-                Log.d(TAG, "Client disconnected");
-                RapidUtils.closeQuietly(mObjOs);
-                RapidUtils.closeQuietly(mObjIs);
-                RapidUtils.closeQuietly(mClient);
-
-            } catch (SocketException e) {
-                Log.w(TAG, "Client disconnected: " + e);
-            } catch (Exception e) {
-                // We don't want any exceptions to escape from here,
-                // hide everything silently if we didn't foresee them cropping
-                // up... Since we don't want the server to die because
-                // somebody's program is misbehaving
-                Log.e(TAG, "Exception not caught properly - " + e);
-                e.printStackTrace();
-            } catch (Error e) {
-                // We don't want any exceptions to escape from here,
-                // hide everything silently if we didn't foresee them cropping
-                // up... Since we don't want the server to die because
-                // somebody's program is misbehaving
-                Log.e(TAG, "Error not caught properly - " + e);
-                e.printStackTrace();
-            } finally {
-                RapidUtils.closeQuietly(mObjOs);
-                RapidUtils.closeQuietly(mObjIs);
-                RapidUtils.closeQuietly(mClient);
-            }
         }
     }
 
