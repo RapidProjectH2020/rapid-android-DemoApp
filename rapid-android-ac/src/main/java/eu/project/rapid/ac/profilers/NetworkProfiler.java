@@ -52,7 +52,7 @@ public class NetworkProfiler {
 
     private static final int rttInfinite = 100000000;
     private static final int rttPings = 5;
-    public static int rtt = rttInfinite;
+    static int rtt = rttInfinite;
 
     // Keep the upload/download data rate history between the phone and the clone
     // Data rate in b/s
@@ -357,7 +357,6 @@ public class NetworkProfiler {
                 } else if (state == TelephonyManager.DATA_SUSPENDED) {
                     Log.d(TAG, "Data connection suspended");
                 }
-
             }
         };
 

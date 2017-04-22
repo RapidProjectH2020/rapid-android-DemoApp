@@ -131,11 +131,11 @@ public class DFE {
     // GVirtuS frontend is responsible for running the CUDA code.
     private Frontend gVirtusFrontend;
     private static Clone sClone;
-    private static Socket mSocket;
-    private static OutputStream mOutStream;
-    private static ObjectOutputStream mObjOutStream;
-    private static InputStream mInStream;
-    private static ObjectInputStream mObjInStream;
+    private static Socket sSocket;
+    private static OutputStream sOutStream;
+    private static ObjectOutputStream sObjOutStream;
+    private static InputStream sInStream;
+    private static ObjectInputStream sObjInStream;
 
     private long myId = -1;
     private String vmIp = "";
@@ -156,7 +156,8 @@ public class DFE {
      */
     public interface DfeCallback {
         // Send updates about the VM connection status.
-        public void vmConnectionStatusUpdate(boolean isConnected, COMM_TYPE commType);
+        /** get formatted name based on {@link } **/
+        void vmConnectionStatusUpdate(boolean isConnected, COMM_TYPE commType);
     }
 
     /**
@@ -210,6 +211,7 @@ public class DFE {
     /**
      * To be used on server side, only local execution
      */
+    @SuppressWarnings("unused")
     private DFE() {
         mRegime = REGIME_SERVER;
     }
@@ -244,7 +246,6 @@ public class DFE {
                 }
             }
         }
-
 
         return result;
     }
@@ -391,7 +392,7 @@ public class DFE {
                 publishProgress("Sending/receiving data for 3 seconds to measure the ulRate and dlRate...");
                 RapidUtils.sendAnimationMsg(config,
                         usePrevVm ? AnimationMsg.AC_PREV_RTT_VM : AnimationMsg.AC_NEW_RTT_VM);
-                NetworkProfiler.rttPing(mInStream, mOutStream);
+                NetworkProfiler.rttPing(sInStream, sOutStream);
                 RapidUtils.sendAnimationMsg(config, usePrevVm ? AnimationMsg.AC_PREV_DL_RATE_VM
                         : AnimationMsg.AC_NEW_DL_RATE_VM);
                 NetworkProfiler.measureDlRate(sClone.getIp(), config.getClonePortBandwidthTest());
@@ -492,7 +493,7 @@ public class DFE {
                     dsOut.writeByte(RapidMessages.AC_REGISTER_NEW_DS);
 
                     dsOut.writeLong(myId); // send my user ID so that my previous VM can be released
-                    // FIXME: should not use static values here.
+                    // FIXME: should not use hard-coded values here.
                     dsOut.writeInt(vmNrVCPUs); // send vcpuNum as int
                     dsOut.writeInt(vmMemSize); // send memSize as int
                     dsOut.writeInt(vmNrGpuCores); // send gpuCores as int
@@ -561,7 +562,7 @@ public class DFE {
                 oos.writeUTF(vmmIp);
                 oos.writeInt(config.getVmmPort());
 
-                // FIXME: should not use static values here.
+                // FIXME: should not use hard-coded values here.
                 oos.writeInt(vmNrVCPUs); // send vcpuNum as int
                 oos.writeInt(vmMemSize); // send memSize as int
                 oos.writeInt(vmNrGpuCores); // send gpuCores as int
@@ -665,13 +666,13 @@ public class DFE {
             long startRxBytes = NetworkProfiler.getProcessRxBytes();
 
             Log.i(TAG, "Connecting in CLEAR with AS on: " + sClone.getIp() + ":" + sClone.getPort());
-            mSocket = new Socket();
-            mSocket.connect(new InetSocketAddress(sClone.getIp(), sClone.getPort()), 10 * 1000);
+            sSocket = new Socket();
+            sSocket.connect(new InetSocketAddress(sClone.getIp(), sClone.getPort()), 10 * 1000);
 
-            mOutStream = mSocket.getOutputStream();
-            mInStream = mSocket.getInputStream();
-            mObjOutStream = new ObjectOutputStream(mOutStream);
-            mObjInStream = new ObjectInputStream(mInStream);
+            sOutStream = sSocket.getOutputStream();
+            sInStream = sSocket.getInputStream();
+            sObjOutStream = new ObjectOutputStream(sOutStream);
+            sObjInStream = new ObjectInputStream(sInStream);
 
             long dur = System.nanoTime() - sTime;
             long totalTxBytes = NetworkProfiler.getProcessTxBytes() - startTxBytes;
@@ -711,25 +712,25 @@ public class DFE {
 
             Log.i(TAG, "Connecting in SSL with clone: " + sClone.getIp() + ":" + sClone.getSslPort());
 
-            mSocket = config.getSslFactory().createSocket(sClone.getIp(), sClone.getSslPort());
+            sSocket = config.getSslFactory().createSocket(sClone.getIp(), sClone.getSslPort());
             // Log.i(TAG, "getEnableSessionCreation: " + ((SSLSocket)
-            // mSocket).getEnableSessionCreation());
-            // ((SSLSocket) mSocket).setEnableSessionCreation(false);
+            // sSocket).getEnableSessionCreation());
+            // ((SSLSocket) sSocket).setEnableSessionCreation(false);
 
             // sslContext.getClientSessionContext().getSession(null).invalidate();
 
-            ((SSLSocket) mSocket).addHandshakeCompletedListener(new SSLHandshakeCompletedListener());
+            ((SSLSocket) sSocket).addHandshakeCompletedListener(new SSLHandshakeCompletedListener());
             Log.i(TAG, "socket created");
 
             // Log.i(TAG, "Enabled cipher suites: ");
-            // for (String s : ((SSLSocket) mSocket).getEnabledCipherSuites()) {
+            // for (String s : ((SSLSocket) sSocket).getEnabledCipherSuites()) {
             // Log.i(TAG, s);
             // }
 
-            mOutStream = mSocket.getOutputStream();
-            mInStream = mSocket.getInputStream();
-            mObjOutStream = new ObjectOutputStream(mOutStream);
-            mObjInStream = new ObjectInputStream(mInStream);
+            sOutStream = sSocket.getOutputStream();
+            sInStream = sSocket.getInputStream();
+            sObjOutStream = new ObjectOutputStream(sOutStream);
+            sObjInStream = new ObjectInputStream(sInStream);
 
             long dur = System.nanoTime() - sTime;
             long totalTxBytes = NetworkProfiler.getProcessTxBytes() - startTxBytes;
@@ -760,9 +761,9 @@ public class DFE {
 
         @Override
         public void handshakeCompleted(HandshakeCompletedEvent event) {
-            Log.i(TAG, "SSL handshake completed");
 
             try {
+                Log.i(TAG, "SSL handshake completed");
                 // Log.i(TAG, "getCipherSuite: " + event.getCipherSuite());
                 // Log.i(TAG, "algorithm: " + config.getPrivateKey().getAlgorithm());
                 // Log.i(TAG, "modulusBitLength: " + ((RSAPrivateKey)
@@ -794,9 +795,9 @@ public class DFE {
                 new Runnable() {
                     @Override
                     public void run() {
-                        RapidUtils.closeQuietly(mObjOutStream);
-                        RapidUtils.closeQuietly(mObjInStream);
-                        RapidUtils.closeQuietly(mSocket);
+                        RapidUtils.closeQuietly(sObjOutStream);
+                        RapidUtils.closeQuietly(sObjInStream);
+                        RapidUtils.closeQuietly(sSocket);
                         onLineClear = onLineSSL = false;
                     }
                 }
@@ -837,9 +838,9 @@ public class DFE {
     /**
      * Wrapper of the execute method with no parameters for the executable method
      *
-     * @param m
-     * @param o
-     * @return
+     * @param m The method to be executed.
+     * @param o The object calling the method.
+     * @return The result of the method execution, which can also be an exception if something went wrong.
      * @throws Throwable
      */
     public Object execute(Method m, Object o) throws Throwable {
@@ -854,11 +855,11 @@ public class DFE {
      * @param pValues with parameter values
      * @param o       on object
      * @return result of execution, or an exception if it happened
-     * @throws NoSuchMethodException
-     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException If the method was not found in the object class.
+     * @throws ClassNotFoundException If the class of the object could not be found by the classloader.
      * @throws IllegalAccessException
      * @throws SecurityException
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException If the arguments passed to the method are not correct.
      */
     public Object execute(Method m, Object[] pValues, Object o) throws IllegalArgumentException,
             SecurityException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException {
@@ -985,13 +986,13 @@ public class DFE {
         /**
          * Execute the method locally
          *
-         * @param m
-         * @param pValues
-         * @param o
-         * @return
-         * @throws IllegalArgumentException
+         * @param m       method to be executed
+         * @param pValues with parameter values
+         * @param o       on object
+         * @return result of execution, or an exception if it happened
          * @throws IllegalAccessException
-         * @throws InvocationTargetException
+         * @throws SecurityException
+         * @throws IllegalArgumentException If the arguments passed to the method are not correct.
          */
         private Object executeLocally(Method m, Object[] pValues, Object o)
                 throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
@@ -1026,7 +1027,7 @@ public class DFE {
          * are here, it means that this phone is not connected to a clone, so we can define the clone to
          * be this D2D device.
          *
-         * @param otherPhone
+         * @param otherPhone Is the closeby phones, which is willing to help with offloading.
          * @return
          * @throws IllegalArgumentException
          * @throws IllegalAccessException
@@ -1053,16 +1054,15 @@ public class DFE {
         /**
          * Execute method remotely
          *
-         * @param m
-         * @param pValues
-         * @param o
-         * @return
-         * @throws IllegalArgumentException
+         * @param m       method to be executed
+         * @param pValues with parameter values
+         * @param o       on object
+         * @return result of execution, or an exception if it happened
+         * @throws NoSuchMethodException If the method was not found in the object class.
+         * @throws ClassNotFoundException If the class of the object could not be found by the classloader.
          * @throws IllegalAccessException
-         * @throws InvocationTargetException
-         * @throws NoSuchMethodException
-         * @throws ClassNotFoundException
          * @throws SecurityException
+         * @throws IllegalArgumentException If the arguments passed to the method are not correct.
          */
         private Object executeRemotely(Method m, Object[] pValues, Object o)
                 throws IllegalArgumentException, IllegalAccessException, InvocationTargetException,
@@ -1094,8 +1094,8 @@ public class DFE {
 
             try {
                 Long startTime = System.nanoTime();
-                mOutStream.write(RapidMessages.AC_OFFLOAD_REQ_AS);
-                result = sendAndExecute(m, pValues, o, mObjInStream, mObjOutStream);
+                sOutStream.write(RapidMessages.AC_OFFLOAD_REQ_AS);
+                result = sendAndExecute(m, pValues, o);
 
                 Long duration = System.nanoTime() - startTime;
                 Log.d(TAG, "REMOTE " + m.getName() + ": Actual Send-Receive duration - "
@@ -1119,34 +1119,33 @@ public class DFE {
         /**
          * Send the object (along with method and parameters) to the remote server for execution
          *
-         * @param o
-         * @param m
-         * @param pValues
-         * @param objOut
+         * @param o The object calling the method.
+         * @param m The method to be executed.
+         * @param pValues The parameter values of the method to be executed.
          * @throws IOException
          */
-        private void sendObject(Object o, Method m, Object[] pValues, ObjectOutputStream objOut)
+        private void sendObject(Object o, Method m, Object[] pValues)
                 throws IOException {
-            objOut.reset();
+            sObjOutStream.reset();
             Log.d(TAG, "Write Object and data");
 
             // Send the number of clones needed to execute the method
-            objOut.writeInt(nrClones);
+            sObjOutStream.writeInt(nrClones);
 
             // Send object for execution
-            objOut.writeObject(o);
+            sObjOutStream.writeObject(o);
             o.getClass();
 
             // Send the method to be executed
             // Log.d(TAG, "Write Method - " + m.getName());
-            objOut.writeObject(m.getName());
+            sObjOutStream.writeObject(m.getName());
 
             // Log.d(TAG, "Write method parameter types");
-            objOut.writeObject(m.getParameterTypes());
+            sObjOutStream.writeObject(m.getParameterTypes());
 
             // Log.d(TAG, "Write method parameter values");
-            objOut.writeObject(pValues);
-            objOut.flush();
+            sObjOutStream.writeObject(pValues);
+            sObjOutStream.flush();
         }
 
         /**
@@ -1156,8 +1155,6 @@ public class DFE {
          * @param m       method to be executed
          * @param pValues parameter values of the remoted method
          * @param o       the remoted object
-         * @param objIn   ObjectInputStream which to read results from
-         * @param objOut  ObjectOutputStream which to write the data to
          * @return result of the remoted method or an exception that occurs during execution
          * @throws IOException
          * @throws ClassNotFoundException
@@ -1167,13 +1164,12 @@ public class DFE {
          * @throws SecurityException
          * @throws IllegalArgumentException
          */
-        private Object sendAndExecute(Method m, Object[] pValues, Object o, ObjectInputStream objIn,
-                                      ObjectOutputStream objOut)
+        private Object sendAndExecute(Method m, Object[] pValues, Object o)
                 throws IOException, ClassNotFoundException, IllegalArgumentException, SecurityException,
                 IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
             // Send the object itself
-            sendObject(o, m, pValues, objOut);
+            sendObject(o, m, pValues);
 
             // TODO To be more precise, this message should be sent by the AS, but for simplicity I put it
             // here.
@@ -1181,7 +1177,7 @@ public class DFE {
 
             // Read the results from the server
             Log.d(TAG, "Read Result");
-            Object response = objIn.readObject();
+            Object response = sObjInStream.readObject();
 
             // TODO To be more precise, this message should be sent by the AS, but for simplicity I put it
             // here.
@@ -1222,14 +1218,14 @@ public class DFE {
             File apkFile = new File(apkName);
             Log.d(TAG, "Apk name - " + apkName);
 
-            mOutStream.write(RapidMessages.AC_REGISTER_AS);
+            sOutStream.write(RapidMessages.AC_REGISTER_AS);
             // Send apkName and apkLength to clone.
             // The clone will compare these information with what he has and tell
             // if he doesn't have the apk or this one differs in size.
-            mObjOutStream.writeObject(mAppName);
-            mObjOutStream.writeInt((int) apkFile.length());
-            mObjOutStream.flush();
-            int response = mInStream.read();
+            sObjOutStream.writeObject(mAppName);
+            sObjOutStream.writeInt((int) apkFile.length());
+            sObjOutStream.flush();
+            int response = sInStream.read();
 
             if (response == RapidMessages.AS_APP_REQ_AC) {
                 // Send the APK file if needed
@@ -1243,10 +1239,10 @@ public class DFE {
                 byte[] tempArray = new byte[BUFFER_SIZE];
                 int read = 0;
                 while ((read = bis.read(tempArray, 0, tempArray.length)) > -1) {
-                    mObjOutStream.write(tempArray, 0, read);
+                    sObjOutStream.write(tempArray, 0, read);
                     // Log.d(TAG, "Sent " + totalRead + " of " + apkFile.length() + " bytes");
                 }
-                mObjOutStream.flush();
+                sObjOutStream.flush();
                 RapidUtils.closeQuietly(bis);
             }
         } catch (IOException e) {
@@ -1257,7 +1253,6 @@ public class DFE {
             fallBackToLocalExecution("Exception: " + e.getMessage());
         }
     }
-
 
     /**
      * Take care of a broken connection - try restarting it when something breaks down immediately or
@@ -1312,6 +1307,7 @@ public class DFE {
         }
     }
 
+    @SuppressWarnings("unused")
     public String getConnectionType() {
         return NetworkProfiler.currentNetworkTypeName;
     }
@@ -1321,10 +1317,12 @@ public class DFE {
         mDSE.setUserChoice(userChoice);
     }
 
+    @SuppressWarnings("unused")
     public ExecLocation getUserChoice() {
         return userChoice;
     }
 
+    @SuppressWarnings("unused")
     public int getRegime() {
         return mRegime;
     }
@@ -1338,10 +1336,12 @@ public class DFE {
         return gVirtusFrontend;
     }
 
+    @SuppressWarnings("unused")
     public void setGvirtusFrontend(Frontend gVirtusFrontend) {
         this.gVirtusFrontend = gVirtusFrontend;
     }
 
+    @SuppressWarnings("unused")
     public Configuration getConfig() {
         return config;
     }
@@ -1363,6 +1363,7 @@ public class DFE {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 }
