@@ -143,7 +143,7 @@ class DSE {
         // Local part
         // Calculate the meanDurLocal and meanEnergyLocal from the previous runs.
         // Give more weight to recent measurements.
-        Log.i(TAG, "------------ The local executions of the method:");
+        if (VERBOSE_LOG) Log.i(TAG, "------------ The local executions of the method:");
         int i = 0;
         Iterator<DBEntry> it = localResults.descendingIterator();
         while (it.hasNext()) {
@@ -151,7 +151,7 @@ class DSE {
             DBEntry e = it.next();
             meanDurLocal += e.getExecDuration();
             meanEnergyLocal += e.getExecEnergy();
-            Log.i(TAG, "------------ LocalEnergy: " + e.getExecEnergy());
+            if (VERBOSE_LOG) Log.i(TAG, "------------ LocalEnergy: " + e.getExecEnergy());
 
             i++;
             if (i > 1) {

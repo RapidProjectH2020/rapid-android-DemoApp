@@ -96,7 +96,7 @@ public class MainActivity extends Activity {
 
     // Watch for button clicks
     public void onStartButton(View v) {
-        Intent intent = new Intent(v.getContext(), StartExecution.class);
+        Intent intent = new Intent(v.getContext(), DemoActivity.class);
 
         // If the user is setting the IP of the VM automatically, we should check that the IP is
         // correctly formatted.

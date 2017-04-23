@@ -33,6 +33,7 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Locale;
+import java.util.Random;
 
 import eu.project.rapid.ac.DFE;
 import eu.project.rapid.common.Clone;
@@ -46,9 +47,9 @@ import eu.project.rapid.synthBenchmark.JniTest;
 /**
  * The class that handles configuration parameters and starts the offloading process.
  */
-public class StartExecution extends Activity implements DFE.DfeCallback {
+public class DemoActivity extends Activity implements DFE.DfeCallback {
 
-    private static final String TAG = "StartExecution";
+    private static final String TAG = "DemoActivity";
 
     public static int nrClones = 1;
     private TextView textViewVmConnected;
@@ -159,7 +160,7 @@ public class StartExecution extends Activity implements DFE.DfeCallback {
         String result = jni.jniCaller();
         Log.i(TAG, "Result of jni invocation: " + result);
 
-        Toast.makeText(StartExecution.this, result, Toast.LENGTH_SHORT).show();
+        Toast.makeText(DemoActivity.this, result, Toast.LENGTH_SHORT).show();
     }
 
     public void onClickSudoku(View v) {
@@ -169,9 +170,9 @@ public class StartExecution extends Activity implements DFE.DfeCallback {
         boolean result = sudoku.hasSolution();
 
         if (result) {
-            Toast.makeText(StartExecution.this, "Sudoku has solution", Toast.LENGTH_SHORT).show();
+            Toast.makeText(DemoActivity.this, "Sudoku has solution", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(StartExecution.this, "Sudoku does not have solution", Toast.LENGTH_SHORT)
+            Toast.makeText(DemoActivity.this, "Sudoku does not have solution", Toast.LENGTH_SHORT)
                     .show();
         }
     }
@@ -181,20 +182,25 @@ public class StartExecution extends Activity implements DFE.DfeCallback {
     }
 
     private class NQueensTask extends AsyncTask<Void, Void, Integer> {
-        // Show a spinning dialog while solving the puzzle
-        ProgressDialog pd =
-                ProgressDialog.show(StartExecution.this, "Working...", "Solving N Queens...", true, false);
-
+        int nrQueens;
         Spinner nrQueensSpinner = (Spinner) findViewById(R.id.spinnerNrQueens);
-        int nrQueens = Integer.parseInt((String) nrQueensSpinner.getSelectedItem());
+        // Show a spinning dialog while solving the puzzle
+        ProgressDialog pd = ProgressDialog.show(DemoActivity.this, "Working...", "Solving N Queens...", true, false);
+
+        public NQueensTask() {
+            this.nrQueens = Integer.parseInt((String) nrQueensSpinner.getSelectedItem());
+        }
+
+        public NQueensTask(int nrQueens) {
+            this.nrQueens = nrQueens;
+            // Show a spinning dialog while solving the puzzle
+            pd = ProgressDialog.show(DemoActivity.this, "Working...", "Solving N Queens...", true, false);
+        }
 
         @Override
         protected Integer doInBackground(Void... params) {
-            int result;
-            long start = System.nanoTime();
             NQueens puzzle = new NQueens(dfe, nrClones);
-            result = puzzle.solveNQueens(nrQueens);
-            return result;
+            return puzzle.solveNQueens(nrQueens);
         }
 
         @Override
@@ -216,13 +222,49 @@ public class StartExecution extends Activity implements DFE.DfeCallback {
         }
     }
 
+    public void onClickMultipleQueenSolver(View v) {
+        new NQueensMultipleTask().execute();
+    }
+
+    private class NQueensMultipleTask extends AsyncTask<Void, Void, Void> {
+        // Show a spinning dialog while solving the puzzle
+        ProgressDialog pd = ProgressDialog.show(DemoActivity.this, "Working...", "Solving multiple N Queens...", true, false);
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            final Random r = new Random();
+            for (int i = 0; i < 10; i++) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        NQueens puzzle = new NQueens(dfe, nrClones);
+                        int nrQueens = 4 + r.nextInt(4);
+                        Log.v(Thread.currentThread().getName(), "Started " + nrQueens + "-queens");
+                        int result = puzzle.solveNQueens(nrQueens);
+                        Log.v(Thread.currentThread().getName(), "Finished " + nrQueens + "-queens, " + result + " solutions");
+                    }
+                }).start();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void param) {
+            Log.i(TAG, "Finished execution");
+            if (pd != null) {
+                pd.dismiss();
+            }
+        }
+    }
+
     public void onClickGvirtusDemo(View v) {
         new GvirtusCaller().execute();
     }
 
     private class GvirtusCaller extends AsyncTask<Void, Void, Void> {
         // Show a spinning dialog while running the GVirtuS demo
-        ProgressDialog pd = ProgressDialog.show(StartExecution.this, "Working...",
+        ProgressDialog pd = ProgressDialog.show(DemoActivity.this, "Working...",
                 "Running the GVirtuS demo...", true, false);
 
         @Override
@@ -273,14 +315,6 @@ public class StartExecution extends Activity implements DFE.DfeCallback {
             case R.id.radio_remote:
                 dfe.setUserChoice(RapidConstants.ExecLocation.REMOTE);
                 break;
-
-//            case R.id.radio_exec_time:
-//                dfe.setUserChoice(Constants.LOCATION_DYNAMIC_TIME);
-//                break;
-//
-//            case R.id.radio_energy:
-//                dfe.setUserChoice(Constants.LOCATION_DYNAMIC_ENERGY);
-//                break;
 
             case R.id.radio_exec_time_energy:
                 dfe.setUserChoice(RapidConstants.ExecLocation.DYNAMIC);

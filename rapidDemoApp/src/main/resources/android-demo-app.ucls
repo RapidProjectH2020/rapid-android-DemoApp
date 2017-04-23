@@ -28,7 +28,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="4" language="java" name="eu.project.rapid.demo.StartExecution.VirusTask" project="Rapid-DemoApp" 
+  <class id="4" language="java" name="eu.project.rapid.demo.DemoActivity.VirusTask" project="Rapid-DemoApp"
     file="/Rapid-DemoApp/src/eu/project/rapid/demo/StartExecution.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="951" y="-240"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -37,7 +37,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="5" language="java" name="eu.project.rapid.demo.StartExecution.NQueensTask" project="Rapid-DemoApp" 
+  <class id="5" language="java" name="eu.project.rapid.demo.DemoActivity.NQueensTask" project="Rapid-DemoApp"
     file="/Rapid-DemoApp/src/eu/project/rapid/demo/StartExecution.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="950" y="-65"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -46,7 +46,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="6" language="java" name="eu.project.rapid.demo.StartExecution" project="Rapid-DemoApp" 
+  <class id="6" language="java" name="eu.project.rapid.demo.DemoActivity" project="Rapid-DemoApp"
     file="/Rapid-DemoApp/src/eu/project/rapid/demo/StartExecution.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="645" y="-64"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -55,7 +55,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="7" language="java" name="eu.project.rapid.demo.StartExecution.GvirtusCaller" project="Rapid-DemoApp" 
+  <class id="7" language="java" name="eu.project.rapid.demo.DemoActivity.GvirtusCaller" project="Rapid-DemoApp"
     file="/Rapid-DemoApp/src/eu/project/rapid/demo/StartExecution.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="949" y="107"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 

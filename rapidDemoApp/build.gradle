@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "eu.project.rapid.demo"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 25
 
         ndk {
