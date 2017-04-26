@@ -963,7 +963,6 @@ public class DFE {
         Method m;
         Object[] pValues;
         Object o;
-        Object result;
         int id;
 
         Task(int id, Method m, Object[] pValues, Object o) {
@@ -1009,7 +1008,7 @@ public class DFE {
                         this.result = null;
 
                         Log.v(TAG, "Got a task, executing...");
-                        runTask(task, os, ois, oos);
+                        runTask(os, ois, oos);
                         Log.v(TAG, "Task finished execution, putting result on the resultMap...");
                         tasksResultsMap.get(task.id).put(this.result);
                         Log.v(TAG, "Result inserted on the resultMap.");
@@ -1031,8 +1030,7 @@ public class DFE {
             return this.result;
         }
 
-        private void runTask(Task task, OutputStream os,
-                             ObjectInputStream ois, ObjectOutputStream oos) {
+        private void runTask(OutputStream os, ObjectInputStream ois, ObjectOutputStream oos) {
 
             if (useAnimationServer)
                 RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_INITIAL_IMG);
