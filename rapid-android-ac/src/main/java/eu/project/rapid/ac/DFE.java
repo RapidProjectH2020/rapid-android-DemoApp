@@ -152,7 +152,7 @@ public class DFE {
     private static ExecutorService threadPool = Executors.newFixedThreadPool(10);
     private static BlockingDeque<Task> tasks = new LinkedBlockingDeque<>();
     private static AtomicInteger taskId = new AtomicInteger();
-    private static SparseArray<BlockingDeque> tasksResultsMap = new SparseArray<>();
+    private static SparseArray<BlockingDeque<Object>> tasksResultsMap = new SparseArray<>();
 
     private ProgressDialog pd = null;
 
@@ -355,7 +355,8 @@ public class DFE {
 
             // Anyway, show the default image, where the AC tries to connects to DS, SLAM, etc. If this
             // fails, then we will show the D2D initial image
-            if (useAnimationServer) RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_INITIAL_IMG);
+            if (useAnimationServer)
+                RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_INITIAL_IMG);
 
             if (clone[0] == null) {
                 publishProgress("Registering with the DS and the SLAM...");
@@ -367,8 +368,9 @@ public class DFE {
 
             config.setClone(sClone);
 
-            if (useAnimationServer) RapidUtils.sendAnimationMsg(config, usePrevVm ? AnimationMsg.AC_PREV_REGISTER_VM
-                    : AnimationMsg.AC_NEW_REGISTER_VM);
+            if (useAnimationServer)
+                RapidUtils.sendAnimationMsg(config, usePrevVm ? AnimationMsg.AC_PREV_REGISTER_VM
+                        : AnimationMsg.AC_NEW_REGISTER_VM);
             if (commType == COMM_TYPE.CLEAR) {
                 publishProgress("Clear connection with the clone: " + sClone);
                 establishConnection();
@@ -406,11 +408,13 @@ public class DFE {
                 if (useAnimationServer) RapidUtils.sendAnimationMsg(config,
                         usePrevVm ? AnimationMsg.AC_PREV_RTT_VM : AnimationMsg.AC_NEW_RTT_VM);
                 NetworkProfiler.rttPing(sInStream, sOutStream);
-                if (useAnimationServer) RapidUtils.sendAnimationMsg(config, usePrevVm ? AnimationMsg.AC_PREV_DL_RATE_VM
-                        : AnimationMsg.AC_NEW_DL_RATE_VM);
+                if (useAnimationServer)
+                    RapidUtils.sendAnimationMsg(config, usePrevVm ? AnimationMsg.AC_PREV_DL_RATE_VM
+                            : AnimationMsg.AC_NEW_DL_RATE_VM);
                 NetworkProfiler.measureDlRate(sClone.getIp(), config.getClonePortBandwidthTest());
-                if (useAnimationServer) RapidUtils.sendAnimationMsg(config, usePrevVm ? AnimationMsg.AC_PREV_UL_RATE_VM
-                        : AnimationMsg.AC_NEW_UL_RATE_VM);
+                if (useAnimationServer)
+                    RapidUtils.sendAnimationMsg(config, usePrevVm ? AnimationMsg.AC_PREV_UL_RATE_VM
+                            : AnimationMsg.AC_NEW_UL_RATE_VM);
                 NetworkProfiler.measureUlRate(sClone.getIp(), config.getClonePortBandwidthTest());
                 if (useAnimationServer) RapidUtils.sendAnimationMsg(config, usePrevVm
                         ? AnimationMsg.AC_PREV_REGISTRATION_OK_VM : AnimationMsg.AC_NEW_REGISTRATION_OK_VM);
@@ -427,7 +431,8 @@ public class DFE {
                 }
 
             } else {
-                if (useAnimationServer) RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_REGISTER_VM_ERROR);
+                if (useAnimationServer)
+                    RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_REGISTER_VM_ERROR);
             }
 
             // if (config.getGvirtusIp() != null) {
@@ -486,7 +491,8 @@ public class DFE {
         private boolean registerWithDs() {
 
             Log.d(TAG, "Starting as phone with ID: " + myId);
-            if (useAnimationServer) RapidUtils.sendAnimationMsg(config, usePrevVm ? AnimationMsg.AC_PREV_VM_DS : AnimationMsg.AC_NEW_REGISTER_DS);
+            if (useAnimationServer) RapidUtils.sendAnimationMsg(config,
+                    usePrevVm ? AnimationMsg.AC_PREV_VM_DS : AnimationMsg.AC_NEW_REGISTER_DS);
 
             Socket dsSocket = null;
             ObjectOutputStream dsOut = null;
@@ -501,13 +507,15 @@ public class DFE {
 
                 // Send the name and id to the DS
                 if (usePrevVm) {
-                    // if (useAnimationServer) RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_PREV_VM_DS);
+                    if (useAnimationServer)
+                        RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_PREV_VM_DS);
                     Log.i(TAG, "AC_REGISTER_PREV_DS");
                     // Send message format: command (java byte), userId (java long), qosFlag (java int)
                     dsOut.writeByte(RapidMessages.AC_REGISTER_PREV_DS);
                     dsOut.writeLong(myId); // send my user ID so that my previous VM can be released
                 } else { // Connect to a new VM
-                    // if (useAnimationServer) RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_NEW_REGISTER_DS);
+                    if (useAnimationServer)
+                        RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_NEW_REGISTER_DS);
                     Log.i(TAG, "AC_REGISTER_NEW_DS");
                     dsOut.writeByte(RapidMessages.AC_REGISTER_NEW_DS);
 
@@ -662,9 +670,11 @@ public class DFE {
                 d2dSetPhones = (Set<PhoneSpecs>) Utils.readObjectFromFile(Constants.FILE_D2D_PHONES);
 
                 if (d2dSetPhones != null && d2dSetPhones.size() > 0) {
-                    if (useAnimationServer) RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_RECEIVED_D2D);
+                    if (useAnimationServer)
+                        RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_RECEIVED_D2D);
                 } else {
-                    if (useAnimationServer) RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_NO_MORE_D2D);
+                    if (useAnimationServer)
+                        RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_NO_MORE_D2D);
                 }
 
                 Log.i(TAG, "List of D2D phones:");
@@ -935,7 +945,7 @@ public class DFE {
         Object result = null;
         try {
             int id = taskId.incrementAndGet();
-            tasksResultsMap.put(id, new LinkedBlockingDeque());
+            tasksResultsMap.put(id, new LinkedBlockingDeque<>());
             Log.v(TAG, "Adding task on the tasks blocking queue...");
             tasks.put(new Task(id, m, pValues, o));
             Log.v(TAG, "Task added");
@@ -946,14 +956,6 @@ public class DFE {
             Thread.currentThread().interrupt();
         }
 
-//        Object result = null;
-//        Future<Object> futureResult = threadPool.submit(new TaskRunner(m, pValues, o));
-//        try {
-//            result = futureResult.get();
-//        } catch (InterruptedException | ExecutionException e) {
-//            Log.e(TAG, "Error on FutureTask while trying to run the method remotely or locally: " + e);
-//        }
-//
         return result;
     }
 
@@ -1032,8 +1034,10 @@ public class DFE {
         private void runTask(Task task, OutputStream os,
                              ObjectInputStream ois, ObjectOutputStream oos) {
 
-            if (useAnimationServer) RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_INITIAL_IMG);
-            if (useAnimationServer) RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_PREPARE_DATA);
+            if (useAnimationServer)
+                RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_INITIAL_IMG);
+            if (useAnimationServer)
+                RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_PREPARE_DATA);
 
             ExecLocation execLocation = findExecLocation(m.getName());
             if (execLocation.equals(ExecLocation.LOCAL)) {
@@ -1051,7 +1055,8 @@ public class DFE {
                                 // first element.
                                 PhoneSpecs otherPhone = it.next();
                                 if (otherPhone.compareTo(myPhoneSpecs) > 0) {
-                                    if (useAnimationServer) RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_OFFLOAD_D2D);
+                                    if (useAnimationServer)
+                                        RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_OFFLOAD_D2D);
                                     this.result = executeD2D(otherPhone);
                                 }
                             }
@@ -1065,7 +1070,8 @@ public class DFE {
                     // interrupted the result would still be null.
                     if (this.result == null) {
                         Log.v(TAG, "No D2D execution was performed, running locally...");
-                        if (useAnimationServer) RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_DECISION_LOCAL);
+                        if (useAnimationServer)
+                            RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_DECISION_LOCAL);
                         this.result = executeLocally(m, pValues, o);
                     }
 
@@ -1120,7 +1126,8 @@ public class DFE {
             // Collect execution statistics
             profiler.stopAndLogExecutionInfoTracking(prepareDataDuration, mPureLocalDuration);
 
-            if (useAnimationServer) RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_LOCAL_FINISHED);
+            if (useAnimationServer)
+                RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_LOCAL_FINISHED);
 
             return result;
         }
@@ -1175,7 +1182,8 @@ public class DFE {
                 SecurityException, ClassNotFoundException, NoSuchMethodException {
 
 
-            if (useAnimationServer) RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_DECISION_OFFLOAD_AS);
+            if (useAnimationServer)
+                RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_DECISION_OFFLOAD_AS);
 
             // Maybe the developer has implemented the prepareDataOnClient() method that helps him prepare
             // the data based on where the execution will take place then call it.
@@ -1210,7 +1218,8 @@ public class DFE {
                 // Collect execution statistics
                 profiler.stopAndLogExecutionInfoTracking(prepareDataDuration, mPureRemoteDuration);
 
-                if (useAnimationServer) RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_OFFLOADING_FINISHED);
+                if (useAnimationServer)
+                    RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_OFFLOADING_FINISHED);
             } catch (Exception e) {
                 // No such host exists, execute locally
                 Log.e(TAG, "REMOTE ERROR: " + m.getName() + ": " + e);
