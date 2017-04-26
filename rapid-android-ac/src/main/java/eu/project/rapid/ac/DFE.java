@@ -58,7 +58,6 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -973,19 +972,15 @@ public class DFE {
         }
     }
 
-    private class TaskRunner implements Callable<Object> {
+    private class TaskRunner implements Runnable {
         private final String TAG;
-        Method m;
-        Object[] pValues;
-        Object o;
-        Object result;
 
         public TaskRunner(int id) {
             TAG = "DFE-TaskRunner-" + id;
         }
 
         @Override
-        public Object call() {
+        public void run() {
 
             try (Socket s = new Socket(sClone.getIp(), sClone.getPort());
                  OutputStream os = s.getOutputStream();
@@ -1002,15 +997,10 @@ public class DFE {
                     try {
                         Log.v(TAG, "Waiting for task...");
                         Task task = tasks.take();
-                        this.m = task.m;
-                        this.pValues = task.pValues;
-                        this.o = task.o;
-                        this.result = null;
-
                         Log.v(TAG, "Got a task, executing...");
-                        runTask(os, ois, oos);
+                        Object result = runTask(task, os, ois, oos);
                         Log.v(TAG, "Task finished execution, putting result on the resultMap...");
-                        tasksResultsMap.get(task.id).put(this.result);
+                        tasksResultsMap.get(task.id).put(result);
                         Log.v(TAG, "Result inserted on the resultMap.");
                     } catch (InterruptedException e) {
                         if (!isDFEActive) {
@@ -1026,18 +1016,17 @@ public class DFE {
             } catch (IOException e) {
                 Log.e(TAG, "IOException while connecting: " + e);
             }
-
-            return this.result;
         }
 
-        private void runTask(OutputStream os, ObjectInputStream ois, ObjectOutputStream oos) {
+        private Object runTask(Task task, OutputStream os, ObjectInputStream ois, ObjectOutputStream oos) {
 
             if (useAnimationServer)
                 RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_INITIAL_IMG);
             if (useAnimationServer)
                 RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_PREPARE_DATA);
 
-            ExecLocation execLocation = findExecLocation(m.getName());
+            Object result = null;
+            ExecLocation execLocation = findExecLocation(task.m.getName());
             if (execLocation.equals(ExecLocation.LOCAL)) {
                 try {
                     Log.v(TAG, "Should run the method locally...");
@@ -1055,7 +1044,7 @@ public class DFE {
                                 if (otherPhone.compareTo(myPhoneSpecs) > 0) {
                                     if (useAnimationServer)
                                         RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_OFFLOAD_D2D);
-                                    this.result = executeD2D(otherPhone);
+                                    result = executeD2D(task, otherPhone);
                                 }
                             }
                         } catch (IOException | ClassNotFoundException | SecurityException
@@ -1066,11 +1055,11 @@ public class DFE {
 
                     // If the D2D execution didn't take place or something happened that the execution was
                     // interrupted the result would still be null.
-                    if (this.result == null) {
+                    if (result == null) {
                         Log.v(TAG, "No D2D execution was performed, running locally...");
                         if (useAnimationServer)
                             RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_DECISION_LOCAL);
-                        this.result = executeLocally(m, pValues, o);
+                        result = executeLocally(task);
                     }
 
                 } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
@@ -1078,34 +1067,33 @@ public class DFE {
                 }
             } else if (execLocation.equals(ExecLocation.REMOTE)) {
                 try {
-                    this.result = executeRemotely(m, pValues, o, os, ois, oos);
-                    if (this.result instanceof InvocationTargetException) {
+                    result = executeRemotely(task, os, ois, oos);
+                    if (result instanceof InvocationTargetException) {
                         // The remote execution throwed an exception, try to run the method locally.
                         Log.w(TAG, "The result was InvocationTargetException. Running the method locally...");
-                        this.result = executeLocally(m, pValues, o);
+                        result = executeLocally(task);
                     }
                 } catch (IllegalArgumentException | SecurityException | IllegalAccessException
                         | InvocationTargetException | ClassNotFoundException | NoSuchMethodException e) {
                     Log.e(TAG, "Error while trying to run the method remotely: " + e);
                 }
             }
+
+            return result;
         }
 
         /**
          * Execute the method locally
          *
-         * @param m       method to be executed
-         * @param pValues with parameter values
-         * @param o       on object
          * @return result of execution, or an exception if it happened
          * @throws IllegalAccessException
          * @throws SecurityException
          * @throws IllegalArgumentException If the arguments passed to the method are not correct.
          */
-        private Object executeLocally(Method m, Object[] pValues, Object o)
+        private Object executeLocally(Task task)
                 throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 
-            ProgramProfiler progProfiler = new ProgramProfiler(mAppName, m.getName());
+            ProgramProfiler progProfiler = new ProgramProfiler(mAppName, task.m.getName());
             DeviceProfiler devProfiler = new DeviceProfiler(mContext);
             Profiler profiler = new Profiler(mRegime, progProfiler, null, devProfiler);
 
@@ -1115,10 +1103,10 @@ public class DFE {
             // Make sure that the method is accessible
             // if (useAnimationServer) RapidUtils.sendAnimationMsg(config, RapidMessages.AC_EXEC_LOCAL);
             Long startTime = System.nanoTime();
-            m.setAccessible(true);
-            Object result = m.invoke(o, pValues); // Access it
+            task.m.setAccessible(true);
+            Object result = task.m.invoke(task.o, task.pValues); // Access it
             long mPureLocalDuration = System.nanoTime() - startTime;
-            Log.d(TAG, "LOCAL " + m.getName() + ": Actual Invocation duration - "
+            Log.d(TAG, "LOCAL " + task.m.getName() + ": Actual Invocation duration - "
                     + mPureLocalDuration / 1000000 + "ms");
 
             // Collect execution statistics
@@ -1145,27 +1133,29 @@ public class DFE {
          * @throws NoSuchMethodException
          * @throws SecurityException
          */
-        private Object executeD2D(PhoneSpecs otherPhone)
+        private Object executeD2D(Task task, PhoneSpecs otherPhone)
                 throws IllegalArgumentException, IllegalAccessException, InvocationTargetException,
                 IOException, ClassNotFoundException, SecurityException, NoSuchMethodException {
 
             // otherPhone.setIp("192.168.43.1");
             Log.i(TAG, "Trying to execute the method using D2D on device: " + otherPhone);
-            sClone = new Clone("vb-D2D device", otherPhone.getIp(), config.getClonePort());
-            establishConnection();
-            // FIXME: Create the connection with the other phone here... Don't use the streams of the DFE.
-//            sendApk();
-//            Object result = executeRemotely(m, pValues, o);
-            closeConnection();
+
+            Object result;
+            try (Socket socket = new Socket(otherPhone.getIp(), config.getClonePort());
+                 InputStream is = socket.getInputStream();
+                 OutputStream os = socket.getOutputStream();
+                 ObjectInputStream ois = new ObjectInputStream(is);
+                 ObjectOutputStream oos = new ObjectOutputStream(os)) {
+
+                sendApk(is, os, oos);
+                result = executeRemotely(task, os, ois, oos);
+            }
             return result;
         }
 
         /**
          * Execute method remotely
          *
-         * @param m       method to be executed
-         * @param pValues with parameter values
-         * @param o       on object
          * @return result of execution, or an exception if it happened
          * @throws NoSuchMethodException    If the method was not found in the object class.
          * @throws ClassNotFoundException   If the class of the object could not be found by the classloader.
@@ -1173,8 +1163,7 @@ public class DFE {
          * @throws SecurityException
          * @throws IllegalArgumentException If the arguments passed to the method are not correct.
          */
-        private Object executeRemotely(Method m, Object[] pValues, Object o,
-                                       OutputStream os, ObjectInputStream ois,
+        private Object executeRemotely(Task task, OutputStream os, ObjectInputStream ois,
                                        ObjectOutputStream oos)
                 throws IllegalArgumentException, IllegalAccessException, InvocationTargetException,
                 SecurityException, ClassNotFoundException, NoSuchMethodException {
@@ -1188,15 +1177,15 @@ public class DFE {
             // Prepare the data by calling the prepareData(localFraction) implemented by the developer.
             try {
                 long s = System.nanoTime();
-                Method prepareDataMethod = o.getClass().getDeclaredMethod("prepareDataOnClient");
+                Method prepareDataMethod = task.o.getClass().getDeclaredMethod("prepareDataOnClient");
                 prepareDataMethod.setAccessible(true);
-                prepareDataMethod.invoke(o);
+                prepareDataMethod.invoke(task.o);
                 prepareDataDuration = System.nanoTime() - s;
             } catch (NoSuchMethodException e) {
                 Log.w(TAG, "The method prepareDataOnClient() does not exist");
             }
 
-            ProgramProfiler progProfiler = new ProgramProfiler(mAppName, m.getName());
+            ProgramProfiler progProfiler = new ProgramProfiler(mAppName, task.m.getName());
             DeviceProfiler devProfiler = new DeviceProfiler(mContext);
             NetworkProfiler netProfiler = new NetworkProfiler();
             Profiler profiler = new Profiler(mRegime, progProfiler, netProfiler, devProfiler);
@@ -1208,10 +1197,10 @@ public class DFE {
             try {
                 Long startTime = System.nanoTime();
                 os.write(RapidMessages.AC_OFFLOAD_REQ_AS);
-                result = sendAndExecute(m, pValues, o, ois, oos);
+                result = sendAndExecute(task, ois, oos);
 
                 Long duration = System.nanoTime() - startTime;
-                Log.d(TAG, "REMOTE " + m.getName() + ": Actual Send-Receive duration - "
+                Log.d(TAG, "REMOTE " + task.m.getName() + ": Actual Send-Receive duration - "
                         + duration / 1000000 + "ms");
                 // Collect execution statistics
                 profiler.stopAndLogExecutionInfoTracking(prepareDataDuration, mPureRemoteDuration);
@@ -1220,10 +1209,10 @@ public class DFE {
                     RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_OFFLOADING_FINISHED);
             } catch (Exception e) {
                 // No such host exists, execute locally
-                Log.e(TAG, "REMOTE ERROR: " + m.getName() + ": " + e);
+                Log.e(TAG, "REMOTE ERROR: " + task.m.getName() + ": " + e);
                 e.printStackTrace();
                 profiler.stopAndDiscardExecutionInfoTracking();
-                result = executeLocally(m, pValues, o);
+                result = executeLocally(task);
                 // ConnectionRepair repair = new ConnectionRepair();
                 // repair.start();
             }
@@ -1234,9 +1223,6 @@ public class DFE {
          * Send the object, the method to be executed and parameter values to the remote server for
          * execution.
          *
-         * @param m       method to be executed
-         * @param pValues parameter values of the remoted method
-         * @param o       the remoted object
          * @return result of the remoted method or an exception that occurs during execution
          * @throws IOException
          * @throws ClassNotFoundException
@@ -1246,13 +1232,12 @@ public class DFE {
          * @throws SecurityException
          * @throws IllegalArgumentException
          */
-        private Object sendAndExecute(Method m, Object[] pValues, Object o,
-                                      ObjectInputStream ois, ObjectOutputStream oos)
+        private Object sendAndExecute(Task task, ObjectInputStream ois, ObjectOutputStream oos)
                 throws IOException, ClassNotFoundException, IllegalArgumentException, SecurityException,
                 IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
             // Send the object itself
-            sendObject(o, m, pValues, oos);
+            sendObject(task, oos);
 
             // TODO To be more precise, this message should be sent by the AS, but for simplicity I put it
             // here.
@@ -1273,7 +1258,7 @@ public class DFE {
             try {
                 // Use the copyState method that must be defined for all Remoteable
                 // classes to copy the state of relevant fields to the local object
-                o.getClass().getMethod("copyState", pTypes).invoke(o, container.objState);
+                task.o.getClass().getMethod("copyState", pTypes).invoke(task.o, container.objState);
             } catch (NullPointerException e) {
                 // Do nothing - exception happened remotely and hence there is
                 // no object state returned.
@@ -1293,12 +1278,9 @@ public class DFE {
     /**
      * Send the object (along with method and parameters) to the remote server for execution
      *
-     * @param o       The object calling the method.
-     * @param m       The method to be executed.
-     * @param pValues The parameter values of the method to be executed.
      * @throws IOException
      */
-    private void sendObject(Object o, Method m, Object[] pValues, ObjectOutputStream oos)
+    private void sendObject(Task task, ObjectOutputStream oos)
             throws IOException {
         oos.reset();
         Log.d(TAG, "Write Object and data");
@@ -1307,18 +1289,17 @@ public class DFE {
         oos.writeInt(nrClones);
 
         // Send object for execution
-        oos.writeObject(o);
-        o.getClass();
+        oos.writeObject(task.o);
 
         // Send the method to be executed
         // Log.d(TAG, "Write Method - " + m.getName());
-        oos.writeObject(m.getName());
+        oos.writeObject(task.m.getName());
 
         // Log.d(TAG, "Write method parameter types");
-        oos.writeObject(m.getParameterTypes());
+        oos.writeObject(task.m.getParameterTypes());
 
         // Log.d(TAG, "Write method parameter values");
-        oos.writeObject(pValues);
+        oos.writeObject(task.pValues);
         oos.flush();
     }
 
