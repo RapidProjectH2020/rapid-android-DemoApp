@@ -147,11 +147,11 @@ public class DFE {
     private static final int vmMemSize = 512; // FIXME
     private static final int vmNrGpuCores = 1200; // FIXME
 
-    private static Set<PhoneSpecs> d2dSetPhones = new TreeSet<>();
-    private static ExecutorService threadPool = Executors.newFixedThreadPool(10);
-    private static BlockingDeque<Task> tasks = new LinkedBlockingDeque<>();
-    private static AtomicInteger taskId = new AtomicInteger();
-    private static SparseArray<BlockingDeque<Object>> tasksResultsMap = new SparseArray<>();
+    private static Set<PhoneSpecs> d2dSetPhones;
+    private static ExecutorService threadPool;
+    private static BlockingDeque<Task> tasks;
+    private static AtomicInteger taskId;
+    private static SparseArray<BlockingDeque<Object>> tasksResultsMap;
 
     private ProgressDialog pd = null;
 
@@ -188,6 +188,11 @@ public class DFE {
         this.mContext = context;
         sClone = clone;
         this.myPhoneSpecs = PhoneSpecs.getPhoneSpecs(mContext);
+        threadPool = Executors.newFixedThreadPool(10);
+        taskId = new AtomicInteger();
+        tasks = new LinkedBlockingDeque<>();
+        tasksResultsMap = new SparseArray<>();
+        d2dSetPhones = new TreeSet<>();
 
         Log.i(TAG, "Current device: " + myPhoneSpecs);
 
@@ -1004,6 +1009,7 @@ public class DFE {
                         Log.v(TAG, "Result inserted on the resultMap.");
                     } catch (InterruptedException e) {
                         if (!isDFEActive) {
+                            Log.v(TAG, "The DFE is destroyed, exiting");
                             break;
                         } else {
                             Thread.currentThread().interrupt();

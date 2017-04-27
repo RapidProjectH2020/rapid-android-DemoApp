@@ -57,8 +57,8 @@ public class NetworkProfiler {
     // Keep the upload/download data rate history between the phone and the clone
     // Data rate in b/s
     private static final int bwWindowMaxLength = 20;
-    private static List<NetworkBWRecord> ulRateHistory = new LinkedList<NetworkBWRecord>();
-    private static List<NetworkBWRecord> dlRateHistory = new LinkedList<NetworkBWRecord>();
+    private static List<NetworkBWRecord> ulRateHistory = new LinkedList<>();
+    private static List<NetworkBWRecord> dlRateHistory = new LinkedList<>();
     public static NetworkBWRecord lastUlRate = null;
     public static NetworkBWRecord lastDlRate = null;
 
@@ -79,7 +79,6 @@ public class NetworkProfiler {
     private Context context;
     private static Configuration config;
     private static NetworkInfo netInfo;
-    private static PhoneStateListener listener;
     private static TelephonyManager telephonyManager;
     private static ConnectivityManager connectivityManager;
     private WifiManager wifiManager;
@@ -98,8 +97,8 @@ public class NetworkProfiler {
     private final static int uid = android.os.Process.myUid();
     private long duration;
     // Needed by Profiler
-    public long rxBytes;
-    public long txBytes;
+    long rxBytes;
+    long txBytes;
 
     /**
      * Constructor used to create a network profiler instance during method execution
@@ -235,7 +234,7 @@ public class NetworkProfiler {
 
         } catch (IOException e) {
             Log.e(TAG, "Error while measuring RTT: " + e);
-            tRtt = rttInfinite;
+            rtt = rttInfinite;
         }
         return rtt;
     }
@@ -244,7 +243,7 @@ public class NetworkProfiler {
      * Start counting transmitted data at a certain point for the current process (RX/TX bytes from
      * /sys/class/net/proc/uid_stat)
      */
-    public void startTransmittedDataCounting() {
+    void startTransmittedDataCounting() {
 
         rxBytes = getProcessRxBytes();
         txBytes = getProcessTxBytes();
@@ -262,7 +261,7 @@ public class NetworkProfiler {
     /**
      * Stop counting transmitted data and store it in the profiler object
      */
-    public void stopAndCollectTransmittedData() {
+    void stopAndCollectTransmittedData() {
 
         synchronized (this) {
             stopEstimatingEnergy = true;
@@ -302,14 +301,14 @@ public class NetworkProfiler {
     /**
      * @return Number of packets transmitted
      */
-    public static Long getProcessTxPackets() {
+    private static Long getProcessTxPackets() {
         return TrafficStats.getUidTxPackets(uid);
     }
 
     /**
      * @return Number of packets received
      */
-    public static Long getProcessRxPackets() {
+    private static Long getProcessRxPackets() {
         return TrafficStats.getUidRxPackets(uid);
     }
 
@@ -340,7 +339,7 @@ public class NetworkProfiler {
         IntentFilter networkStateFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         context.registerReceiver(networkStateReceiver, networkStateFilter);
 
-        listener = new PhoneStateListener() {
+        PhoneStateListener listener = new PhoneStateListener() {
             @Override
             public void onDataConnectionStateChanged(int state, int networkType) {
                 if (state == TelephonyManager.DATA_CONNECTED) {
@@ -422,6 +421,7 @@ public class NetworkProfiler {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
                     }
                 }
             }
@@ -444,13 +444,13 @@ public class NetworkProfiler {
     }
 
 
-    byte timeoutDchFach = 6; // Inactivity timer for transition from DCH -> FACH
-    byte timeoutFachIdle = 4; // Inactivity timer for transition from FACH -> IDLE
-    int uplinkThreshold = 151;
-    int downlikThreshold = 119;
-    byte threegState = THREEG_IN_IDLE_STATE;
-    boolean fromIdleState = true;
-    boolean fromDchState = false;
+    private byte timeoutDchFach = 6; // Inactivity timer for transition from DCH -> FACH
+    private byte timeoutFachIdle = 4; // Inactivity timer for transition from FACH -> IDLE
+    private int uplinkThreshold = 151;
+    private int downlikThreshold = 119;
+    private byte threegState = THREEG_IN_IDLE_STATE;
+    private boolean fromIdleState = true;
+    private boolean fromDchState = false;
     private long prevRxBytes, prevTxBytes;
 
     private void calculate3GStates() {
@@ -474,6 +474,7 @@ public class NetworkProfiler {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
                     }
                 }
             }

@@ -5,7 +5,7 @@ ext {
     bintrayName = 'rapid-android-ac'
 
     publishedGroupId = 'eu.project.rapid'
-    libraryName = 'AccelerationClient-Android'
+    libraryName = 'rapid-android-ac'
     artifact = 'rapid-android-ac'
 
     libraryDescription = 'Library for Android computation offloading.'
@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/RapidProjectH2020/rapid-android'
     gitUrl = 'https://github.com/RapidProjectH2020/rapid-android.git'
 
-    libraryVersion = '0.0.1'
+    libraryVersion = '0.0.3'
 
     developerId = 'rapidprojecth2020'
     developerName = 'Rapid EU Project'
