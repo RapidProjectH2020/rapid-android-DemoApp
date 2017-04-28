@@ -25,7 +25,7 @@
     <string name="cpuLoader3">Test 3</string>
     <string name="scenario1">Scenario 1</string>
     <string name="scenario2">Scenario 2</string>
-    <string name="jni1">JNI test</string>
+
     <string name="gvirtus">GVirtuS deviceQuery test</string>
     <string name="benchmark1">Benchmark Bundle 1</string>
     <string name="benchmark2">Benchmark Bundle 2</string>
@@ -37,14 +37,20 @@
     <string name="virusScanning">Virus Scanning</string>
     <string name="sudoku">Solve Sudoku</string>
 
+    <string name="textLocalCount">Nr. local exec.:</string>
+    <string name="textLocalTime">Avg. local (ms):</string>
+    <string name="textRemoteCount">Nr. remote exec.:</string>
+    <string name="textRemoteTime">Avg. remote (ms):</string>
+
     <string name="nrQueens">Nr. of Queens:</string>
     <string name="nQueensButton">Solve NQueens</string>
     <string name="nQueensDescription">Solve the NQueens puzzle.
         The higher the number of queens, the higher the execution time.</string>
-    <string name="nQueensLocalCount">Nr. local exec.:</string>
-    <string name="nQueensLocalTime">Avg. local (ms):</string>
-    <string name="nQueensRemoteCount">Nr. remote exec.:</string>
-    <string name="nQueensRemoteTime">Avg. remote (ms):</string>
+
+    <string name="jni1">JNI test</string>
+    <string name="jni1Description">
+        This test shows the offloading of native methods implemented via JNI.
+        It simply prints \"Hello from JNI\".</string>
 
     <string name="radioButtonStaticLocal">Always Local</string>
     <string name="radioButtonStaticRemote">Always Remote</string>

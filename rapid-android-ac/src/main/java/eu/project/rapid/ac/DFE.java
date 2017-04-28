@@ -147,11 +147,11 @@ public class DFE {
     private static final int vmMemSize = 512; // FIXME
     private static final int vmNrGpuCores = 1200; // FIXME
 
-    private static Set<PhoneSpecs> d2dSetPhones;
     private static ExecutorService threadPool;
-    private static BlockingDeque<Task> tasks;
-    private static AtomicInteger taskId;
-    private static SparseArray<BlockingDeque<Object>> tasksResultsMap;
+    private static Set<PhoneSpecs> d2dSetPhones = new TreeSet<>();
+    private static BlockingDeque<Task> tasks = new LinkedBlockingDeque<>();
+    private static AtomicInteger taskId = new AtomicInteger();
+    private static SparseArray<BlockingDeque<Object>> tasksResultsMap = new SparseArray<>();
 
     private ProgressDialog pd = null;
 
@@ -188,11 +188,7 @@ public class DFE {
         this.mContext = context;
         sClone = clone;
         this.myPhoneSpecs = PhoneSpecs.getPhoneSpecs(mContext);
-        threadPool = Executors.newFixedThreadPool(10);
-        taskId = new AtomicInteger();
-        tasks = new LinkedBlockingDeque<>();
-        tasksResultsMap = new SparseArray<>();
-        d2dSetPhones = new TreeSet<>();
+        threadPool = Executors.newFixedThreadPool(3);
 
         Log.i(TAG, "Current device: " + myPhoneSpecs);
 
@@ -1034,54 +1030,37 @@ public class DFE {
             Object result = null;
             ExecLocation execLocation = findExecLocation(task.m.getName());
             if (execLocation.equals(ExecLocation.LOCAL)) {
-                try {
-                    Log.v(TAG, "Should run the method locally...");
-                    // First try to see if we can offload this task to a more powerful device that is in D2D
-                    // distance.
-                    // Do this only if we are not connected to a clone, otherwise it becomes a mess.
-                    if (!onLineClear && !onLineSSL) {
-                        try {
-                            if (d2dSetPhones != null && d2dSetPhones.size() > 0) {
-                                Log.v(TAG, "Running the method using D2D...");
-                                Iterator<PhoneSpecs> it = d2dSetPhones.iterator();
-                                // This is the best phone from the D2D ones since the set is sorted and this is the
-                                // first element.
-                                PhoneSpecs otherPhone = it.next();
-                                if (otherPhone.compareTo(myPhoneSpecs) > 0) {
-                                    if (useAnimationServer)
-                                        RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_OFFLOAD_D2D);
-                                    result = executeD2D(task, otherPhone);
-                                }
-                            }
-                        } catch (IOException | ClassNotFoundException | SecurityException
-                                | NoSuchMethodException e) {
-                            Log.e(TAG, "Error while trying to run the method D2D: " + e);
+                Log.v(TAG, "Should run the method locally...");
+                // First try to see if we can offload this task to a more powerful device that is in D2D
+                // distance.
+                // Do this only if we are not connected to a clone, otherwise it becomes a mess.
+                if (!onLineClear && !onLineSSL) {
+                    if (d2dSetPhones != null && d2dSetPhones.size() > 0) {
+                        Log.v(TAG, "Running the method using D2D...");
+                        Iterator<PhoneSpecs> it = d2dSetPhones.iterator();
+                        // This is the best phone from the D2D ones since the set is sorted and this is the
+                        // first element.
+                        PhoneSpecs otherPhone = it.next();
+                        if (otherPhone.compareTo(myPhoneSpecs) > 0) {
+                            result = executeD2D(task, otherPhone);
                         }
                     }
+                }
 
-                    // If the D2D execution didn't take place or something happened that the execution was
-                    // interrupted the result would still be null.
-                    if (result == null) {
-                        Log.v(TAG, "No D2D execution was performed, running locally...");
-                        if (useAnimationServer)
-                            RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_DECISION_LOCAL);
-                        result = executeLocally(task);
-                    }
-
-                } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
-                    Log.e(TAG, "Error while running the method locally: " + e);
+                // If the D2D execution didn't take place or something happened that the execution was
+                // interrupted the result would still be null.
+                if (result == null) {
+                    Log.v(TAG, "No D2D execution was performed, running locally...");
+                    if (useAnimationServer)
+                        RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_DECISION_LOCAL);
+                    result = executeLocally(task);
                 }
             } else if (execLocation.equals(ExecLocation.REMOTE)) {
-                try {
-                    result = executeRemotely(task, os, ois, oos);
-                    if (result instanceof InvocationTargetException) {
-                        // The remote execution throwed an exception, try to run the method locally.
-                        Log.w(TAG, "The result was InvocationTargetException. Running the method locally...");
-                        result = executeLocally(task);
-                    }
-                } catch (IllegalArgumentException | SecurityException | IllegalAccessException
-                        | InvocationTargetException | ClassNotFoundException | NoSuchMethodException e) {
-                    Log.e(TAG, "Error while trying to run the method remotely: " + e);
+                result = executeRemotely(task, os, ois, oos);
+                if (result instanceof InvocationTargetException) {
+                    // The remote execution throwed an exception, try to run the method locally.
+                    Log.w(TAG, "The result was InvocationTargetException. Running the method locally...");
+                    result = executeLocally(task);
                 }
             }
 
@@ -1096,8 +1075,7 @@ public class DFE {
          * @throws SecurityException
          * @throws IllegalArgumentException If the arguments passed to the method are not correct.
          */
-        private Object executeLocally(Task task)
-                throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        private Object executeLocally(Task task) {
 
             ProgramProfiler progProfiler = new ProgramProfiler(mAppName, task.m.getName());
             DeviceProfiler devProfiler = new DeviceProfiler(mContext);
@@ -1105,18 +1083,25 @@ public class DFE {
 
             // Start tracking execution statistics for the method
             profiler.startExecutionInfoTracking();
+            Object result = null; // Access it
+            try {
+                // Make sure that the method is accessible
+                // if (useAnimationServer) RapidUtils.sendAnimationMsg(config, RapidMessages.AC_EXEC_LOCAL);
+                Long startTime = System.nanoTime();
+                task.m.setAccessible(true);
 
-            // Make sure that the method is accessible
-            // if (useAnimationServer) RapidUtils.sendAnimationMsg(config, RapidMessages.AC_EXEC_LOCAL);
-            Long startTime = System.nanoTime();
-            task.m.setAccessible(true);
-            Object result = task.m.invoke(task.o, task.pValues); // Access it
-            long mPureLocalDuration = System.nanoTime() - startTime;
-            Log.d(TAG, "LOCAL " + task.m.getName() + ": Actual Invocation duration - "
-                    + mPureLocalDuration / 1000000 + "ms");
+                result = task.m.invoke(task.o, task.pValues);
+                long mPureLocalDuration = System.nanoTime() - startTime;
+                Log.d(TAG, "LOCAL " + task.m.getName() + ": Actual Invocation duration - "
+                        + mPureLocalDuration / 1000000 + "ms");
 
-            // Collect execution statistics
-            profiler.stopAndLogExecutionInfoTracking(prepareDataDuration, mPureLocalDuration);
+                // Collect execution statistics
+                profiler.stopAndLogExecutionInfoTracking(prepareDataDuration, mPureLocalDuration);
+            } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
+                Log.w(TAG, "Exception while running the method locally: " + e);
+                profiler.stopAndDiscardExecutionInfoTracking();
+                e.printStackTrace();
+            }
 
             if (useAnimationServer)
                 RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_LOCAL_FINISHED);
@@ -1132,21 +1117,16 @@ public class DFE {
          * @param otherPhone Is the closeby phones, which is willing to help with offloading.
          * @return
          * @throws IllegalArgumentException
-         * @throws IllegalAccessException
-         * @throws InvocationTargetException
-         * @throws IOException
-         * @throws ClassNotFoundException
-         * @throws NoSuchMethodException
          * @throws SecurityException
          */
-        private Object executeD2D(Task task, PhoneSpecs otherPhone)
-                throws IllegalArgumentException, IllegalAccessException, InvocationTargetException,
-                IOException, ClassNotFoundException, SecurityException, NoSuchMethodException {
+        private Object executeD2D(Task task, PhoneSpecs otherPhone) {
 
             // otherPhone.setIp("192.168.43.1");
             Log.i(TAG, "Trying to execute the method using D2D on device: " + otherPhone);
+            if (useAnimationServer)
+                RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_OFFLOAD_D2D);
 
-            Object result;
+            Object result = null;
             try (Socket socket = new Socket(otherPhone.getIp(), config.getClonePort());
                  InputStream is = socket.getInputStream();
                  OutputStream os = socket.getOutputStream();
@@ -1155,6 +1135,8 @@ public class DFE {
 
                 sendApk(is, os, oos);
                 result = executeRemotely(task, os, ois, oos);
+            } catch (Exception e) {
+                Log.w(TAG, "Exception while trying to connect with other phone: " + e);
             }
             return result;
         }
@@ -1170,9 +1152,7 @@ public class DFE {
          * @throws IllegalArgumentException If the arguments passed to the method are not correct.
          */
         private Object executeRemotely(Task task, OutputStream os, ObjectInputStream ois,
-                                       ObjectOutputStream oos)
-                throws IllegalArgumentException, IllegalAccessException, InvocationTargetException,
-                SecurityException, ClassNotFoundException, NoSuchMethodException {
+                                       ObjectOutputStream oos) {
 
 
             if (useAnimationServer)
@@ -1189,6 +1169,9 @@ public class DFE {
                 prepareDataDuration = System.nanoTime() - s;
             } catch (NoSuchMethodException e) {
                 Log.w(TAG, "The method prepareDataOnClient() does not exist");
+            } catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
+                Log.e(TAG, "Exception while calling method prepareDataOnClient(): " + e);
+                e.printStackTrace();
             }
 
             ProgramProfiler progProfiler = new ProgramProfiler(mAppName, task.m.getName());

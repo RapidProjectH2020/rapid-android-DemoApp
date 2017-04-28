@@ -691,8 +691,8 @@ public class NetworkProfiler {
         InputStream is = null;
         DataInputStream dis = null;
 
-        long txTime = 0;
-        long txBytes = 0;
+        long txTime;
+        long txBytes;
 
         Socket clientSocket = null;
         try {
@@ -703,6 +703,7 @@ public class NetworkProfiler {
 
             os.write(RapidMessages.UPLOAD_FILE);
 
+            // This will throw an exception when the VM will close the socket after 3 seconds
             while (true) {
                 os.write(buffer);
                 is.read();
@@ -711,7 +712,7 @@ public class NetworkProfiler {
         } catch (UnknownHostException e) {
             Log.w(TAG, "UnknownHostException while measuring upload rate: " + e);
         } catch (SocketException e) {
-            Log.w(TAG, "SocketException while measuring upload rate: " + e);
+            Log.w(TAG, "Finished sending data for 3s for upload rate measurement");
         } catch (IOException e) {
             Log.w(TAG, "IOException while measuring upload rate: " + e);
         } finally {
@@ -721,6 +722,7 @@ public class NetworkProfiler {
             RapidUtils.closeQuietly(clientSocket);
 
             try {
+                Log.w(TAG, "Asking the VM to tell us how many data it actually received in 3s");
                 clientSocket = new Socket(config.getClone().getIp(), config.getClonePortBandwidthTest());
                 os = clientSocket.getOutputStream();
                 is = clientSocket.getInputStream();
@@ -731,13 +733,12 @@ public class NetworkProfiler {
                 txTime = dis.readLong();
 
                 addNewUlRateEstimate(txBytes, txTime);
-
             } catch (UnknownHostException e) {
-                Log.w(TAG, "UnknownHostException while measuring upload rate: " + e);
+                Log.w(TAG, "UnknownHostException while getting the upload rate result from the VM: " + e);
             } catch (IOException e) {
-                Log.w(TAG, "IOException while measuring upload rate: " + e);
+                Log.w(TAG, "IOException while getting the upload rate result from the VM: " + e);
             } catch (Exception e) {
-                Log.w(TAG, "Exception while measuring upload rate: " + e);
+                Log.w(TAG, "Exception while getting the upload rate result from the VM: " + e);
             } finally {
                 RapidUtils.closeQuietly(os);
                 RapidUtils.closeQuietly(is);

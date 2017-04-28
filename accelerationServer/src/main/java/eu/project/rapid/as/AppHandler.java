@@ -23,6 +23,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -37,7 +38,11 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -55,6 +60,9 @@ import eu.project.rapid.common.RapidUtils;
  * The server-side class handling client requests for invocation. Works in a separate thread for
  * each client. This can handle requests coming from the phone (when behaving as the main clone) or
  * requests coming from the main clone when behaving as a clone helper.
+ * <p>
+ * FIXME: When running the AS on Android-x86 6.0 the native libraries are correctly loaded.
+ * On Android 4.4 it doesn't work properly.
  */
 public class AppHandler implements Runnable {
 
@@ -86,11 +94,22 @@ public class AppHandler implements Runnable {
     private Object[] pValues; // the values of the parameters to be passed to the method
     private Class<?> returnType; // the return type of the method
     private String apkFilePath; // the path where the apk is installed
-    private LinkedList<File> libraries;
+    //    private LinkedList<File> libraries;
+
+    /**
+     * Key is the appName.
+     * Value is a map <libName, File> keeping a map of files pointing to the library.
+     * Static because more than one thread will be launched to deal with one app.
+     * They can rename the library (by adding an increasing index number), so is important
+     * that all threads use the same library then,
+     * otherwise one can end up not finding the library anymore at all.
+     */
+    private List<File> libraries = new LinkedList<>();
+    private static Map<String, Map<String, Integer>> librariesIndex = new ConcurrentHashMap<>();
 
     // Classloaders needed by the dynamicObjectInputStream
     private ClassLoader mCurrent = ClassLoader.getSystemClassLoader();
-    private DexClassLoader mCurrentDexLoader = null;
+    private DexClassLoader mCurrentDexLoader;
 
     public AppHandler(Socket pClient, final Context cW, Configuration config) {
         Log.d(TAG, "New Client connected");
@@ -124,7 +143,7 @@ public class AppHandler implements Runnable {
                         devProfiler.startDeviceProfiling();
 
                         Log.d(TAG, "Execute request - " + request);
-                        Object result = retrieveAndExecute(mObjIs, libraries);
+                        Object result = retrieveAndExecute(mObjIs);
 
                         // Delete the file containing the cloneHelperId assigned to this clone
                         // (if such file does not exist do nothing)
@@ -160,6 +179,7 @@ public class AppHandler implements Runnable {
                         Log.d(TAG, "Registering apk");
                         appName = (String) mObjIs.readObject();
                         Log.i(TAG, "apk name: " + appName);
+
                         appLength = mObjIs.readInt();
                         apkFilePath = mContext.getFilesDir().getAbsolutePath() + "/" + appName + ".apk";
                         Log.d(TAG, "Registering apk: " + appName + " of size: " + appLength + " bytes");
@@ -182,8 +202,10 @@ public class AppHandler implements Runnable {
                         // Create the new (if needed) dex file and load the .dex file
                         File dexFile = new File(apkFilePath);
                         Log.d(TAG, "APK file size on disk: " + dexFile.length());
-                        libraries = addLibraries(dexFile);
+//                        libraries = addLibraries(dexFile);
+                        addLibraries(dexFile);
                         mCurrentDexLoader = mObjIs.addDex(dexFile);
+//                        AccelerationServer.dexClassLoaderMap.put(appName, mObjIs.addDex(dexFile));
                         Log.d(TAG, "DEX file added.");
 
                         break;
@@ -192,14 +214,9 @@ public class AppHandler implements Runnable {
                         cloneHelperId = mIs.read();
                         Utils.writeCloneHelperId(cloneHelperId);
                         break;
-
                 }
             }
             Log.d(TAG, "Client disconnected");
-            RapidUtils.closeQuietly(mObjOs);
-            RapidUtils.closeQuietly(mObjIs);
-            RapidUtils.closeQuietly(mClient);
-
         } catch (SocketException e) {
             Log.w(TAG, "Client disconnected: " + e);
         } catch (Exception e) {
@@ -211,7 +228,7 @@ public class AppHandler implements Runnable {
             e.printStackTrace();
         } catch (Error e) {
             // We don't want any exceptions to escape from here,
-            // hide everything silently if we didn't foresee them cropping
+            // hide everything silently if we didn't foresee them dropping
             // up... Since we don't want the server to die because
             // somebody's program is misbehaving
             Log.e(TAG, "Error not caught properly - " + e);
@@ -220,9 +237,22 @@ public class AppHandler implements Runnable {
             RapidUtils.closeQuietly(mObjOs);
             RapidUtils.closeQuietly(mObjIs);
             RapidUtils.closeQuietly(mClient);
+
+//            // Delete the library files
+            for (File f : libraries) {
+                File fParent = f.getParentFile();
+                if (fParent.isDirectory()) {
+                    for (File f2 : fParent.listFiles()) {
+                        if (!f2.delete()) {
+                            Log.v(TAG, "Not possible to delete library file: " + f2);
+                        }
+                    }
+                }
+                // Do not delete the parent, needed for the library index.
+//                fParent.delete();
+            }
         }
     }
-//    }
 
     /**
      * Method to retrieve an apk of an application that needs to be executed
@@ -269,10 +299,10 @@ public class AppHandler implements Runnable {
     }
 
     /**
-     * Extract native libraries for the x86 platform included in the .apk file (which is actually a
+     * Extract native libraries for the x86/x86_64 platform included in the .apk file (which is actually a
      * zip file).
      * <p>
-     * The x86 shared libraries are: lib/x86/library.so inside the apk file. We extract them from the
+     * The x86/x86_64 shared libraries are: lib/[x86\x86_64]/library.so inside the apk file. We extract them from the
      * apk and save in the /data/data/eu.rapid.project.as/files folder. Initially we used to save them
      * with the same name as the original (library.so) but this caused many problems related to
      * classloaders. When an app was offloaded for the first time and used the library, the library
@@ -291,11 +321,11 @@ public class AppHandler implements Runnable {
      */
 
     @SuppressWarnings("unchecked")
-    private LinkedList<File> addLibraries(File dexFile) {
+    private synchronized void addLibraries(File dexFile) {
         Long startTime = System.nanoTime();
 
         ZipFile apkFile;
-        LinkedList<File> libFiles = new LinkedList<>();
+//        LinkedList<File> libFiles = new LinkedList<>();
         try {
             apkFile = new ZipFile(dexFile);
             Enumeration<ZipEntry> entries = (Enumeration<ZipEntry>) apkFile.entries();
@@ -304,45 +334,50 @@ public class AppHandler implements Runnable {
                 entry = entries.nextElement();
                 // Zip entry for a lib file is in the form of
                 // lib/platform/library.so
-                // But only load x86 libraries on the server side
-                if (entry.getName().matches("lib/x86/(.*).so")) {
+                // But only load x86/x86_64 libraries on the server side
+                if (entry.getName().matches("lib/" + AccelerationServer.arch + "/(.*).so")) {
                     Log.d(TAG, "Matching APK entry - " + entry.getName());
                     // Unzip the lib file from apk
                     BufferedInputStream is = new BufferedInputStream(apkFile.getInputStream(entry));
-
 
                     // Folder where to put the libraries (usually this will resolve to:
                     // /data/data/eu.rapid.project.as/files)
                     File libFolder = new File(mContext.getFilesDir().getAbsolutePath());
 
                     // Get the library name without the .so extension
-                    String libName = entry.getName().replace("lib/x86/", "").replace(".so", "");
+                    final String libName = entry.getName().replace("lib/" +
+                            AccelerationServer.arch + "/", "").replace(".so", "");
+
+                    if (!librariesIndex.containsKey(appName)) {
+                        librariesIndex.put(appName, new HashMap<String, Integer>());
+                    }
 
                     // The sequence number to append to the library name
-                    int libSeqNr = 1;
-                    for (File f : libFolder.listFiles()) {
-                        // Scan all the previously created folder libraries until we find this one
-                        int lastIndexDash = f.getName().lastIndexOf("-");
-                        if (lastIndexDash != -1 && libName.equals(f.getName().substring(0, lastIndexDash))) {
-                            try {
-                                libSeqNr = Integer.parseInt(f.getName().substring(lastIndexDash + 1));
-                                // And increment the sequence number so that the library can be saved with a new
-                                // name
-                                libSeqNr++;
-                            } catch (Exception e) {
-                                Log.w(TAG,
-                                        "Library file does not contain any number in the name, maybe is not written by us!");
+                    int libSeqNr = 0;
+                    if (librariesIndex.get(appName).containsKey(libName)) {
+                        libSeqNr = librariesIndex.get(appName).get(libName);
+                    } else {
+                        for (File f : libFolder.listFiles(new FilenameFilter() {
+                            @Override
+                            public boolean accept(File file, String s) {
+                                return s.matches(libName + "-\\d+");
                             }
-
-                            // Delete the current one
-                            if (f.isDirectory()) {
-                                for (File f2 : f.listFiles()) {
-                                    f2.delete();
+                        })) {
+                            // Scan all the previously created folder libraries
+                            int lastIndexDash = f.getName().lastIndexOf("-");
+                            if (lastIndexDash != -1) {
+                                try {
+                                    libSeqNr = Math.max(libSeqNr, Integer.parseInt(f.getName().substring(lastIndexDash + 1)));
+                                } catch (Exception e) {
+                                    Log.w(TAG,
+                                            "Library file does not contain any number in the name, maybe is not written by us!");
                                 }
                             }
-                            f.delete();
                         }
                     }
+
+                    libSeqNr++;
+                    librariesIndex.get(appName).put(libName, libSeqNr);
 
                     File currLibFolder =
                             new File(libFolder.getAbsolutePath() + File.separator + libName + "-" + libSeqNr);
@@ -350,16 +385,6 @@ public class AppHandler implements Runnable {
 
                     File libFile =
                             new File(currLibFolder.getAbsolutePath() + File.separator + libName + ".so");
-
-                    //
-                    // File libFile = new File(mContext.getFilesDir().getAbsolutePath() + "/"
-                    // + entry.getName().replace("lib/x86/", ""));
-                    //
-                    // // Delete the old library files, otherwise the server crashes
-                    // // when the app is installed twice.
-                    // libFile.delete();
-                    // Let the error propagate if the file cannot be created
-                    // - handled by IOException
                     libFile.createNewFile();
 
                     Log.d(TAG, "Writing lib file to " + libFile.getAbsolutePath());
@@ -367,7 +392,7 @@ public class AppHandler implements Runnable {
                     BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);
 
                     byte data[] = new byte[BUFFER];
-                    int count = 0;
+                    int count;
                     while ((count = is.read(data, 0, BUFFER)) != -1) {
                         dest.write(data, 0, count);
                     }
@@ -375,18 +400,15 @@ public class AppHandler implements Runnable {
                     dest.close();
                     is.close();
 
-                    // Store the library to the list
-                    libFiles.add(libFile);
+                    // Store the library on the map
+                    libraries.add(libFile);
                 }
             }
-
         } catch (IOException e) {
             Log.d(TAG, "ERROR: File unzipping error " + e);
         }
         Log.d(TAG,
                 "Duration of unzipping libraries - " + ((System.nanoTime() - startTime) / 1000000) + "ms");
-        return libFiles;
-
     }
 
     /**
@@ -399,7 +421,7 @@ public class AppHandler implements Runnable {
      * @throws IllegalArgumentException
      * @throws SecurityException
      */
-    private Object retrieveAndExecute(DynamicObjectInputStream objIn, LinkedList<File> libraries) {
+    private Object retrieveAndExecute(DynamicObjectInputStream objIn) {
         Long getObjectDuration = -1L;
         Long startTime = System.nanoTime();
         // Read the object in for execution

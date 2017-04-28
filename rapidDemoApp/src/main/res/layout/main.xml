@@ -156,7 +156,7 @@
                         android:layout_gravity="center_vertical"
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
-                        android:text="@string/nQueensLocalCount"
+                        android:text="@string/textLocalCount"
                         android:textSize="14sp" />
 
                     <TextView
@@ -174,13 +174,12 @@
                     android:baselineAligned="false">
 
                     <TextView
-                        android:id="@+id/textNQueensLocalTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
-                        android:text="@string/nQueensLocalTime"
+                        android:text="@string/textLocalTime"
                         android:textSize="14sp" />
 
                     <TextView
@@ -205,13 +204,12 @@
                     android:baselineAligned="false">
 
                     <TextView
-                        android:id="@+id/textNQueensRemoteNr"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
-                        android:text="@string/nQueensRemoteCount"
+                        android:text="@string/textRemoteCount"
                         android:textSize="14sp" />
 
                     <TextView
@@ -229,13 +227,12 @@
                     android:baselineAligned="false">
 
                     <TextView
-                        android:id="@+id/textNQueensRemoteTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
-                        android:text="@string/nQueensRemoteTime"
+                        android:text="@string/textRemoteTime"
                         android:textSize="14sp" />
 
                     <TextView
@@ -275,6 +272,145 @@
                 android:layout_weight="9"
                 android:onClick="onClickQueenSolver"
                 android:text="@string/nQueensButton" />
+        </LinearLayout>
+
+        <View style="@style/Divider" />
+
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:text="@string/jni1Description"
+            android:textColor="@android:color/holo_blue_dark" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:baselineAligned="false">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:text="@string/textLocalCount"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/valJNILocalNr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:baselineAligned="false">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:text="@string/textLocalTime"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/valJNILocalTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:baselineAligned="false">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:text="@string/textRemoteCount"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/valJNIRemoteNr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:baselineAligned="false">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:text="@string/textRemoteTime"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/valJNIRemoteTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/jni1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="9"
+                android:onClick="onClickJni1"
+                android:text="@string/jni1" />
         </LinearLayout>
 
         <View style="@style/Divider" />

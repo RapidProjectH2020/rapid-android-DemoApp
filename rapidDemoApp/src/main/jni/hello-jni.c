@@ -30,7 +30,7 @@ JNIEXPORT jstring JNICALL
 Java_eu_project_rapid_synthBenchmark_JniTest_stringFromJNI( JNIEnv* env,
                                                   jobject thiz )
 {
-    return (*env)->NewStringUTF(env, "Hello from JNI !");
+    return (*env)->NewStringUTF(env, "Hello from JNI 7!");
 }
 
 jint JNI_OnLoad(JavaVM* vm, void* reserved)

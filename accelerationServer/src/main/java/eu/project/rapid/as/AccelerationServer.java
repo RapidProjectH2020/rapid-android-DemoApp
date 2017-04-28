@@ -79,7 +79,8 @@ public class AccelerationServer extends Service {
 
     private Handler mBroadcastHandler;
     private Runnable mBroadcastRunnable;
-    private ExecutorService threadPool = Executors.newFixedThreadPool(10);
+    private ExecutorService threadPool = Executors.newFixedThreadPool(1000);
+    static String arch = System.getProperty("os.arch");
 
     // Using the BC
     static {
@@ -92,7 +93,7 @@ public class AccelerationServer extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "Server created");
+        Log.d(TAG, "Server created, running on arch: " + arch);
     }
 
     @Override
