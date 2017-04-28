@@ -26,9 +26,12 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -115,7 +118,12 @@ public class AccelerationServer extends Service {
         // Create a special file on the clone that methods can use to check
         // if are being executed on the clone or on the phone.
         // This can be of help to advanced developers.
-        createOffloadedFile();
+        if (createOrGetRapidFolder()) {
+            createOffloadedFile();
+            copyCryptoKeysFromAssets();
+        } else {
+            Log.e(TAG, "Error while creating RAPID folder: " + Constants.RAPID_FOLDER);
+        }
 
         // Delete the file containing the cloneHelperId assigned to this clone
         // (if such file does not exist do nothing).
@@ -165,20 +173,37 @@ public class AccelerationServer extends Service {
         return START_STICKY;
     }
 
+    private boolean createOrGetRapidFolder() {
+        File f = new File(Constants.RAPID_FOLDER);
+        return f.exists() || f.mkdirs();
+    }
+
     /**
      * Creates a sentinel file on the clone in order to let the method know it is being executed on
      * the clone.
      */
     private void createOffloadedFile() {
         try {
-            File f = new File(Constants.RAPID_FOLDER);
-            if (!f.exists()) {
-                f.mkdirs();
+            if (new File(Constants.FILE_OFFLOADED).createNewFile()) {
+                Log.i(TAG, "The offloaded file didn't exist and was created: " + Constants.FILE_OFFLOADED);
             }
-            f = new File(Constants.FILE_OFFLOADED);
-            f.createNewFile();
         } catch (IOException e) {
             Log.e(TAG, "Could not create offloaded file: " + e);
+        }
+    }
+
+    private void copyCryptoKeysFromAssets() {
+        Log.v(TAG, "Copying the keystore from assets to the rapid folder...");
+        try (InputStream is = this.getAssets().open("keystore.bks");
+             OutputStream fos = new FileOutputStream(Constants.SSL_KEYSTORE)) {
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = is.read(buffer)) > 0) {
+                fos.write(buffer, 0, length);
+            }
+            Log.v(TAG, "Finished copying the keystore!");
+        } catch (IOException e) {
+            Log.v(TAG, "Exception while copying the keystore: " + e);
         }
     }
 

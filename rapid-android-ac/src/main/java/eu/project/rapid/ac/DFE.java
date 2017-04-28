@@ -277,9 +277,7 @@ public class DFE {
         }
     }
 
-
     private void readConfigurationFile() {
-
         try {
             // Read the config file to read the IP and port of Manager
             config = new Configuration(Constants.PHONE_CONFIG_FILE);
@@ -289,7 +287,6 @@ public class DFE {
             config = new Configuration();
         }
     }
-
 
     /**
      * Create the necessary stuff for the SSL connection.

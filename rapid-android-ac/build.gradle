@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/RapidProjectH2020/rapid-android'
     gitUrl = 'https://github.com/RapidProjectH2020/rapid-android.git'
 
-    libraryVersion = '0.0.4'
+    libraryVersion = '0.0.5'
 
     developerId = 'rapidprojecth2020'
     developerName = 'Rapid EU Project'
