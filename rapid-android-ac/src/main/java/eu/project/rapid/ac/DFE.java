@@ -147,6 +147,8 @@ public class DFE {
     private static final int vmMemSize = 512; // FIXME
     private static final int vmNrGpuCores = 1200; // FIXME
 
+    private static ScheduledThreadPoolExecutor d2dSetReaderThread;
+
     private static ExecutorService threadPool;
     private static Set<PhoneSpecs> d2dSetPhones = new TreeSet<>();
     private static BlockingDeque<Task> tasks = new LinkedBlockingDeque<>();
@@ -189,6 +191,7 @@ public class DFE {
         sClone = clone;
         this.myPhoneSpecs = PhoneSpecs.getPhoneSpecs(mContext);
         threadPool = Executors.newFixedThreadPool(3);
+        d2dSetReaderThread = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(1);
 
         Log.i(TAG, "Current device: " + myPhoneSpecs);
 
@@ -211,7 +214,8 @@ public class DFE {
     private void start() {
         netProfiler.registerNetworkStateTrackers();
 
-        // Start the thread that will deal with the D2D communication
+        // Start the service that will deal with the D2D communication
+        startD2DListeningService();
         startD2DThread();
 
         // Show a spinning dialog while connecting to the Manager and to the clone.
@@ -639,20 +643,22 @@ public class DFE {
         DBCache.saveDbCache();
         closeConnection();
         threadPool.shutdownNow();
+        d2dSetReaderThread.shutdown();
         instance = null;
         // FIXME Should I also stop the D2D listening service here or should I leave it running?
         if (useAnimationServer) RapidUtils.sendAnimationMsg(config, AnimationMsg.AC_INITIAL_IMG);
     }
 
-    private void startD2DThread() {
+    private void startD2DListeningService() {
         Log.i(TAG, "Starting the D2D listening service...");
         Intent d2dServiceIntent = new Intent(mContext, D2DClientService.class);
         mContext.startService(d2dServiceIntent);
+    }
 
+    private void startD2DThread() {
         // This thread will run with a certain frequency to read the D2D devices that are written by the
         // D2DClientService on the sdcard. This is needed because another DFE may have written the
         // devices on the file.
-        ScheduledThreadPoolExecutor d2dSetReaderThread = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(5);
         d2dSetReaderThread.scheduleWithFixedDelay(new D2DSetReader(), 0,
                 D2DClientService.FREQUENCY_READ_D2D_SET, TimeUnit.MILLISECONDS);
     }

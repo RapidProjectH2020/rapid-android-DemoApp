@@ -214,9 +214,6 @@ public class AccelerationServer extends Service {
 
     /**
      * Read the config file to get the IP and port for the Manager.
-     *
-     * @throws IOException
-     * @throws UnknownHostException
      */
     private class RegistrationManager implements Runnable {
 
