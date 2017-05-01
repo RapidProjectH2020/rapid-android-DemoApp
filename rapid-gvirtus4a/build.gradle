@@ -1,5 +1,29 @@
 apply plugin: 'com.android.library'
 
+ext {
+    bintrayRepo = 'rapid'
+    bintrayName = 'rapid-gvirtus4a'
+
+    publishedGroupId = 'eu.project.rapid'
+    libraryName = 'rapid-gvirtus4a'
+    artifact = 'rapid-gvirtus4a'
+
+    libraryDescription = 'Library for Android computation offloading.'
+
+    siteUrl = 'https://github.com/RapidProjectH2020/rapid-android'
+    gitUrl = 'https://github.com/RapidProjectH2020/rapid-android.git'
+
+    libraryVersion = '0.0.1'
+
+    developerId = 'rapidprojecth2020'
+    developerName = 'Rapid EU Project'
+    developerEmail = 'kosta@di.uniroma1.it'
+
+    licenseName = 'GNU Lesser General Public License version 2.1'
+    licenseUrl = 'https://opensource.org/licenses/lgpl-2.1.php'
+    allLicenses = ["LGPL-2.1"]
+}
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -20,6 +44,11 @@ android {
         }
     }
 
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
     externalNativeBuild {
         cmake {
             path "CMakeLists.txt"
@@ -35,3 +64,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     testCompile 'junit:junit:4.12'
 }
+
+apply from: '../installv1.gradle'
+apply from: '../bintrayv1.gradle'
