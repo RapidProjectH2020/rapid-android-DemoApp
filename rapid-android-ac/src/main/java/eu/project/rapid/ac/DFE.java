@@ -84,7 +84,6 @@ import eu.project.rapid.common.RapidConstants.COMM_TYPE;
 import eu.project.rapid.common.RapidConstants.ExecLocation;
 import eu.project.rapid.common.RapidMessages;
 import eu.project.rapid.common.RapidUtils;
-import eu.project.rapid.gvirtusfe.Frontend;
 
 /**
  * The most important class of the framework for the client program - controls DSE, profilers,
@@ -118,10 +117,7 @@ public class DFE {
     private DSE mDSE;
     private NetworkProfiler netProfiler;
 
-    // GVirtuS frontend is responsible for running the CUDA code.
-    private Frontend gVirtusFrontend;
     private static Clone sClone;
-
     private PhoneSpecs myPhoneSpecs;
 
     private static ScheduledThreadPoolExecutor d2dSetReaderThread;
@@ -1084,15 +1080,6 @@ public class DFE {
     public void setNrClones(int nrClones) {
         Log.i(TAG, "Changing nrClones to: " + nrClones);
         this.nrClones = nrClones;
-    }
-
-    public Frontend getGvirtusFrontend() {
-        return gVirtusFrontend;
-    }
-
-    @SuppressWarnings("unused")
-    public void setGvirtusFrontend(Frontend gVirtusFrontend) {
-        this.gVirtusFrontend = gVirtusFrontend;
     }
 
     @SuppressWarnings("unused")
