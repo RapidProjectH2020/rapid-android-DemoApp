@@ -40,6 +40,7 @@ android {
 
 dependencies {
     compile project(":rapid-android-ac")
+    compile project(":rapid-gvirtus4a")
 //    compile 'eu.project.rapid:rapid-android-ac:0.0.5'
     compile files('libs/commons-compress-1.9.jar')
     compile files('libs/core-1.51.0.0.jar')

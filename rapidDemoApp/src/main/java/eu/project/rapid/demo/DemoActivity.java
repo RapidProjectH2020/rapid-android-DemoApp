@@ -30,8 +30,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.Random;
 
@@ -39,7 +37,7 @@ import eu.project.rapid.ac.DFE;
 import eu.project.rapid.common.Clone;
 import eu.project.rapid.common.RapidConstants;
 import eu.project.rapid.common.RapidConstants.COMM_TYPE;
-import eu.project.rapid.gvirtus.GVirtusDemo;
+import eu.project.rapid.gvirtus.MatrixMul;
 import eu.project.rapid.queens.NQueens;
 import eu.project.rapid.sudoku.Sudoku;
 import eu.project.rapid.synthBenchmark.JniTest;
@@ -65,6 +63,24 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
     private TextView nQueensLocalDurText;
     private TextView nQueensRemoteNrText;
     private TextView nQueensRemoteDurText;
+
+    private int jniLocalNr;
+    private double jniLocalTotDur;
+    private int jniRemoteNr;
+    private double jniRemoteTotDur;
+    private TextView jniLocalNrText;
+    private TextView jniLocalDurText;
+    private TextView jniRemoteNrText;
+    private TextView jniRemoteDurText;
+
+    private int gvirtusLocalNr;
+    private double gvirtusLocalTotDur;
+    private int gvirtusRemoteNr;
+    private double gvirtusRemoteTotDur;
+    private TextView gvirtusLocalNrText;
+    private TextView gvirtusLocalDurText;
+    private TextView gvirtusRemoteNrText;
+    private TextView gvirtusRemoteDurText;
 
     /**
      * Called when the activity is first created.
@@ -97,6 +113,16 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
         nQueensLocalDurText = (TextView) findViewById(R.id.valNQueensLocalTime);
         nQueensRemoteNrText = (TextView) findViewById(R.id.valNQueensRemoteNr);
         nQueensRemoteDurText = (TextView) findViewById(R.id.valNQueensRemoteTime);
+
+        jniLocalNrText = (TextView) findViewById(R.id.valJNILocalNr);
+        jniLocalDurText = (TextView) findViewById(R.id.valJNILocalTime);
+        jniRemoteNrText = (TextView) findViewById(R.id.valJNIRemoteNr);
+        jniRemoteDurText = (TextView) findViewById(R.id.valJNIRemoteTime);
+
+        gvirtusLocalNrText = (TextView) findViewById(R.id.valGvirtusLocalNr);
+        gvirtusLocalDurText = (TextView) findViewById(R.id.valGvirtusLocalTime);
+        gvirtusRemoteNrText = (TextView) findViewById(R.id.valGvirtusRemoteNr);
+        gvirtusRemoteDurText = (TextView) findViewById(R.id.valGvirtusRemoteTime);
 
         // If we don't specify the IP of the VM, we assume that we are using the Rapid infrastructure,
         // i.e. the DS, the VMM, the SLAM, etc., which means that the DFE will select automatically a
@@ -161,6 +187,17 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
         Log.i(TAG, "Result of jni invocation: " + result);
 
         Toast.makeText(DemoActivity.this, result, Toast.LENGTH_SHORT).show();
+
+        String methodName = "localjniCaller";
+        if (dfe.getLastExecLocation(getPackageName(), methodName).equals(RapidConstants.ExecLocation.LOCAL)) {
+            jniLocalNrText.setText(String.format(Locale.ENGLISH, "%d", ++jniLocalNr));
+            jniLocalTotDur += dfe.getLastExecDuration(getPackageName(), methodName);
+            jniLocalDurText.setText(String.format(Locale.ENGLISH, "%.2f", jniLocalTotDur / jniLocalNr / 1000000));
+        } else {
+            jniRemoteNrText.setText(String.format(Locale.ENGLISH, "%d", ++jniRemoteNr));
+            jniRemoteTotDur += dfe.getLastExecDuration(getPackageName(), methodName);
+            jniRemoteDurText.setText(String.format(Locale.ENGLISH, "%.2f", jniRemoteTotDur / jniRemoteNr / 1000000));
+        }
     }
 
     public void onClickSudoku(View v) {
@@ -209,14 +246,16 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
             if (pd != null) {
                 pd.dismiss();
             }
+
+            String methodName = "localSolveNQueens";
             Log.i(TAG, nrQueens + "-Queens solved, solutions: " + result);
-            if (dfe.getLastExecLocation(getPackageName(), "localSolveNQueens").equals(RapidConstants.ExecLocation.LOCAL)) {
+            if (dfe.getLastExecLocation(getPackageName(), methodName).equals(RapidConstants.ExecLocation.LOCAL)) {
                 nQueensLocalNrText.setText(String.format(Locale.ENGLISH, "%d", ++nQueensLocalNr));
-                nQueensLocalTotDur += dfe.getLastExecDuration(getPackageName(), "localSolveNQueens");
+                nQueensLocalTotDur += dfe.getLastExecDuration(getPackageName(), methodName);
                 nQueensLocalDurText.setText(String.format(Locale.ENGLISH, "%.2f", nQueensLocalTotDur / nQueensLocalNr / 1000000));
             } else {
                 nQueensRemoteNrText.setText(String.format(Locale.ENGLISH, "%d", ++nQueensRemoteNr));
-                nQueensRemoteTotDur += dfe.getLastExecDuration(getPackageName(), "localSolveNQueens");
+                nQueensRemoteTotDur += dfe.getLastExecDuration(getPackageName(), methodName);
                 nQueensRemoteDurText.setText(String.format(Locale.ENGLISH, "%.2f", nQueensRemoteTotDur / nQueensRemoteNr / 1000000));
             }
         }
@@ -271,26 +310,20 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
         protected Void doInBackground(Void... params) {
             int nrTests = 1;
 
-            GVirtusDemo gvirtusDemo = new GVirtusDemo(dfe);
-            for (int i = 0; i < nrTests; i++) {
-                Log.i(TAG, "------------ Started running the GVirtuS deviceQuery demo.");
-                try {
-                    gvirtusDemo.deviceQuery();
-                    Log.i(TAG, "Correctly executed the GVirtuS deviceQuery demo.");
-                } catch (IOException e) {
-                    Log.e(TAG, "Error while running the GVirtuS deviceQuery demo: " + e);
-                }
-            }
+            MatrixMul matrixMul = new MatrixMul(dfe);
+            int wa = 8;
+            int wb = 12;
+
+//            for (int i = 0; i < nrTests; i++) {
+//                Log.i(TAG, "------------ Started running GVirtuS without DFE.");
+//                matrixMul.localGpuMatrixMul(wa, wb, wa);
+//                Log.i(TAG, "Finished executing GVirtuS matrixMul without DFE.");
+//            }
 
             for (int i = 0; i < nrTests; i++) {
-                Log.i(TAG,
-                        "------------ Started running the GVirtuS matrixMul demo. " + Charset.defaultCharset());
-                try {
-                    gvirtusDemo.matrixMul2();
-                    Log.i(TAG, "Correctly executed the GVirtuS matrixMul demo.");
-                } catch (IOException e) {
-                    Log.e(TAG, "Error while running the GVirtuS matrixMul demo: " + e);
-                }
+                Log.i(TAG, "------------ Started running GVirtuS with DFE.");
+                matrixMul.gpuMatrixMul(wa, wb, wa);
+                Log.i(TAG, "Finished executing GVirtuS matrixMul with DFE.");
             }
 
             return null;
@@ -301,6 +334,17 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
             Log.i(TAG, "Finished execution");
             if (pd != null) {
                 pd.dismiss();
+            }
+
+            String methodName = "localGpuMatrixMul";
+            if (dfe.getLastExecLocation(getPackageName(), methodName).equals(RapidConstants.ExecLocation.LOCAL)) {
+                gvirtusLocalNrText.setText(String.format(Locale.ENGLISH, "%d", ++gvirtusLocalNr));
+                gvirtusLocalTotDur += dfe.getLastExecDuration(getPackageName(), methodName);
+                gvirtusLocalDurText.setText(String.format(Locale.ENGLISH, "%.2f", gvirtusLocalTotDur / gvirtusLocalNr / 1000000));
+            } else {
+                gvirtusRemoteNrText.setText(String.format(Locale.ENGLISH, "%d", ++gvirtusRemoteNr));
+                gvirtusRemoteTotDur += dfe.getLastExecDuration(getPackageName(), methodName);
+                gvirtusRemoteDurText.setText(String.format(Locale.ENGLISH, "%.2f", gvirtusRemoteTotDur / gvirtusRemoteNr / 1000000));
             }
         }
     }

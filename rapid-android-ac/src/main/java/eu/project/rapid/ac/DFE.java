@@ -128,6 +128,7 @@ public class DFE {
     private static AtomicInteger taskId = new AtomicInteger();
     private static SparseArray<BlockingDeque<Object>> tasksResultsMap = new SparseArray<>();
     private static CountDownLatch waitForTaskRunners;
+    private static final int nrTaskRunners = 3;
 
     // Get broadcast messages from the Rapid service. They will contain network measurements etc.
     private static BroadcastReceiver rapidBroadcastReceiver;
@@ -168,8 +169,8 @@ public class DFE {
         this.mContext = context;
         this.myPhoneSpecs = PhoneSpecs.getPhoneSpecs(mContext);
         d2dSetReaderThread = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(1);
-        threadPool = Executors.newFixedThreadPool(3);
-        waitForTaskRunners = new CountDownLatch(3);
+        threadPool = Executors.newFixedThreadPool(nrTaskRunners);
+        waitForTaskRunners = new CountDownLatch(nrTaskRunners);
 
         rapidBroadcastReceiver = new RapidBroadcastReceiver();
         IntentFilter filter = new IntentFilter(RapidNetworkService.RAPID_NETWORK_CHANGED);
@@ -548,7 +549,9 @@ public class DFE {
                     Log.v(TAG, "Got a task, executing...");
                     Object result = runTask(task, os, ois, oos);
                     Log.v(TAG, "Task finished execution, putting result on the resultMap...");
-                    tasksResultsMap.get(task.id).put(result);
+                    // If the method returned void then the result may be null and here we get
+                    // NullPointerException then. In that case insert an empty Object as result.
+                    tasksResultsMap.get(task.id).put(result != null ? result : new Object());
                     Log.v(TAG, "Result inserted on the resultMap.");
                 } catch (InterruptedException e) {
                     if (!isDFEActive) {
@@ -558,6 +561,9 @@ public class DFE {
                     } else {
                         Thread.currentThread().interrupt();
                     }
+                } catch (Exception e) {
+                    Log.e(TAG, "Exception on TaskRunner: " + e);
+                    e.printStackTrace();
                 }
             }
 

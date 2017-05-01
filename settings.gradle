@@ -1,3 +1,3 @@
-include ':rapid-android-ac'
+include ':rapid-android-ac', ':rapid-gvirtus4a'
 include ':rapidDemoApp'
 include ':accelerationServer'

@@ -26,7 +26,6 @@
     <string name="scenario1">Scenario 1</string>
     <string name="scenario2">Scenario 2</string>
 
-    <string name="gvirtus">GVirtuS deviceQuery test</string>
     <string name="benchmark1">Benchmark Bundle 1</string>
     <string name="benchmark2">Benchmark Bundle 2</string>
     <string name="allBundles">All Bundles</string>
@@ -36,6 +35,10 @@
     <string name="faceDetection">Face Detection</string>
     <string name="virusScanning">Virus Scanning</string>
     <string name="sudoku">Solve Sudoku</string>
+
+    <string name="gvirtus">GVirtuS MatrixMul test</string>
+    <string name="gvirtusDescription">Matrix multiplication using CUDA.
+        The CUDA calls will be transparently offloaded to a remote GPU.</string>
 
     <string name="textLocalCount">Nr. local exec.:</string>
     <string name="textLocalTime">Avg. local (ms):</string>
