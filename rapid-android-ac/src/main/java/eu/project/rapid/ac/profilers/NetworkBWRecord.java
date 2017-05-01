@@ -28,10 +28,7 @@ public class NetworkBWRecord {
 	
 	/**
 	 * 
-	 * @param ulRate
-	 * @param dlRate
 	 * @param timestamp
-	 * @param location
 	 */
 	public NetworkBWRecord(int bw, long timestamp) {
 		this.bw = bw;

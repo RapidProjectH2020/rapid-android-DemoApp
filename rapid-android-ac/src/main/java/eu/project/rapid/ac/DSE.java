@@ -40,15 +40,13 @@ class DSE {
     private static final int MIN_UL_RATE_OFFLOAD_1_TIME = 256 * 1000; // b/s
     private static final int MIN_DL_RATE_OFFLOAD_1_TIME = 256 * 1000; // b/s
 
-    private ExecLocation userChoice;
     private DBCache dbCache;
 
-    private DSE(ExecLocation userChoice) {
-        this.userChoice = userChoice;
+    private DSE() {
         this.dbCache = DBCache.getDbCache();
     }
 
-    public static DSE getInstance(ExecLocation userChoice) {
+    public static DSE getInstance() {
         // local variable increases performance by 25 percent according to
         // Joshua Bloch "Effective Java, Second Edition", p. 283-284
         DSE result = instance;
@@ -57,7 +55,7 @@ class DSE {
             synchronized (DFE.class) {
                 result = instance;
                 if (result == null) {
-                    instance = result = new DSE(userChoice);
+                    instance = result = new DSE();
                 }
             }
         }
@@ -68,25 +66,20 @@ class DSE {
     /**
      * Decide whether to execute remotely, locally, or hybrid
      *
-     * @return The type of execution: LOCAL, REMOTE, HYBRID
+     * @return The type of execution: LOCAL, REMOTE
      */
     ExecLocation findExecLocation(String appName, String methodName) {
-        Log.v(TAG, "execLoc: " + DFE.onLineClear + ", " + DFE.onLineSSL + ", " + userChoice);
-        if (!DFE.onLineClear && !DFE.onLineSSL || userChoice.equals(ExecLocation.LOCAL)) {
-            return ExecLocation.LOCAL;
-        } else if (userChoice.equals(ExecLocation.REMOTE)) {
-            return ExecLocation.REMOTE;
-        } else { // if (userChoice.equals(ExecLocation.DYNAMIC)) {
-            int ulRate = NetworkProfiler.lastUlRate.getBw();
-            int dlRate = NetworkProfiler.lastDlRate.getBw();
+        Log.d(TAG, "Deciding where to execute " + appName + "/" + methodName);
+        int ulRate = NetworkProfiler.lastUlRate.getBw();
+        int dlRate = NetworkProfiler.lastDlRate.getBw();
+        Log.d(TAG, "ulRate=" + ulRate + ", dlRate" + dlRate);
 
-            if (shouldOffloadDBCache(appName, methodName, ulRate, dlRate)) {
-                Log.d(TAG, "Execute Remotely - True");
-                return ExecLocation.REMOTE;
-            } else {
-                Log.d(TAG, "Execute Remotely - False");
-                return ExecLocation.LOCAL;
-            }
+        if (shouldOffloadDBCache(appName, methodName, ulRate, dlRate)) {
+            Log.d(TAG, "Execute Remotely - True");
+            return ExecLocation.REMOTE;
+        } else {
+            Log.d(TAG, "Execute Remotely - False");
+            return ExecLocation.LOCAL;
         }
     }
 
@@ -297,14 +290,6 @@ class DSE {
 
     private double dist(int ul1, int dl1, int ul2, int dl2) {
         return Math.sqrt((ul2 - ul1) * (ul2 - ul1) + (dl2 - dl1) * (dl2 - dl1));
-    }
-
-    void setUserChoice(ExecLocation userChoice) {
-        this.userChoice = userChoice;
-    }
-
-    public ExecLocation getUserChoice() {
-        return this.userChoice;
     }
 
     public ExecLocation getLastExecLocation(String appName, String methodName) {

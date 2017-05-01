@@ -50,31 +50,22 @@ import eu.project.rapid.common.RapidUtils;
 public class NetworkProfiler {
     private static final String TAG = "NetworkProfiler";
 
-    private static final int rttInfinite = 100000000;
     private static final int rttPings = 5;
-    static int rtt = rttInfinite;
+    public static final int rttInfinite = 100000000;
+    public static int rtt = rttInfinite;
 
     // Keep the upload/download data rate history between the phone and the clone
     // Data rate in b/s
     private static final int bwWindowMaxLength = 20;
     private static List<NetworkBWRecord> ulRateHistory = new LinkedList<>();
     private static List<NetworkBWRecord> dlRateHistory = new LinkedList<>();
-    public static NetworkBWRecord lastUlRate = null;
-    public static NetworkBWRecord lastDlRate = null;
+    public static NetworkBWRecord lastUlRate = new NetworkBWRecord();
+    public static NetworkBWRecord lastDlRate = new NetworkBWRecord();
 
     public static String currentNetworkTypeName;
     public static String currentNetworkSubtypeName;
     private static byte[] buffer;
     private static final int BUFFER_SIZE = 10 * 1024;
-    private static final int delayRefreshUlRate = 3 * 60 * 1000; // measure the rtt and rates every 30
-    // minutes
-    private static final int delayRefreshDlRate = delayRefreshUlRate + 10000; // measure the rtt and
-    // rates every 30
-    // minutes
-    // private static Handler uploadRateHandler;
-    // private static Handler downloadRateHandler;
-    // private static Runnable uploadRunnable;
-    // private static Runnable downloadRunnable;
 
     private Context context;
     private static Configuration config;
@@ -105,10 +96,10 @@ public class NetworkProfiler {
      */
     public NetworkProfiler() {
         stopEstimatingEnergy = false;
-        wifiTxPackets = new ArrayList<Long>();
-        wifiRxPackets = new ArrayList<Long>();
-        wifiTxBytes = new ArrayList<Long>();
-        threeGActiveState = new ArrayList<Byte>();
+        wifiTxPackets = new ArrayList<>();
+        wifiRxPackets = new ArrayList<>();
+        wifiTxBytes = new ArrayList<>();
+        threeGActiveState = new ArrayList<>();
     }
 
     /**
@@ -117,7 +108,7 @@ public class NetworkProfiler {
      * @param context
      */
     public NetworkProfiler(Context context, Configuration config) {
-
+        this();
         this.context = context;
         NetworkProfiler.config = config;
         buffer = new byte[BUFFER_SIZE];
@@ -129,25 +120,6 @@ public class NetworkProfiler {
         if (wifiManager == null) {
             throw new NullPointerException("WiFi manager is null");
         }
-
-    /*
-     * // FIXME: Crashes on Android 4+ due to networkonmainthread exception. // Fix this
-     * implementing with alarm manager.
-     * 
-     * uploadRunnable = new UploadRateMeasurer(); uploadRateHandler = new Handler(); TimerTask
-     * uploadRateTask = new TimerTask() {
-     * 
-     * @Override public void run() { uploadRateHandler.post(uploadRunnable); } }; Timer
-     * uploadRateTimer = new Timer(); uploadRateTimer.schedule(uploadRateTask, delayRefreshUlRate,
-     * delayRefreshUlRate);
-     * 
-     * downloadRunnable = new DownloadRateMeasurer(); downloadRateHandler = new Handler(); TimerTask
-     * downloadRateTask = new TimerTask() {
-     * 
-     * @Override public void run() { downloadRateHandler.post(downloadRunnable); } }; Timer
-     * downloadRateTimer = new Timer(); downloadRateTimer.schedule(downloadRateTask,
-     * delayRefreshDlRate, delayRefreshDlRate);
-     */
     }
 
     private static void addNewUlRateEstimate(long bytes, long nanoTime) {
@@ -232,7 +204,7 @@ public class NetworkProfiler {
             rtt = tRtt / rttPings;
             Log.d(TAG, "Ping - " + rtt / 1000000 + "ms");
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, "Error while measuring RTT: " + e);
             rtt = rttInfinite;
         }
@@ -361,48 +333,6 @@ public class NetworkProfiler {
 
         Log.d(TAG, "Register Telephony Data Connection State Tracker");
         telephonyManager.listen(listener, PhoneStateListener.LISTEN_DATA_CONNECTION_STATE);
-    }
-
-    /**
-     * Class to be used for measuring the data rate and RTT every 30 minutes.
-     */
-    private class RTTMeasurer implements Runnable {
-        private static final String TAG = "RTTMeasurer";
-
-        @Override
-        public void run() {
-            Log.i(TAG, "Measuring the RTT");
-            NetworkProfiler.measureRtt();
-            // uploadRateHandler.postDelayed(this, delayRefreshUlRate);
-        }
-    }
-
-    /**
-     * Class to be used for measuring the data rate and RTT every 30 minutes.
-     */
-    private class UploadRateMeasurer implements Runnable {
-        private static final String TAG = "UploadRateMeasurer";
-
-        @Override
-        public void run() {
-            Log.i(TAG, "Measuring the upload rate");
-            NetworkProfiler.measureUlRate(config.getClone().getIp(), config.getClonePortBandwidthTest());
-            // uploadRateHandler.postDelayed(this, delayRefreshUlRate);
-        }
-    }
-
-    /**
-     * Class to be used for measuring the data rate and RTT every 30 minutes.
-     */
-    private class DownloadRateMeasurer implements Runnable {
-        private static final String TAG = "DownloadRateMeasurer";
-
-        @Override
-        public void run() {
-            Log.i(TAG, "Measuring the download rate");
-            NetworkProfiler.measureDlRate(config.getClone().getIp(), config.getClonePortBandwidthTest());
-            // downloadRateHandler.postDelayed(this, delayRefreshDlRate);
-        }
     }
 
     /**
@@ -586,16 +516,26 @@ public class NetworkProfiler {
     }
 
     /**
-     * Someone sets the data rate manually (maybe for testing)
-     *
-     * @param dataRate
+     * @param rtt
      */
-    public static void setDataRate(int dataRate) {
-        lastDlRate = new NetworkBWRecord(dataRate, System.currentTimeMillis());
-        dlRateHistory.add(lastDlRate);
+    public static void setRtt(int rtt) {
+        NetworkProfiler.rtt = rtt;
+    }
 
-        lastUlRate = new NetworkBWRecord(dataRate, System.currentTimeMillis());
+    /**
+     * @param ulRate
+     */
+    public static void setUlRate(int ulRate) {
+        lastUlRate = new NetworkBWRecord(ulRate, System.currentTimeMillis());
         ulRateHistory.add(lastUlRate);
+    }
+
+    /**
+     * @param dlRate
+     */
+    public static void setDlRate(int dlRate) {
+        lastDlRate = new NetworkBWRecord(dlRate, System.currentTimeMillis());
+        dlRateHistory.add(lastDlRate);
     }
 
     public void onDestroy() {
@@ -604,19 +544,18 @@ public class NetworkProfiler {
         } catch (IllegalArgumentException e) {
             Log.v(TAG, "The receiver was not registered, no necessary to unregister.");
         }
-
-        // if (uploadRateHandler != null) {
-        // uploadRateHandler.removeCallbacks(uploadRunnable);
-        // }
-        //
-        // if (downloadRateHandler != null) {
-        // downloadRateHandler.removeCallbacks(downloadRunnable);
-        // }
     }
 
-    public static void measureRtt() {
-        // TODO
+    public static void measureRtt(String serverIp, int serverPort) {
+        try (Socket clientSocket = new Socket(serverIp, serverPort);
+             OutputStream os = clientSocket.getOutputStream();
+             InputStream is = clientSocket.getInputStream();
+             DataInputStream dis = new DataInputStream(is)) {
 
+            rttPing(is, os);
+        } catch (IOException e) {
+            Log.w(TAG, "Could not connect with the VM for measuring the RTT: " + e);
+        }
     }
 
     public static NetworkBWRecord measureDlRate(String serverIp, int serverPort) {
@@ -664,7 +603,7 @@ public class NetworkProfiler {
         } catch (UnknownHostException e) {
             Log.w(TAG, "UnknownHostException while measuring download rate: " + e);
         } catch (SocketException e) {
-            Log.w(TAG, "SocketException while measuring download rate: " + e);
+            Log.w(TAG, "Finished the download rate measurement");
         } catch (IOException e) {
             Log.w(TAG, "IOException while measuring download rate: " + e);
         } finally {

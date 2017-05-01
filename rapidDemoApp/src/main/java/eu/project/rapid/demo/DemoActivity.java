@@ -105,7 +105,7 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
             dfe = DFE.getInstance(getPackageName(), getPackageManager(), this);
         } else {
             dfe = DFE.getInstance(getPackageName(), getPackageManager(), this,
-                    new Clone("", vmIp), usePrevVm, commType);
+                    new Clone("", vmIp), commType);
         }
     }
 
