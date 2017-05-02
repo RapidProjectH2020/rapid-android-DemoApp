@@ -39,10 +39,12 @@ android {
 }
 
 dependencies {
-    compile project(":rapid-android-ac")
-    compile project(":rapid-gvirtus4a")
-//    compile 'eu.project.rapid:rapid-android-ac:0.0.5'
-    compile files('libs/commons-compress-1.9.jar')
+    // The libraries are imported in settings.gradle when developing locally.
+    // Uncomment the following lines if you are just a user.
+    //    compile 'eu.project.rapid:rapid-android-ac:0.0.7'
+    //    compile 'eu.project.rapid:rapid-gvirtus4a:0.0.1'
+    compile project(':rapid-android-ac')
+    compile project(':rapid-gvirtus4a')
     compile files('libs/core-1.51.0.0.jar')
     compile files('libs/prov-1.51.0.0.jar')
 }

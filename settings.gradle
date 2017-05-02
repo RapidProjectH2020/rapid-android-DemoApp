@@ -1,3 +1,5 @@
-include ':rapid-android-ac', ':rapid-gvirtus4a'
 include ':rapidDemoApp'
-include ':accelerationServer'
+include ':rapid-android-ac'
+project(':rapid-android-ac').projectDir = new File('../rapid-android/rapid-android-ac/')
+include ':rapid-gvirtus4a'
+project(':rapid-gvirtus4a').projectDir = new File('../rapid-android/rapid-gvirtus4a/')
