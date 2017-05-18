@@ -48,62 +48,19 @@
         android:paddingBottom="15dp" >
 
         <RadioButton
-            android:id="@+id/radioUseRapidNo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/useRapidNo" />
-        
-        <RadioButton
             android:id="@+id/radioUseRapidYes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/useRapidYes" />
-    </RadioGroup>
-
-    <View style="@style/Divider" />
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="2dp"
-        android:gravity="center_vertical"
-        android:text="@string/textCommunicationType"
-        android:textColor="@android:color/holo_blue_dark" />
-
-    <RadioGroup
-        android:id="@+id/communicationRadioGroup"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="15dp" >
-
-        <RadioButton
-            android:id="@+id/radio_ssl_communication"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:checked="true"
-            android:onClick="onRadioCommunicationTypeChecked"
-            android:text="@string/radioSSLCommunication" />
-        
-        <RadioButton
-            android:id="@+id/radio_clear_communication"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onRadioCommunicationTypeChecked"
-            android:text="@string/radioClearCommunication" />
+            android:text="@string/useRapidYes" />
 
         <RadioButton
-            android:id="@+id/radio_choose_from_annotation_communication"
+            android:id="@+id/radioUseRapidNo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:enabled="false"
-            android:onClick="onRadioCommunicationTypeChecked"
-            android:text="@string/radioChooseFromMethodAnnotation" />
+            android:text="@string/useRapidNo" />
+
     </RadioGroup>
-
-    <View style="@style/Divider" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -112,6 +69,7 @@
         android:layout_marginTop="2dp"
         android:gravity="center_vertical"
         android:text="@string/textChooseVM"
+        android:visibility="gone"
         android:textColor="@android:color/holo_blue_dark" />
 
     <RadioGroup
@@ -147,10 +105,48 @@
         android:digits="0123456789."
         android:ems="10"
         android:hint="@string/hintInstertIpAddress"
+        android:visibility="gone"
         android:inputType="number|numberDecimal" >
 
         <requestFocus />
     </EditText>
+
+    <View style="@style/Divider" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="2dp"
+        android:gravity="center_vertical"
+        android:text="@string/textCommunicationType"
+        android:textColor="@android:color/holo_blue_dark" />
+
+    <RadioGroup
+        android:id="@+id/communicationRadioGroup"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="15dp" >
+
+        <RadioButton
+            android:id="@+id/radio_ssl_communication"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:onClick="onRadioCommunicationTypeChecked"
+            android:text="@string/radioSSLCommunication" />
+
+        <RadioButton
+            android:id="@+id/radio_clear_communication"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onRadioCommunicationTypeChecked"
+            android:text="@string/radioClearCommunication" />
+    </RadioGroup>
+
+    <View style="@style/Divider" />
+
 
     <!--
          <Button

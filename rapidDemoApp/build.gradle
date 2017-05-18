@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "eu.project.rapid.demo"
         minSdkVersion 19
-        targetSdkVersion 22
+        targetSdkVersion 25
 
         ndk {
             moduleName "hello-jni"
@@ -41,8 +41,8 @@ android {
 dependencies {
     // The libraries are imported in settings.gradle when developing locally.
     // Uncomment the following lines if you are just a user.
-    //    compile 'eu.project.rapid:rapid-android-ac:0.0.7'
-    //    compile 'eu.project.rapid:rapid-gvirtus4a:0.0.1'
+    //    compile 'eu.project.rapid:rapid-android-ac:0.0.9'
+    //    compile 'eu.project.rapid:rapid-gvirtus4a:0.0.2'
     compile project(':rapid-android-ac')
     compile project(':rapid-gvirtus4a')
     compile files('libs/core-1.51.0.0.jar')

@@ -44,6 +44,8 @@ import eu.project.rapid.synthBenchmark.JniTest;
 
 /**
  * The class that handles configuration parameters and starts the offloading process.
+ *
+ * @author sokol
  */
 public class DemoActivity extends Activity implements DFE.DfeCallback {
 
@@ -92,7 +94,7 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
         Log.i(TAG, "onCreate");
 
         String vmIp = getIntent().getStringExtra(MainActivity.KEY_VM_IP);
-        boolean useRapidInfrastructure = getIntent().getBooleanExtra(MainActivity.KEY_USE_RAPID_INFRASTRUCTURE, false);
+        boolean useRapidInfrastructure = getIntent().getBooleanExtra(MainActivity.KEY_USE_RAPID_INFRASTRUCTURE, true);
         COMM_TYPE commType = (COMM_TYPE) getIntent().getSerializableExtra(MainActivity.KEY_CONN_TYPE);
         boolean usePrevVm = getIntent().getBooleanExtra(MainActivity.KEY_USE_PREV_VM, true);
 
@@ -126,7 +128,7 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
 
         // If we don't specify the IP of the VM, we assume that we are using the Rapid infrastructure,
         // i.e. the DS, the VMM, the SLAM, etc., which means that the DFE will select automatically a
-        // VM. We leave the user select a VM manually for fast deploy and testing.
+        // VM. We let the user select a VM manually for fast deploy and testing.
         if (vmIp == null) {
             dfe = DFE.getInstance(getPackageName(), getPackageManager(), this);
         } else {
@@ -224,7 +226,7 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
         // Show a spinning dialog while solving the puzzle
         ProgressDialog pd = ProgressDialog.show(DemoActivity.this, "Working...", "Solving N Queens...", true, false);
 
-        public NQueensTask() {
+        NQueensTask() {
             this.nrQueens = Integer.parseInt((String) nrQueensSpinner.getSelectedItem());
         }
 
@@ -249,6 +251,10 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
 
             String methodName = "localSolveNQueens";
             Log.i(TAG, nrQueens + "-Queens solved, solutions: " + result);
+
+            Toast.makeText(DemoActivity.this, nrQueens + "-Queens solved, solutions: " + result,
+                    Toast.LENGTH_SHORT).show();
+
             if (dfe.getLastExecLocation(getPackageName(), methodName).equals(RapidConstants.ExecLocation.LOCAL)) {
                 nQueensLocalNrText.setText(String.format(Locale.ENGLISH, "%d", ++nQueensLocalNr));
                 nQueensLocalTotDur += dfe.getLastExecDuration(getPackageName(), methodName);
@@ -313,12 +319,6 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
             MatrixMul matrixMul = new MatrixMul(dfe);
             int wa = 8;
             int wb = 12;
-
-//            for (int i = 0; i < nrTests; i++) {
-//                Log.i(TAG, "------------ Started running GVirtuS without DFE.");
-//                matrixMul.localGpuMatrixMul(wa, wb, wa);
-//                Log.i(TAG, "Finished executing GVirtuS matrixMul without DFE.");
-//            }
 
             for (int i = 0; i < nrTests; i++) {
                 Log.i(TAG, "------------ Started running GVirtuS with DFE.");

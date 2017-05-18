@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
     public static final String KEY_CONN_TYPE = "KEY_CONN_TYPE";
     public static final String KEY_USE_PREV_VM = "KEY_USE_PREV_VM";
 
-    private RadioGroup radioGroupStartAs;
+//    private RadioGroup radioGroupStartAs;
     private RadioGroup radioGroupUseRapid;
     private EditText textVmIpAddress;
     private String vmIp;
@@ -65,8 +65,8 @@ public class MainActivity extends Activity {
         radioGroupUseRapid = (RadioGroup) findViewById(R.id.radioGroupUseRapid);
         radioGroupUseRapid.setOnCheckedChangeListener(new OnUseRapidRadioChecked());
 
-        radioGroupStartAs = (RadioGroup) findViewById(R.id.radioGroupStartAs);
-        radioGroupStartAs.setOnCheckedChangeListener(new OnStartAsRadioChecked());
+//        radioGroupStartAs = (RadioGroup) findViewById(radioGroupStartAs);
+//        radioGroupStartAs.setOnCheckedChangeListener(new OnStartAsRadioChecked());
 
         textVmIpAddress = (EditText) findViewById(R.id.editTextIpAddress);
         SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
@@ -86,10 +86,6 @@ public class MainActivity extends Activity {
             case R.id.radio_ssl_communication:
                 commType = COMM_TYPE.SSL;
                 Log.i(TAG, "The communication UE-VM should be performed using SSL");
-                break;
-
-            case R.id.radio_choose_from_annotation_communication:
-                Log.w(TAG, "TODO: The communication UE-VM will be decided based on methods' annotations");
                 break;
         }
     }
@@ -149,11 +145,11 @@ public class MainActivity extends Activity {
             switch (checkedId) {
                 case R.id.radioUseRapidYes:
                     textVmIpAddress.setVisibility(View.GONE);
-                    radioGroupStartAs.setVisibility(View.VISIBLE);
+//                    radioGroupStartAs.setVisibility(View.VISIBLE);
                     break;
 
                 case R.id.radioUseRapidNo:
-                    radioGroupStartAs.setVisibility(View.GONE);
+//                    radioGroupStartAs.setVisibility(View.GONE);
                     textVmIpAddress.setVisibility(View.VISIBLE);
                     break;
             }
