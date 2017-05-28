@@ -101,7 +101,7 @@ Installation steps:
    * `Always Remote` will instruct the framework to always execute the tasks remotely on the VM.
    * `Energy and Delay` will instruct the framework to make dynamic decisions and choose the execution location (local or remote) so that to minimize the energy and execution time of each task.
 8. The second figure below shows the N-Queens puzzle being executed locally on the device.
-9. The third figure shows the statistics after running the N-Queens puzzle once in the device and once remotely on the VM.
+9. The third figure shows the statistics of running the N-Queens puzzle in the device and remotely on the VM.
     * You can see that running it remotely is almost 10 times faster.
 
 <p align="center">
