@@ -2,6 +2,10 @@
 This is part of the [RAPID Project](http://www.rapid-project.eu) and is an ongoing work. While RAPID envisions to support heterogeneous devices, this is the demonstration of the tasks offloading on **Android**. This demo uses the [RAPID Android Offloading Framework](https://github.com/RapidProjectH2020/rapid-android).  
 For Java and CUDA code offloading on other platforms, have a look at the generic [RAPID Linux/Windows Demo Application](https://github.com/RapidProjectH2020/rapid-linux-DemoApp).
 
+In this page we will guide you on how to:
+* [Quickly Install and Test the Demo Application](#installing-and-testing-the-demo).
+* [Start Developing Android Applications with RAPID Offloading Support](#developing-android-applications-with-rapid-offloading-suppport).
+
 ## Intro
 RAPID enables automatic computation offloading of heavy tasks on Android and Linux/Windows Java applications.
 Moreover, RAPID enables the possibility for embedding CUDA code in applications for generic Android devices
@@ -14,9 +18,9 @@ RAPID supports its acceleration service through code offloading to more capable 
 
 ### Terminology
 * **User Device (UD):** is the low-power device (phone, e.g.) that will be accelerated by code offloading. In our scenario it will be a phone running Android (version 4.1+ is recommended).
-* **VM:** is a Virtual Machine running on virtualized software, with the same operating system as the UD. In our scenario it will be an Android-x86 instance (version 4.0+ is recommended) running on VirtualBox.
 * **Acceleration Client (AC):** is an Android library that enables code offloading on the Android applications.
 * **Application (AP):** is the Android application that will be accelerated by the framework. This application includes the AC as a library and uses the AC's API and the RAPID programming model.
+* **VM:** is a Virtual Machine running on virtualized software, with the same operating system as the UD. In our scenario it will be an Android-x86 instance (version 4.0+ is recommended) running on VirtualBox.
 * **Acceleration Server (AS):** is an Android application that runs on the VM and is responsible for executing the offloaded code by the client.
 
 ### Description of the Demo App
@@ -65,11 +69,9 @@ The demo application shows three representative use case offloading scenarios:
   (when using the RAPID architecture), which means that the latency of each CUDA call will be smaller than the local case.
   Also in this case, the user can see the cumulative statistics as for the other applications.
 
-
-In this page we will guide you on how to:
-* [Quickly Install and Test the Demo Application](#installing-and-testing-the-demo).
-* [Start Developing Android Applications with RAPID Offloading Support](#developing-android-applications-with-rapid-offloading-suppport).
-
+<p align="center">
+<img src="http://rapid-project.eu/files/rapid-android-demo1.png" width="240">
+</p>
 
 ## Installing and Testing the Demo
 
