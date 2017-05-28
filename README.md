@@ -1,16 +1,13 @@
 # RAPID - Android Demo Application
-This is part of the [RAPID Project](http://www.rapid-project.eu) and is an ongoing work.  
-While RAPID envisions to support heterogeneous devices, this is the demonstration of the tasks offloading on **Android**.
- This demo uses the [RAPID Android Offloading Framework](https://github.com/RapidProjectH2020/rapid-android).  
+This is part of the [RAPID Project](http://www.rapid-project.eu) and is an ongoing work. While RAPID envisions to support heterogeneous devices, this is the demonstration of the tasks offloading on **Android**. This demo uses the [RAPID Android Offloading Framework](https://github.com/RapidProjectH2020/rapid-android).  
 For Java and CUDA code offloading on other platforms, have a look at the generic [RAPID Linux/Windows Demo Application](https://github.com/RapidProjectH2020/rapid-linux-DemoApp).
 
 ## Intro
 RAPID enables automatic computation offloading of heavy tasks on Android and Linux/Windows Java applications.
 Moreover, RAPID enables the possibility for embedding CUDA code in applications for generic Android devices
-and for Java Linux/Windows.
-RAPID enables highly CPU- or GPU-demanding applications to be offered through physical or virtual devices with lower capabilities or resources than the applications require, potentially backed by remote accelerators of the same class (D2D) or higher classes (hierarchical mode).
-RAPID will support its acceleration service through proper code offloading to more capable devices or devices with more resources, when this is deemed necessary or beneficial.
-
+and for Java Linux/Windows.  
+RAPID enables highly CPU- or GPU-demanding applications to be offered through physical or virtual devices with lower capabilities or resources than the applications require, potentially backed by remote accelerators of the same class (D2D) or higher classes (hierarchical mode).  
+RAPID supports its acceleration service through code offloading to more capable devices or devices with more resources, when this is deemed necessary or beneficial.
 <p align="center">
 <img src="http://rapid-project.eu/files/rapid-arch.png" width="480">
 </p>
