@@ -112,7 +112,7 @@ Installation steps:
 
 ## Developing Android Applications with RAPID Offloading Support
 ### Normal Android/Java Method Offloading
-Suppose we have an Android/Java class `Factorial.java` that implements a **heavy method** `long factorial(int n)`,
+Let's start with a simple Android/Java class `Factorial.java` that implements a **heavy method** `long factorial(int n)`,
 which takes in a number `n` and returns the factorial of number `n!`:
 ```java
 public class Factorial {
@@ -126,6 +126,51 @@ public class Factorial {
 }
 ```
 
+To make this class RAPID offloadable, we simply need to perform the following steps:
+* Include the [RAPID libraries](https://bintray.com/rapidprojecth2020/rapid) in the *build.gradle* file (use the latest version releases):
+  ```gradle
+  dependencies {
+      compile 'eu.project.rapid:rapid-android-ac:0.0.9'
+      compile 'eu.project.rapid:rapid-gvirtus4a:0.0.2'
+  }
+  ```
+* Next, modify the source code in the following way:
+  * Make the `Factorial` class *extend* `Remoteable`, which is a RAPID abstract class.
+    * The `Remoteable` class implements the `Serializable` Java [interface](https://docs.oracle.com/javase/7/docs/api/java/io/Serializable.html), which means that the `Factorial` class should also be serializable.
+    * Moreover, the abstract method `copyState()` should be implemented. Leave it empty for the moment.
+  * Add a `@Remote` Java annotation to the `factorial` method to indicate that this method should be considered for offloading
+  (we can also add `QoS` annotations for more fine-grained quality of service controls but let's keep this example simple and ignore it).
+  * Declare an instance variable `transient DFE controller;` and initialize it on the constructor 
+  with a `DFE` object that will be passed to the class from the main class.
+    ```java
+    import eu.project.rapid.ac.DFE;
+    import eu.project.rapid.ac.Remoteable;
+
+    public class Factorial extends Remoteable {
+
+        private transient DFE controller;
+
+        public Factorial(DFE controller) {
+            this.controller = controller;
+        }
+
+        @Remote
+        public long factorial(int n) { 
+            long result = 1;
+            for (int i = 2; i <= n; i++) {
+                result *= i;
+            }
+            return result;
+        }
+
+        @Override
+        public void copyState(Remoteable state) {
+        }
+    }
+    ```
+  
+  
+we use the RAPID source-to-source *compiler*, which parses the source code and converts it 
 
 ### Native C/C++ Android Code Offloading
 ### CUDA Android Support and CUDA Code Offloading
