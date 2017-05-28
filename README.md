@@ -225,7 +225,7 @@ To make this class RAPID offloadable, we simply need to perform the following st
            }
         }
         ```
-* Create the `DFE` object in the main activity of your app (have a look at the `DemoActivity.java` 
+* Create a `DFE dfe;` object in the main activity of your app (have a look at the `DemoActivity.java` 
 [file](rapidDemoApp/src/main/java/eu/project/rapid/demo/DemoActivity.java) in this repo).
   * The `DFE` class is implemented as [Java Singleton](https://en.wikipedia.org/wiki/Singleton_pattern) and exposes
   two static public methods for getting an instance:
@@ -233,6 +233,7 @@ To make this class RAPID offloadable, we simply need to perform the following st
     * The second performs a registration with the RAPID architecture and allocates a VM on the RAPID cloud
     (**currently works only for RAPID internal testing)**.
   * Pass the `DFE` object to the constructor of the `Factorial` when you create the new object.
+  * Call the `dfe.onDestroy()` method in the `onDestroy()` method of your main activity.
 * That's it, now when you run your application, the method `factorial()` will be executed via the `DFE` locally on the device
 or remotely on the VM.
   
