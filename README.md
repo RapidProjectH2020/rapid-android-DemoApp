@@ -225,16 +225,16 @@ To make this class RAPID offloadable, we simply need to perform the following st
            }
         }
         ```
-  * Create the `DFE` object in the main activity of your app (have a look at the `DemoActivity.java` 
-  [file](blob/master/rapidDemoApp/src/main/java/eu/project/rapid/demo/DemoActivity.java) in this repo).
-    * The `DFE` class is implemented as [Java Singleton](https://en.wikipedia.org/wiki/Singleton_pattern) and exposes
-    two static public methods for getting an instance:
-      * The first allows you to specify the IP of the VM where the AS is running.
-      * The second performs a registration with the RAPID architecture and allocates a VM on the RAPID cloud
-      (**currently works only for RAPID internal testing)**.
-    * Pass the `DFE` object to the constructor of the `Factorial` when you create the new object.
-  * That's it, now when you run your application, the method `factorial()` will be executed via the `DFE` locally on the device
-  or remotely on the VM.
+* Create the `DFE` object in the main activity of your app (have a look at the `DemoActivity.java` 
+[file](rapidDemoApp/src/main/java/eu/project/rapid/demo/DemoActivity.java) in this repo).
+  * The `DFE` class is implemented as [Java Singleton](https://en.wikipedia.org/wiki/Singleton_pattern) and exposes
+  two static public methods for getting an instance:
+    * The first allows you to specify the IP of the VM where the AS is running.
+    * The second performs a registration with the RAPID architecture and allocates a VM on the RAPID cloud
+    (**currently works only for RAPID internal testing)**.
+  * Pass the `DFE` object to the constructor of the `Factorial` when you create the new object.
+* That's it, now when you run your application, the method `factorial()` will be executed via the `DFE` locally on the device
+or remotely on the VM.
   
 ### Native C/C++ Android Code Offloading
 ### CUDA Android Support and CUDA Code Offloading
