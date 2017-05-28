@@ -1,14 +1,20 @@
 # RAPID - Android Demo Application
 This is part of the [RAPID Project](http://www.rapid-project.eu) and is an ongoing work. This demo uses the [RAPID Android Offloading Framework](https://github.com/RapidProjectH2020/rapid-android).
-```
-RAPID enables automatic computation offloading of heavy tasks on Android and Linux/Windows Java applications.
-Moreover, RAPID enables the possibility for embedding CUDA code in applications for generic Android devices
-and for Java Linux/Windows.
-```
+
 While RAPID envisions to support heterogeneous devices, this is the demonstration of the tasks offloading on **Android**.
 For Java and CUDA code offloading on other platforms, have a look at the generic [RAPID Linux/Windows Demo Application](https://github.com/RapidProjectH2020/rapid-linux-DemoApp).
 
+## Intro
+RAPID enables automatic computation offloading of heavy tasks on Android and Linux/Windows Java applications.
+Moreover, RAPID enables the possibility for embedding CUDA code in applications for generic Android devices
+and for Java Linux/Windows.
+RAPID enables highly CPU- or GPU-demanding applications to be offered through physical or virtual devices with lower capabilities or resources than the applications require, potentially backed by remote accelerators of the same class (D2D) or higher classes (hierarchical mode).
+RAPID will support its acceleration service through proper code offloading to more capable devices or devices with more resources, when this is deemed necessary or beneficial.
+
+<img src="http://rapid-project.eu/files/rapid-arch.png" width="480">
+
 The demo application shows three representative use case offloading scenarios:
+
 * **Android Java method offloading.**
 
   This is the simplest case of computation offloading, dealing with remote execution of Java methods.
@@ -60,5 +66,7 @@ In this page we will guide you on how to:
 
 ## Installing and Testing the Demo
 
+* First, clone this project on Android Studio.
+* Se
 
 ## Developing Android Applications with RAPID Offloading Support
