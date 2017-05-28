@@ -4,7 +4,7 @@ For Java and CUDA code offloading on other platforms, have a look at the generic
 
 In this page we will guide you on how to:
 * [Quickly Install and Test the Demo Application](#installing-and-testing-the-demo).
-* [Start Developing Android Applications with RAPID Offloading Support](#developing-android-applications-with-rapid-offloading-suppport).
+* [Start Developing Android Applications with RAPID Offloading Support](#developing-android-applications-with-rapid-offloading-support).
 
 ## Intro
 RAPID enables automatic computation offloading of heavy tasks on Android and Linux/Windows Java applications.
@@ -74,8 +74,25 @@ The demo application shows three representative use case offloading scenarios:
 </p>
 
 ## Installing and Testing the Demo
+The demo will show how portion of the application's code can be run locally on the device or can be offloaded on a remote VM.
+Installation steps:
+1. Clone this project on Android Studio.
+2. Install the demo application in an Android device (a phone with Android 4.1+ is recommended).
+3. Install the Android-x86 VM we provide on a computer that is reachable by the phone device (i.e. the phone can ping the VM).
+   * Install [VirtualBox](https://www.virtualbox.org/) on the computer.
+   * Download the VirtualBox image of the VM from the RAPID website [here](http://rapid-project.eu/files/android-x86-6.0-r3.ova).
+   * [Import the image on VirtualBox](https://docs.oracle.com/cd/E26217_01/E26796/html/qs-import-vm.html).
+   * *In the final release of the RAPID architecture we will provide VMs running on the RAPID cloud,
+   meaning that you will not have to deal with these steps yourself.*
+4. Launch the Android VM you just imported.
+   * The VM will automatically start the AS, you don't have to do anything.
+   * Note the IP of the VM.
+     * ssss
 
-* First, clone this project on Android Studio.
-* Se
+You can choose the execution location of the tasks using the radio buttons:
+* `Always Local` will instruct the framework to always execute the tasks locally on the device (phone).
+* `Always Remote` will instruct the framework to always execute the tasks remotely on the VM.
+* `Energy and Delay` will instruct the framework to make dynamic decisions and choose the execution location (local or remote) so that to minimize the energy and execution time of each task.
+
 
 ## Developing Android Applications with RAPID Offloading Support
