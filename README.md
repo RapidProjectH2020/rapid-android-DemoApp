@@ -1,12 +1,13 @@
 # RAPID - Android Demo Application
-This is part of the [RAPID Project](http://www.rapid-project.eu) and is an ongoing work.
+This is part of the [RAPID Project](http://www.rapid-project.eu) and is an ongoing work. This demo uses the [RAPID Android Offloading Framework](https://github.com/RapidProjectH2020/rapid-android).
 ```
 RAPID enables automatic computation offloading of heavy tasks on Android and Linux/Windows Java applications.
 Moreover, RAPID enables the possibility for embedding CUDA code in applications for generic Android devices
 and for Java Linux/Windows.
 ```
 While RAPID envisions to support heterogeneous devices, this is the demonstration of the tasks offloading on **Android**.
-This demo uses the [RAPID Android Offloading Framework](https://github.com/RapidProjectH2020/rapid-android).  
+For Java and CUDA code offloading on other platforms, have a look at the generic [RAPID Linux/Windows Demo Application](https://github.com/RapidProjectH2020/rapid-linux-DemoApp).
+
 The demo application shows three representative use case offloading scenarios:
 * **Android Java method offloading.**
 
@@ -56,7 +57,6 @@ In this page we will guide you on how to:
 * [Quickly Install and Test the Demo Application](#installing-and-testing-the-demo).
 * [Start Developing Android Applications with RAPID Offloading Support](#developing-android-applications-with-rapid-offloading-suppport).
 
-For Java and CUDA code offloading on other platforms, have a look at the generic [RAPID Linux/Windows Demo Application](https://github.com/RapidProjectH2020/rapid-linux-DemoApp).
 
 ## Installing and Testing the Demo
 
