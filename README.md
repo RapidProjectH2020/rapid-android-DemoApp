@@ -95,19 +95,18 @@ Installation steps:
 5. On the phone, select the radio button `Direct connection to VM` and write the **IP of the VM** on the text box that will open
 (see the first figure below).
 6. Press `Start` and wait until the app connects with the AS running on the VM.
+   * A **green text** will notify that the connection with the VM was **successful**.
+   * A **red text** will notify that the connection with the VM was **not successful**.
 7. You will be presented with an Android activity showing the three demo apps.
-
+8. You can select the execution location of the tasks using the radio buttons:
+* `Always Local` will instruct the framework to always execute the tasks locally on the device (phone).
+* `Always Remote` will instruct the framework to always execute the tasks remotely on the VM.
+* `Energy and Delay` will instruct the framework to make dynamic decisions and choose the execution location (local or remote) so that to minimize the energy and execution time of each task.
 
 <p align="center">
 <img src="http://rapid-project.eu/files/rapid-android-demo2.png" width="160">
 <img src="http://rapid-project.eu/files/rapid-android-demo3.png" width="160">
 <img src="http://rapid-project.eu/files/rapid-android-demo4.png" width="160">
 </p>
-
-You can choose the execution location of the tasks using the radio buttons:
-* `Always Local` will instruct the framework to always execute the tasks locally on the device (phone).
-* `Always Remote` will instruct the framework to always execute the tasks remotely on the VM.
-* `Energy and Delay` will instruct the framework to make dynamic decisions and choose the execution location (local or remote) so that to minimize the energy and execution time of each task.
-
 
 ## Developing Android Applications with RAPID Offloading Support
