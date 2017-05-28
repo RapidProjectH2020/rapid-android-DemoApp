@@ -86,8 +86,17 @@ Installation steps:
    meaning that you will not have to deal with these steps yourself.*
 4. Launch the Android VM you just imported.
    * The VM will automatically start the AS, you don't have to do anything.
-   * Note the IP of the VM.
-     * ssss
+   * Get the IP of the VM.
+     * One way to do this is to open the Terminal app inside the Android-x86 VM and type `busybox ifconfig`.
+   * Make sure that the phone device can ping the VM.
+     * If you are experiencing issues with networking, maybe you can read more about VirtualBox 
+     networking [here](https://www.virtualbox.org/manual/ch06.html).
+
+<p align="center">
+<img src="http://rapid-project.eu/files/rapid-android-demo2.png" width="120">
+<img src="http://rapid-project.eu/files/rapid-android-demo3.png" width="120">
+<img src="http://rapid-project.eu/files/rapid-android-demo4.png" width="120">
+</p>
 
 You can choose the execution location of the tasks using the radio buttons:
 * `Always Local` will instruct the framework to always execute the tasks locally on the device (phone).
