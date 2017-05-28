@@ -168,9 +168,62 @@ To make this class RAPID offloadable, we simply need to perform the following st
         }
     }
     ```
-  
-  
-we use the RAPID source-to-source *compiler*, which parses the source code and converts it 
+  * Next, download the RAPID source-to-source *compiler* to convert the modified class on RAPID-offloadable class.
+    * Download the compiler as an executable jar file from the RAPID website [here](http://www.rapid-project.eu/files/rapid-acceleration-compiler.jar).
+    * Run the compiler:
+    ```bash
+    java -jar rapid-acceleration-compiler.jar [<PATH_TO_THE_PROJECT> | <PATH_TO_THE_FILE>]
+    ```
+      * If the command line argument is a folder, all Java files inside the folder will be processed.
+      * If the command line argument is a Java file, only that file will be processed.
+    ```java
+    import eu.project.rapid.ac.DFE;
+    import eu.project.rapid.ac.Remoteable;
+
+    public class Factorial extends Remoteable {
+
+        private transient DFE controller;
+
+        public Factorial(DFE controller) {
+            this.controller = controller;
+        }
+
+        @Remote
+        public long localfactorial(int n) {
+            long result = 1;
+            for (int i = 2; i <= n; i++) {
+                result *= i;
+            }
+            return result;
+        }
+
+        @Override
+        public void copyState(Remoteable state) {
+        }
+
+        public  long factorial (int n) {
+           Method toExecute;
+           Class<?>[] paramTypes = {int.class};
+           Object[] paramValues = { n};
+           long result = null;
+           try {
+               toExecute = this.getClass().getDeclaredMethod("localfactorial", paramTypes);
+               result = (long) controller.execute(toExecute, paramValues, this);
+           } catch (SecurityException e) {
+               // Should never get here
+               e.printStackTrace();
+               throw e;
+           } catch (NoSuchMethodException e) {
+               // Should never get here
+               e.printStackTrace();
+           } catch (Throwable e) {
+               // TODO Auto-generated catch block
+               e.printStackTrace();
+           }
+           return result;
+       }
+    }
+    ```
 
 ### Native C/C++ Android Code Offloading
 ### CUDA Android Support and CUDA Code Offloading
