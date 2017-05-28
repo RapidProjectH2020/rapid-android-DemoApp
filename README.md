@@ -23,6 +23,8 @@ RAPID supports its acceleration service through code offloading to more capable 
 * **VM:** is a Virtual Machine running on virtualized software, with the same operating system as the UD. In our scenario it will be an Android-x86 instance (version 4.0+ is recommended) running on VirtualBox.
 * **Acceleration Server (AS):** is an Android application that runs on the VM and is responsible for executing the offloaded code by the client.
 
+## Installing and Testing the Demo
+
 ### Description of the Demo App
 The demo application shows three representative use case offloading scenarios:
 
@@ -47,8 +49,7 @@ The demo application shows three representative use case offloading scenarios:
   Also in this case, the user can see cumulative statistics in terms of number and duration of local/remote execution.
   The expected result here is that the local execution will always be faster than the remote one, 
   given that the native function is not computationally intensive, meaning that the remote execution is penalized by the data transmission.
-  However, this is just a simple demo that users can use as a starting point for building their applications 
-  including offloadable native functions.
+  However, this is just a simple demo serving as a starting point for building applications that include offloadable native functions.
 
 * **Android CUDA programming and Android CUDA offloading.**
 
@@ -73,10 +74,10 @@ The demo application shows three representative use case offloading scenarios:
 <img src="http://rapid-project.eu/files/rapid-android-demo1.png" width="240">
 </p>
 
-## Installing and Testing the Demo
-The demo will show how portion of the application's code can be run locally on the device or can be offloaded on a remote VM.
+### Installing
+The demo shows how portion of the application's code can be run locally on the device or can be offloaded on a remote VM.
 Installation steps:
-1. Clone this project on Android Studio.
+1. Clone this project in Android Studio.
 2. Install the demo application in an Android device (a phone with Android 4.1+ is recommended).
 3. Install the Android-x86 VM we provide on a computer that is reachable by the phone device (i.e. the phone can ping the VM).
    * Install [VirtualBox](https://www.virtualbox.org/) on the computer.
@@ -89,13 +90,18 @@ Installation steps:
    * Get the IP of the VM.
      * One way to do this is to open the Terminal app inside the Android-x86 VM and type `busybox ifconfig`.
    * Make sure that the phone device can ping the VM.
-     * If you are experiencing issues with networking, maybe you can read more about VirtualBox 
-     networking [here](https://www.virtualbox.org/manual/ch06.html).
+     * If you are experiencing issues with networking, maybe you can read more about [VirtualBox 
+     networking](https://www.virtualbox.org/manual/ch06.html).
+5. On the phone, select the radio button `Direct connection to VM` and write the **IP of the VM** on the text box that will open
+(see the first figure below).
+6. Press `Start` and wait until the app connects with the AS running on the VM.
+7. You will be presented with an Android activity showing the three demo apps.
+
 
 <p align="center">
-<img src="http://rapid-project.eu/files/rapid-android-demo2.png" width="120">
-<img src="http://rapid-project.eu/files/rapid-android-demo3.png" width="120">
-<img src="http://rapid-project.eu/files/rapid-android-demo4.png" width="120">
+<img src="http://rapid-project.eu/files/rapid-android-demo2.png" width="160">
+<img src="http://rapid-project.eu/files/rapid-android-demo3.png" width="160">
+<img src="http://rapid-project.eu/files/rapid-android-demo4.png" width="160">
 </p>
 
 You can choose the execution location of the tasks using the radio buttons:
