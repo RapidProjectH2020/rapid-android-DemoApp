@@ -171,11 +171,13 @@ To make this class RAPID offloadable, we simply need to perform the following st
   * Next, download the RAPID source-to-source *compiler* to convert the modified class on RAPID-offloadable class.
     * Download the compiler as an executable jar file from the RAPID website [here](http://www.rapid-project.eu/files/rapid-acceleration-compiler.jar).
     * Run the compiler:
-    ```bash
-    java -jar rapid-acceleration-compiler.jar [<PATH_TO_THE_PROJECT> | <PATH_TO_THE_FILE>]
-    ```
+      ```bash
+      java -jar rapid-acceleration-compiler.jar [<PATH_TO_THE_PROJECT> | <PATH_TO_THE_FILE>]
+      ```
       * If the command line argument is a folder, all Java files inside the folder will be processed.
       * If the command line argument is a Java file, only that file will be processed.
+      * The `Factorial.java` will be modified as shown below:
+      
     ```java
     import eu.project.rapid.ac.DFE;
     import eu.project.rapid.ac.Remoteable;
