@@ -12,6 +12,14 @@ RAPID supports its acceleration service through code offloading to more capable 
 <img src="http://rapid-project.eu/files/rapid-arch.png" width="480">
 </p>
 
+### Terminology
+* **User Device (UD):** is the low-power device (phone, e.g.) that will be accelerated by code offloading. In our scenario it will be a phone running Android (version 4.1+ is recommended).
+* **VM:** is a Virtual Machine running on virtualized software, with the same operating system as the UD. In our scenario it will be an Android-x86 instance (version 4.0+ is recommended) running on VirtualBox.
+* **Acceleration Client (AC):** is an Android library that enables code offloading on the Android applications.
+* **Application (AP):** is the Android application that will be accelerated by the framework. This application includes the AC as a library and uses the AC's API and the RAPID programming model.
+* **Acceleration Server (AS):** is an Android application that runs on the VM and is responsible for executing the offloaded code by the client.
+
+### Description of the Demo App
 The demo application shows three representative use case offloading scenarios:
 
 * **Android Java method offloading.**
