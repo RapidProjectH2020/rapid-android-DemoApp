@@ -67,7 +67,7 @@ The demo application shows three representative use case offloading scenarios:
   RAPID will offload the CUDA calls from the client device to RAPID AS,
   which will take care of running them on the physical GPU of the machine where it is deployed (i.e. the RAPID cloud). 
   When the execution of the method containing the CUDA calls is performed remotely, because it is offloaded by the RAPID AC,
-  the CUDA calls will be executed by the GVirtuS Frontend on the remote VM.
+  the CUDA calls will be executed by RAPID on the remote GPU.
 
 <p align="center">
 <img src="http://rapid-project.eu/files/rapid-android-demo1.png" width="240">
