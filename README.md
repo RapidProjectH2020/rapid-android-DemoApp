@@ -111,3 +111,21 @@ Installation steps:
 </p>
 
 ## Developing Android Applications with RAPID Offloading Support
+### Normal Android/Java Method Offloading
+Suppose we have an Android/Java class `Factorial.java` that implements a **heavy method** `long factorial(int n)`,
+which takes in a number `n` and returns the factorial of number `n!`:
+```java
+public class Factorial {
+    public long factorial(int n) { 
+        long result = 1;
+        for (int i = 2; i <= n; i++) {
+            result *= i;
+        }
+        return result;
+    }
+}
+```
+
+
+### Native C/C++ Android Code Offloading
+### CUDA Android Support and CUDA Code Offloading
