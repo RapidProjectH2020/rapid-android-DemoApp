@@ -82,27 +82,26 @@ Installation steps:
    * Install [VirtualBox](https://www.virtualbox.org/) on the computer.
    * Download the VirtualBox image of the VM from the RAPID website [here](http://rapid-project.eu/files/android-x86-6.0-r3.ova).
    * [Import the image on VirtualBox](https://docs.oracle.com/cd/E26217_01/E26796/html/qs-import-vm.html).
-   * *In the final release of the RAPID architecture we will provide VMs running on the RAPID cloud,
-   meaning that you will not have to deal with these steps yourself.*
-4. Launch the Android VM you just imported.
-   * The VM will automatically start the AS, you don't have to do anything.
-   * Get the IP of the VM.
-     * One way to do this is to open the Terminal app inside the Android-x86 VM and type `busybox ifconfig`.
-   * Make sure that the phone device can ping the VM.
-     * If you are experiencing issues with networking, maybe you can read more about [VirtualBox 
+   * Launch the Android VM you just imported.
+     * The VM will automatically start the AS, you don't have to do anything.
+     * Get the IP of the VM (one way to do this is to open the Terminal app inside the Android-x86 VM and type `busybox ifconfig`).
+     * Make sure that the phone device can ping the VM.
+     * If you are experiencing issues with networking, you can read more about [VirtualBox 
      networking](https://www.virtualbox.org/manual/ch06.html).
-5. On the phone, select the radio button `Direct connection to VM` and write the **IP of the VM** on the text box that will open
+   * ***Notice:** In the final release of the RAPID architecture we will provide VMs running on the RAPID cloud,
+   meaning that you will not have to deal with these steps yourself.*
+4. On the phone, select the radio button `Direct connection to VM` and write the **IP of the VM** on the text box that will open
 (see the first figure below).
-6. Press `Start` and wait until the app connects with the AS running on the VM.
+5. Press `Start` and wait until the app connects with the AS running on the VM.
    * A **green text** will notify that the connection with the VM was **successful**.
    * A **red text** will notify that the connection with the VM was **not successful**.
-7. You will be presented with an Android activity showing the three demo apps.
-8. You can select the execution location of the tasks using the radio buttons:
+6. You will be presented with an Android activity showing the three demo apps.
+7. You can select the execution location of the tasks using the radio buttons:
    * `Always Local` will instruct the framework to always execute the tasks locally on the device (phone).
    * `Always Remote` will instruct the framework to always execute the tasks remotely on the VM.
    * `Energy and Delay` will instruct the framework to make dynamic decisions and choose the execution location (local or remote) so that to minimize the energy and execution time of each task.
-9. The second figure below shows the N-Queens puzzle being executed locally on the device.
-10. The third figure shows the statistics after running the N-Queens puzzle once in the device and once remotely on the VM.
+8. The second figure below shows the N-Queens puzzle being executed locally on the device.
+9. The third figure shows the statistics after running the N-Queens puzzle once in the device and once remotely on the VM.
     * You can see that running it remotely is almost 10 times faster.
 
 <p align="center">
