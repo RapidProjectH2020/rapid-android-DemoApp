@@ -3,8 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/rapid-android-DemoApp.iml" filepath="$PROJECT_DIR$/rapid-android-DemoApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rapid-android-DemoApp.iml" filepath="$PROJECT_DIR$/rapid-android-DemoApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/../rapid-android/rapid-android-ac/rapid-android-ac.iml" filepath="$PROJECT_DIR$/../rapid-android/rapid-android-ac/rapid-android-ac.iml" />
       <module fileurl="file://$PROJECT_DIR$/../rapid-android/rapid-gvirtus4a/rapid-gvirtus4a.iml" filepath="$PROJECT_DIR$/../rapid-android/rapid-gvirtus4a/rapid-gvirtus4a.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rapidDemoApp/rapidDemoApp.iml" filepath="$PROJECT_DIR$/rapidDemoApp/rapidDemoApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/rapidDemoApp/rapidDemoApp.iml" filepath="$PROJECT_DIR$/rapidDemoApp/rapidDemoApp.iml" />
     </modules>
   </component>
