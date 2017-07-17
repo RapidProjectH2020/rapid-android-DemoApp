@@ -8,29 +8,12 @@
                 <computeIntensive>true</computeIntensive>
             </Remote>
             <QoS>
-                <term>cpu</term>
-                <operator>ge</operator>
-                <threshold>1200</threshold>
-                <term>ram</term>
-                <operator>ge</operator>
-                <threshold>500</threshold>
-            </QoS>
-        </method>
-    </class>
-    <class>
-        <name>/Users/sokol/Desktop/test/demo/NQueens.java</name>
-        <method>
-            <name>localSolveNQueens</name>
-            <Remote>
-                <computeIntensive>true</computeIntensive>
-            </Remote>
-            <QoS>
-                <term>cpu</term>
-                <operator>ge</operator>
-                <threshold>1500</threshold>
-                <term>ram</term>
-                <operator>ge</operator>
-                <threshold>1000</threshold>
+                <term>cpu_util</term>
+                <operator>LT</operator>
+                <threshold>120</threshold>
+                <term>mem_util</term>
+                <operator>LT</operator>
+                <threshold>60</threshold>
             </QoS>
         </method>
     </class>

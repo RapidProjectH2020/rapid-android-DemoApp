@@ -1,5 +1,7 @@
 package eu.project.rapid.gvirtus;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.lang.reflect.Method;
 
@@ -22,12 +24,15 @@ public class MatrixMul extends Remoteable {
     private int widthB;
 
     private String ptxSource;
+    private static final String TAG = "MatrixMul";
 
     public MatrixMul(DFE dfe) {
         this.dfe = dfe;
         String ptxName = "cuda-kernels/matrixMul_kernel64.ptx";
         try {
             ptxSource = Util.readAssetFileAsString(dfe.getContext(), ptxName);
+            Log.v(TAG, "Read the PTX source");
+            Log.v(TAG, ptxSource);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
@@ -45,7 +50,7 @@ public class MatrixMul extends Remoteable {
 
     public void gpuMatrixMul(int widthA, int heightA, int widthB) {
 
-        Providers.getInstance().register("193.205.230.23",9991);
+        Providers.getInstance().register("193.205.230.23", 9991);
 
         this.widthA = widthA;
         this.heightA = heightA;
@@ -73,11 +78,19 @@ public class MatrixMul extends Remoteable {
     @Remote
     public void localGpuMatrixMul(int widthA, int heightA, int widthB) {
         final float valB = 0.01f;
-        CudaDrFrontend driver=new CudaDrFrontend();
+        CudaDrFrontend driver = new CudaDrFrontend();
+
+        Log.v(TAG, "Entered matrixMul");
+        Log.v(TAG, "PTXsource length: " + ptxSource.length());
+        Log.v(TAG, "PTXsource first 100 chars: " + ptxSource.substring(0, 100));
+        Log.v(TAG, "PTXsource last 100 chars: " + ptxSource.substring(ptxSource.length() - 100));
+
         try {
             driver.cuInit(0);
             String cuContext = driver.cuCtxCreate(0, 0);
             driver.cuDeviceGet(0);
+
+            Log.v(TAG, "matrixMul 1");
 
             int jitNumOptions = 3;
             int[] jitOptions = new int[jitNumOptions];
@@ -93,16 +106,24 @@ public class MatrixMul extends Remoteable {
             char[] jitLogBuffer = new char[(int) jitLogBufferSize];
             char[] jitOptVals1 = jitLogBuffer;
 
+            Log.v(TAG, "matrixMul 2");
+
             // set up pointer to set the Maximum # of registers for a particular
             // kernel
             jitOptions[2] = 0;// CU_JIT_MAX_REGISTERS;
             long jitRegCount = 32;
             long jitOptVals2 = jitRegCount;
 
+            Log.v(TAG, "matrixMul 3");
+
             String cmodule = driver.cuModuleLoadDataEx(ptxSource, jitNumOptions, jitOptions, jitOptVals0,
                     jitOptVals1, jitOptVals2);
 
+            Log.v(TAG, "matrixMul 4");
+
             String cfunction = driver.cuModuleGetFunction(cmodule, "matrixMul_bs32_32bit");
+
+            Log.v(TAG, "matrixMul 5");
 
             // allocate host memory for matrices A and B
             int block_size = 32; // larger block size is for Fermi and above
@@ -121,6 +142,8 @@ public class MatrixMul extends Remoteable {
             float[] h_B = new float[size_B];
 //System.out.prinf("%.2f", valB);
 
+            Log.v(TAG, "matrixMul 6");
+
             h_A = constantInit(h_A, size_A, 1.0f);
             h_B = constantInit(h_B, size_B, valB);
             // allocate device memory
@@ -134,6 +157,8 @@ public class MatrixMul extends Remoteable {
             long size_C = WC * HC;
             float[] h_C = new float[WC * HC];
 
+            Log.v(TAG, "matrixMul 7");
+
             long mem_size_C = Float.SIZE / 8 * size_C;
             String d_C;
 
@@ -144,6 +169,7 @@ public class MatrixMul extends Remoteable {
             int offset = 0;
             // setup execution parameters
 
+            Log.v(TAG, "matrixMul 8");
 
             driver.cuParamSetv(cfunction, offset, d_C, Util.Sizeof.LONG);
 
@@ -153,6 +179,8 @@ public class MatrixMul extends Remoteable {
             driver.cuParamSetv(cfunction, offset, d_B, Util.Sizeof.LONG);
             offset += Util.Sizeof.LONG;
 
+            Log.v(TAG, "matrixMul 9");
+
             int Matrix_Width_A = WA;
             int Matrix_Width_B = WB;
             int Sizeof_Matrix_Width_A = Util.Sizeof.INT;
@@ -161,11 +189,13 @@ public class MatrixMul extends Remoteable {
 
             driver.cuParamSeti(cfunction, offset, Matrix_Width_A);
 
+            Log.v(TAG, "matrixMul 10");
 
             offset += Sizeof_Matrix_Width_A;
             driver.cuParamSeti(cfunction, offset, Matrix_Width_B);
             offset += Sizeof_Matrix_Width_B;
 
+            Log.v(TAG, "matrixMul 11");
 
             driver.cuParamSetSize(cfunction, offset);
 
@@ -178,6 +208,7 @@ public class MatrixMul extends Remoteable {
 
             h_C = driver.cuMemcpyDtoH(d_C, mem_size_C);
 
+            Log.v(TAG, "matrixMul 12");
 
             boolean correct = true;
             for (int i = 0; i < WC * HC; i++) {
@@ -185,6 +216,8 @@ public class MatrixMul extends Remoteable {
                     correct = false;
                 }
             }
+
+            Log.v(TAG, "matrixMul 13");
 
             driver.cuMemFree(d_A);
             driver.cuMemFree(d_B);

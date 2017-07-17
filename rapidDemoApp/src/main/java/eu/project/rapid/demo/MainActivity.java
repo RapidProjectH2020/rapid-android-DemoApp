@@ -29,6 +29,7 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 
 import java.security.Security;
 
+import eu.project.rapid.ac.RapidNetworkService;
 import eu.project.rapid.common.RapidConstants.COMM_TYPE;
 import eu.project.rapid.common.RapidUtils;
 
@@ -43,7 +44,7 @@ public class MainActivity extends Activity {
     public static final String KEY_CONN_TYPE = "KEY_CONN_TYPE";
     public static final String KEY_USE_PREV_VM = "KEY_USE_PREV_VM";
 
-//    private RadioGroup radioGroupStartAs;
+    private RadioGroup radioGroupStartAs;
     private RadioGroup radioGroupUseRapid;
     private EditText textVmIpAddress;
     private String vmIp;
@@ -65,8 +66,8 @@ public class MainActivity extends Activity {
         radioGroupUseRapid = (RadioGroup) findViewById(R.id.radioGroupUseRapid);
         radioGroupUseRapid.setOnCheckedChangeListener(new OnUseRapidRadioChecked());
 
-//        radioGroupStartAs = (RadioGroup) findViewById(radioGroupStartAs);
-//        radioGroupStartAs.setOnCheckedChangeListener(new OnStartAsRadioChecked());
+        radioGroupStartAs = (RadioGroup) findViewById(R.id.radioGroupStartAs);
+        radioGroupStartAs.setOnCheckedChangeListener(new OnStartAsRadioChecked());
 
         textVmIpAddress = (EditText) findViewById(R.id.editTextIpAddress);
         SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
@@ -127,10 +128,12 @@ public class MainActivity extends Activity {
             switch (checkedId) {
                 case R.id.radioStartAsNewVm:
                     connectToPrevVm = false;
+                    RapidNetworkService.usePrevVm = false;
                     break;
 
                 case R.id.radioStartAsOldVm:
                     connectToPrevVm = true;
+                    RapidNetworkService.usePrevVm = true;
                     break;
 
                 case R.id.radioStartAsD2D:
@@ -145,11 +148,11 @@ public class MainActivity extends Activity {
             switch (checkedId) {
                 case R.id.radioUseRapidYes:
                     textVmIpAddress.setVisibility(View.GONE);
-//                    radioGroupStartAs.setVisibility(View.VISIBLE);
+                    radioGroupStartAs.setVisibility(View.VISIBLE);
                     break;
 
                 case R.id.radioUseRapidNo:
-//                    radioGroupStartAs.setVisibility(View.GONE);
+                    radioGroupStartAs.setVisibility(View.GONE);
                     textVmIpAddress.setVisibility(View.VISIBLE);
                     break;
             }

@@ -72,30 +72,32 @@
         android:visibility="gone"
         android:textColor="@android:color/holo_blue_dark" />
 
+    <View style="@style/Divider" />
+
     <RadioGroup
         android:id="@+id/radioGroupStartAs"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone" >
-
-        <RadioButton
-            android:id="@+id/radioStartAsNewVm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/start_as_new_button" />
+        android:layout_height="wrap_content" >
 
         <RadioButton
             android:id="@+id/radioStartAsOldVm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:text="@string/start_as_old_button" />
+
+        <RadioButton
+            android:id="@+id/radioStartAsNewVm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/start_as_new_button" />
 
         <RadioButton
             android:id="@+id/radioStartAsD2D"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/start_as_D2D_peer" />
+            android:text="@string/start_as_D2D_peer"
+            android:visibility="gone"/>
     </RadioGroup>
 
     <EditText
