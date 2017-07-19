@@ -28,7 +28,7 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/layoutNrClones"
+            android:id="@+id/layoutNrVMs"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -43,7 +43,7 @@
                 android:text="@string/nrClones" />
 
             <Spinner
-                android:id="@+id/spinnerNrClones"
+                android:id="@+id/spinnerNrVMs"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

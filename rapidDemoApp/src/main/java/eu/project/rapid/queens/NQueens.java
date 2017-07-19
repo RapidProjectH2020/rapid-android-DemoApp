@@ -29,16 +29,16 @@ public class NQueens extends Remoteable {
     private static final long serialVersionUID = 5687713591581731140L;
     private static final String TAG = "NQueens";
     private int N = 8;
-    private int nrClones;
+    private int nrVMs;
     private transient DFE dfe;
 
     /**
-     * @param dfe      The dfe taking care of the execution
-     * @param nrClones In case of remote execution specify the number of clones needed
+     * @param dfe      The dfe taking care of the execution.
+     * @param nrVMs In case of remote execution specify the number of VMs needed.
      */
-    public NQueens(DFE dfe, int nrClones) {
+    public NQueens(DFE dfe, int nrVMs) {
         this.dfe = dfe;
-        this.nrClones = nrClones;
+        this.nrVMs = nrVMs;
     }
 
     /**
@@ -88,71 +88,65 @@ public class NQueens extends Remoteable {
 
         int countSolutions = 0;
 
-        // FIXME: remove this for loop, is here only for testing QoS monitoring on 12/07/2017
-        if (N == 8) {
-            for (int count = 0; count < 5; count++) {
+        byte[][] board = new byte[N][N];
 
-                byte[][] board = new byte[N][N];
+        int start = 0, end = N;
 
-                int start = 0, end = N;
+        if (Utils.isOffloaded()) {
+            // cloneId == 0 if this is the main clone
+            // or [1, nrVMs-1] otherwise
+            int cloneId = Utils.readCloneHelperId();
+            int howManyCols = (N) / nrVMs; // Integer division, we may
+            // loose some columns.
+            start = cloneId * howManyCols; // cloneId == 0 if this is the main clone
+            end = start + howManyCols;
 
-                if (Utils.isOffloaded()) {
-                    // cloneId == 0 if this is the main clone
-                    // or [1, nrClones-1] otherwise
-                    int cloneId = Utils.readCloneHelperId();
-                    int howManyCols = (N) / nrClones; // Integer division, we may
-                    // loose some columns.
-                    start = cloneId * howManyCols; // cloneId == 0 if this is the main clone
-                    end = start + howManyCols;
+            // If this is the clone with the highest id let him take care
+            // of the columns not considered due to the integer division.
+            if (cloneId == nrVMs - 1) {
+                end += N % nrVMs;
+            }
+        }
 
-                    // If this is the clone with the highest id let him take care
-                    // of the columns not considered due to the integer division.
-                    if (cloneId == nrClones - 1) {
-                        end += N % nrClones;
-                    }
-                }
+        Log.i(TAG, "Finding solutions for " + N + "-queens puzzle.");
+        Log.i(TAG, "Analyzing columns: " + start + "-" + (end - 1));
 
-                Log.i(TAG, "Finding solutions for " + N + "-queens puzzle.");
-                Log.i(TAG, "Analyzing columns: " + start + "-" + (end - 1));
-
-                for (int i = start; i < end; i++) {
-                    for (int j = 0; j < N; j++) {
-                        for (int k = 0; k < N; k++) {
-                            for (int l = 0; l < N; l++) {
-                                if (N == 4) {
-                                    countSolutions += setAndCheckBoard(board, i, j, k, l);
+        for (int i = start; i < end; i++) {
+            for (int j = 0; j < N; j++) {
+                for (int k = 0; k < N; k++) {
+                    for (int l = 0; l < N; l++) {
+                        if (N == 4) {
+                            countSolutions += setAndCheckBoard(board, i, j, k, l);
+                            continue;
+                        }
+                        for (int m = 0; m < N; m++) {
+                            if (N == 5) {
+                                countSolutions += setAndCheckBoard(board, i, j, k, l, m);
+                                continue;
+                            }
+                            for (int n = 0; n < N; n++) {
+                                if (N == 6) {
+                                    countSolutions += setAndCheckBoard(board, i, j, k, l, m, n);
                                     continue;
                                 }
-                                for (int m = 0; m < N; m++) {
-                                    if (N == 5) {
-                                        countSolutions += setAndCheckBoard(board, i, j, k, l, m);
+                                for (int o = 0; o < N; o++) {
+                                    if (N == 7) {
+                                        countSolutions += setAndCheckBoard(board, i, j, k, l, m, n, o);
                                         continue;
                                     }
-                                    for (int n = 0; n < N; n++) {
-                                        if (N == 6) {
-                                            countSolutions += setAndCheckBoard(board, i, j, k, l, m, n);
-                                            continue;
-                                        }
-                                        for (int o = 0; o < N; o++) {
-                                            if (N == 7) {
-                                                countSolutions += setAndCheckBoard(board, i, j, k, l, m, n, o);
-                                                continue;
-                                            }
-                                            for (int p = 0; p < N; p++) {
-                                                countSolutions += setAndCheckBoard(board, i, j, k, l, m, n, o, p);
-                                            }
-                                        }
+                                    for (int p = 0; p < N; p++) {
+                                        countSolutions += setAndCheckBoard(board, i, j, k, l, m, n, o, p);
                                     }
                                 }
                             }
                         }
                     }
                 }
-
-                Log.i(TAG, "Found " + countSolutions + " solutions.");
-
             }
         }
+
+        Log.i(TAG, "Found " + countSolutions + " solutions.");
+
         return countSolutions;
     }
 
@@ -260,7 +254,7 @@ public class NQueens extends Remoteable {
     }
 
     public void setNumberOfClones(int nrClones) {
-        this.nrClones = nrClones;
+        this.nrVMs = nrClones;
     }
 
     @Override

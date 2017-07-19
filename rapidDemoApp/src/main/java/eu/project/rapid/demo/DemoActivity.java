@@ -51,7 +51,7 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
 
     private static final String TAG = "DemoActivity";
 
-    public static int nrClones = 1;
+    private static int nrVMs = 1;
     private TextView textViewVmConnected;
     private Handler handler;
 
@@ -100,13 +100,14 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
 
         handler = new Handler();
 
-        LinearLayout layoutNrClones = (LinearLayout) findViewById(R.id.layoutNrClones);
+        // Used for specifying the number of VMs the developer wants to use.
+        LinearLayout layoutNrVMs = (LinearLayout) findViewById(R.id.layoutNrVMs);
         if (useRapidInfrastructure) {
-            layoutNrClones.setVisibility(View.VISIBLE);
-            Spinner nrClonesSpinner = (Spinner) findViewById(R.id.spinnerNrClones);
-            nrClonesSpinner.setOnItemSelectedListener(new NrClonesSelectedListener());
+            layoutNrVMs.setVisibility(View.VISIBLE);
+            Spinner nrVMsSpinner = (Spinner) findViewById(R.id.spinnerNrVMs);
+            nrVMsSpinner.setOnItemSelectedListener(new NrVMsSelectedListener());
         } else {
-            layoutNrClones.setVisibility(View.GONE);
+            layoutNrVMs.setVisibility(View.GONE);
         }
 
         textViewVmConnected = (TextView) findViewById(R.id.textVmConnectionStatus);
@@ -238,7 +239,7 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
 
         @Override
         protected Integer doInBackground(Void... params) {
-            NQueens puzzle = new NQueens(dfe, nrClones);
+            NQueens puzzle = new NQueens(dfe, nrVMs);
             return puzzle.solveNQueens(nrQueens);
         }
 
@@ -282,7 +283,7 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        NQueens puzzle = new NQueens(dfe, nrClones);
+                        NQueens puzzle = new NQueens(dfe, nrVMs);
                         int nrQueens = 4 + r.nextInt(4);
                         Log.v(Thread.currentThread().getName(), "Started " + nrQueens + "-queens");
                         int result = puzzle.solveNQueens(nrQueens);
@@ -366,17 +367,17 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
         }
     }
 
-    private class NrClonesSelectedListener implements OnItemSelectedListener {
+    private class NrVMsSelectedListener implements OnItemSelectedListener {
 
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 
-            nrClones = Integer.parseInt((String) parent.getItemAtPosition(pos));
-            Log.i(TAG, "Number of clones: " + nrClones);
-            dfe.setNrClones(nrClones);
+            nrVMs = Integer.parseInt((String) parent.getItemAtPosition(pos));
+            Log.i(TAG, "Number of VMs: " + nrVMs);
+            dfe.setNrVMs(nrVMs);
         }
 
         public void onNothingSelected(AdapterView<?> arg0) {
-            Log.i(TAG, "Nothing selected on clones spinner");
+            Log.i(TAG, "Nothing selected on VM spinner");
         }
     }
 
