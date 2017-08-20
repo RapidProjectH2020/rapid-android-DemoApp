@@ -98,6 +98,7 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
         COMM_TYPE commType = (COMM_TYPE) getIntent().getSerializableExtra(MainActivity.KEY_CONN_TYPE);
         boolean usePrevVm = getIntent().getBooleanExtra(MainActivity.KEY_USE_PREV_VM, true);
 
+        // The handler for
         handler = new Handler();
 
         // Used for specifying the number of VMs the developer wants to use.
