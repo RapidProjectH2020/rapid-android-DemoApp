@@ -85,7 +85,7 @@ Installation steps:
    * [Import the image on VirtualBox](https://docs.oracle.com/cd/E26217_01/E26796/html/qs-import-vm.html).
    * Launch the Android VM you just imported.
      * The VM will automatically start the AS, you don't have to do anything.
-     * Get the IP of the VM (one way to do this is to open the Terminal app inside the Android-x86 VM and type `busybox ifconfig`. If this command doesn't work then try `netcfg`.).
+     * Get the IP of the VM (one way to do this is to open the Terminal app inside the Android-x86 VM and type `busybox ifconfig`. If this command doesn't work then try `netcfg`.).  
      * Make sure that the phone device can ping the VM **and** the VM can ping the phone.
      * If you are experiencing issues with networking, you can read more about [VirtualBox 
      networking](https://www.virtualbox.org/manual/ch06.html).
