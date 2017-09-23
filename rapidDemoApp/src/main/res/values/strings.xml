@@ -98,4 +98,6 @@
 	<string name="testSendBytes">Test sending bytes 1000 times to clone</string>
 	<string name="testReceiveBytes">Test receiving bytes 1000 times from clone</string>
 
+    <string name="enforceForwarding">Check to enforce forwarding</string>
+
 </resources>

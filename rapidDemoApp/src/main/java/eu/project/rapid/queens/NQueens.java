@@ -30,6 +30,7 @@ public class NQueens extends Remoteable {
     private static final String TAG = "NQueens";
     private int N = 8;
     private int nrVMs;
+    private boolean enforceForwarding = false;
     private transient DFE dfe;
 
     /**
@@ -93,6 +94,14 @@ public class NQueens extends Remoteable {
         int start = 0, end = N;
 
         if (Utils.isOffloaded()) {
+
+            // FIXME Here we use this flag to enforce a forwarding
+            if (enforceForwarding) {
+                // set to false, so the other VM will not keep forwarding.
+                enforceForwarding = false;
+                throw new OutOfMemoryError("Enforcing offload forwarding");
+            }
+
             // cloneId == 0 if this is the main clone
             // or [1, nrVMs-1] otherwise
             int cloneId = Utils.readCloneHelperId();
@@ -260,6 +269,14 @@ public class NQueens extends Remoteable {
     @Override
     public void copyState(Remoteable state) {
 
+    }
+
+    public boolean isEnforceForwarding() {
+        return enforceForwarding;
+    }
+
+    public void setEnforceForwarding(boolean enforceForwarding) {
+        this.enforceForwarding = enforceForwarding;
     }
 }
 

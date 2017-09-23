@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -84,6 +85,8 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
     private TextView gvirtusRemoteNrText;
     private TextView gvirtusRemoteDurText;
 
+    private CheckBox checkBoxEnforceForwarding;
+
     /**
      * Called when the activity is first created.
      */
@@ -127,6 +130,8 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
         gvirtusLocalDurText = (TextView) findViewById(R.id.valGvirtusLocalTime);
         gvirtusRemoteNrText = (TextView) findViewById(R.id.valGvirtusRemoteNr);
         gvirtusRemoteDurText = (TextView) findViewById(R.id.valGvirtusRemoteTime);
+
+        checkBoxEnforceForwarding = (CheckBox) findViewById(R.id.checkboxEnforceForwarding);
 
         // If we don't specify the IP of the VM, we assume that we are using the Rapid infrastructure,
         // i.e. the DS, the VMM, the SLAM, etc., which means that the DFE will select automatically a
@@ -224,6 +229,7 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
 
     private class NQueensTask extends AsyncTask<Void, Void, Integer> {
         int nrQueens;
+        boolean isEnforceForwarding = checkBoxEnforceForwarding.isChecked();
         Spinner nrQueensSpinner = (Spinner) findViewById(R.id.spinnerNrQueens);
         // Show a spinning dialog while solving the puzzle
         ProgressDialog pd = ProgressDialog.show(DemoActivity.this, "Working...", "Solving N Queens...", true, false);
@@ -241,6 +247,9 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
         @Override
         protected Integer doInBackground(Void... params) {
             NQueens puzzle = new NQueens(dfe, nrVMs);
+            if (checkBoxEnforceForwarding != null) {
+                puzzle.setEnforceForwarding(isEnforceForwarding);
+            }
             return puzzle.solveNQueens(nrQueens);
         }
 
@@ -265,6 +274,10 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
                 nQueensRemoteNrText.setText(String.format(Locale.ENGLISH, "%d", ++nQueensRemoteNr));
                 nQueensRemoteTotDur += dfe.getLastExecDuration(getPackageName(), methodName);
                 nQueensRemoteDurText.setText(String.format(Locale.ENGLISH, "%.2f", nQueensRemoteTotDur / nQueensRemoteNr / 1000000));
+            }
+
+            if (checkBoxEnforceForwarding != null) {
+                checkBoxEnforceForwarding.setChecked(false);
             }
         }
     }
@@ -392,5 +405,21 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
 
     public void vmConnectionStatusUpdate(boolean isConnected, COMM_TYPE commType) {
         new Thread(new VmConnectionStatusUpdater(isConnected, commType)).start();
+    }
+
+    public void onCheckboxClicked(View view) {
+        // Is the view now checked?
+        boolean checked = ((CheckBox) view).isChecked();
+
+        // Check which checkbox was clicked
+        switch(view.getId()) {
+            case R.id.checkboxEnforceForwarding:
+                if (checked) {
+                    Log.i(TAG, "NQueens will enforce forwarding if run on the VM");
+                } else {
+                    Log.i(TAG, "NQueens will NOT enforce forwarding");
+                }
+                break;
+        }
     }
 }
