@@ -80,12 +80,13 @@ Installation steps:
 2. Install the demo application in an Android device (a phone with Android 4.1+ is recommended).
 3. Install the Android-x86 VM we provide on a computer that is reachable by the phone device (i.e. the phone can ping the VM).
    * Install [VirtualBox](https://www.virtualbox.org/) on the computer.
-   * Download the VirtualBox image of the VM from the RAPID website [here](http://rapid-project.eu/files/android-x86-6.0-r3.ova).
+   * Download the Android-x86-6.0 VirtualBox image of the VM from the RAPID website [here](http://rapid-project.eu/files/android-x86-6.0-r3.ova).
+   (If you are having problems with this image then you can download the Android-x86-4.4 RAPID image from [here](http://rapid-project.eu/files/android-x86-4.4.ova))
    * [Import the image on VirtualBox](https://docs.oracle.com/cd/E26217_01/E26796/html/qs-import-vm.html).
    * Launch the Android VM you just imported.
      * The VM will automatically start the AS, you don't have to do anything.
-     * Get the IP of the VM (one way to do this is to open the Terminal app inside the Android-x86 VM and type `busybox ifconfig`).
-     * Make sure that the phone device can ping the VM.
+     * Get the IP of the VM (one way to do this is to open the Terminal app inside the Android-x86 VM and type `busybox ifconfig`. If this command doesn't work then try `netcfg`.).  
+     * Make sure that the phone device can ping the VM **and** the VM can ping the phone.
      * If you are experiencing issues with networking, you can read more about [VirtualBox 
      networking](https://www.virtualbox.org/manual/ch06.html).
    * ***Notice:** In the final release of the RAPID architecture we will provide VMs running on the RAPID cloud,
