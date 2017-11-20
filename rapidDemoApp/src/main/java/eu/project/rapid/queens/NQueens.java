@@ -30,7 +30,7 @@ public class NQueens extends Remoteable {
     private static final String TAG = "NQueens";
     private int N = 8;
     private int nrVMs;
-    private boolean enforceForwarding = false;
+    public boolean enforceForwarding = false;
     private transient DFE dfe;
 
     /**
@@ -94,6 +94,7 @@ public class NQueens extends Remoteable {
         int start = 0, end = N;
 
         if (Utils.isOffloaded()) {
+            Log.i(TAG, "This is now running on the VM...");
 
             // FIXME Here we use this flag to enforce a forwarding
             if (enforceForwarding) {

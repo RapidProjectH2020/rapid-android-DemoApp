@@ -9,7 +9,6 @@ import eu.project.rapid.ac.DFE;
 import eu.project.rapid.ac.Remote;
 import eu.project.rapid.ac.Remoteable;
 import eu.project.rapid.gvirtus4a.CudaDrFrontend;
-import eu.project.rapid.gvirtus4a.Providers;
 import eu.project.rapid.gvirtus4a.Util;
 
 /**
@@ -48,20 +47,22 @@ public class MatrixMul extends Remoteable {
 
     }
 
-    public void gpuMatrixMul(int widthA, int heightA, int widthB) {
+    public boolean gpuMatrixMul(int widthA, int heightA, int widthB) {
 
-        Providers.getInstance().register("193.205.230.23", 9991);
+//        Providers.getInstance().register("193.205.230.23", 9991);
+//        Providers.getInstance().register("54.72.110.23", 9996);
 
         this.widthA = widthA;
         this.heightA = heightA;
         this.widthB = widthB;
         Method toExecute;
+        boolean result = false;
         Class<?>[] paramTypes = {int.class, int.class, int.class};
         Object[] paramValues = {widthA, heightA, widthB};
 
         try {
             toExecute = this.getClass().getDeclaredMethod("localGpuMatrixMul", paramTypes);
-            dfe.execute(toExecute, paramValues, this);
+            result = (Boolean) dfe.execute(toExecute, paramValues, this);
         } catch (SecurityException e) {
             // Should never get here
             e.printStackTrace();
@@ -73,17 +74,16 @@ public class MatrixMul extends Remoteable {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        return result;
     }
 
     @Remote
-    public void localGpuMatrixMul(int widthA, int heightA, int widthB) {
-        final float valB = 0.01f;
-        CudaDrFrontend driver = new CudaDrFrontend();
-
+    public boolean localGpuMatrixMul(int widthA, int heightA, int widthB) {
         Log.v(TAG, "Entered matrixMul");
-        Log.v(TAG, "PTXsource length: " + ptxSource.length());
-        Log.v(TAG, "PTXsource first 100 chars: " + ptxSource.substring(0, 100));
-        Log.v(TAG, "PTXsource last 100 chars: " + ptxSource.substring(ptxSource.length() - 100));
+
+        final float valB = 0.01f;
+        CudaDrFrontend driver = new CudaDrFrontend("193.205.230.23", 9991);
 
         try {
             driver.cuInit(0);
@@ -116,7 +116,8 @@ public class MatrixMul extends Remoteable {
 
             Log.v(TAG, "matrixMul 3");
 
-            String cmodule = driver.cuModuleLoadDataEx(ptxSource, jitNumOptions, jitOptions, jitOptVals0,
+            String cmodule = driver.cuModuleLoadDataEx(
+                    ptxSource, jitNumOptions, jitOptions, jitOptVals0,
                     jitOptVals1, jitOptVals2);
 
             Log.v(TAG, "matrixMul 4");
@@ -140,7 +141,7 @@ public class MatrixMul extends Remoteable {
             int size_B = WB * HB;
             int mem_size_B = Float.SIZE / 8 * size_B;
             float[] h_B = new float[size_B];
-//System.out.prinf("%.2f", valB);
+            //System.out.prinf("%.2f", valB);
 
             Log.v(TAG, "matrixMul 6");
 
@@ -155,15 +156,12 @@ public class MatrixMul extends Remoteable {
             driver.cuMemcpyHtoD(d_B, h_B, mem_size_B);
             // allocate device memory for result
             long size_C = WC * HC;
-            float[] h_C = new float[WC * HC];
+            float[] h_C;
 
             Log.v(TAG, "matrixMul 7");
 
             long mem_size_C = Float.SIZE / 8 * size_C;
-            String d_C;
-
-
-            d_C = driver.cuMemAlloc(mem_size_C);
+            String d_C = driver.cuMemAlloc(mem_size_C);
             Util.Dim3 grid = new Util.Dim3(WC / block_size, HC / block_size, 1);
 
             int offset = 0;
@@ -198,14 +196,9 @@ public class MatrixMul extends Remoteable {
             Log.v(TAG, "matrixMul 11");
 
             driver.cuParamSetSize(cfunction, offset);
-
-
             driver.cuFuncSetBlockShape(cfunction, block_size, block_size, grid.z);
-
             driver.cuFuncSetSharedSize(cfunction, 2 * block_size * block_size * (Float.SIZE / 8));
-
             driver.cuLaunchGrid(cfunction, grid.x, grid.y);
-
             h_C = driver.cuMemcpyDtoH(d_C, mem_size_C);
 
             Log.v(TAG, "matrixMul 12");
@@ -224,7 +217,12 @@ public class MatrixMul extends Remoteable {
             driver.cuMemFree(d_C);
             driver.cuCtxDestroy(cuContext);
 
+            driver.close();
+            Log.v(TAG, "matrixMul 14");
+            return correct;
+
         } catch (IOException ex) {
+            Log.e(TAG, "Error while running MatrixMul: " + ex);
             throw new RuntimeException(ex);
         }
     }

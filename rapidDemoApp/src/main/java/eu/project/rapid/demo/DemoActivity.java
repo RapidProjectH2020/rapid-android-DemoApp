@@ -337,8 +337,8 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
 
             for (int i = 0; i < nrTests; i++) {
                 Log.i(TAG, "------------ Started running GVirtuS with DFE.");
-                matrixMul.gpuMatrixMul(wa, wb, wa);
-                Log.i(TAG, "Finished executing GVirtuS matrixMul with DFE.");
+                boolean result = matrixMul.gpuMatrixMul(wa, wb, wa);
+                Log.i(TAG, "Finished GVirtuS matrixMul with DFE: isResultValid=" + result);
             }
 
             return null;
