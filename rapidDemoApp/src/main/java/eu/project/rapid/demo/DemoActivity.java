@@ -224,7 +224,7 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
     }
 
     public void onClickQueenSolver(View v) {
-        new NQueensTask().execute();
+            new NQueensTask().execute();
     }
 
     private class NQueensTask extends AsyncTask<Void, Void, Integer> {
@@ -250,6 +250,7 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
             if (checkBoxEnforceForwarding != null) {
                 puzzle.setEnforceForwarding(isEnforceForwarding);
             }
+
             return puzzle.solveNQueens(nrQueens);
         }
 
