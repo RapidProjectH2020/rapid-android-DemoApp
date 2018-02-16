@@ -54,11 +54,6 @@ public class MatrixMul extends Remoteable {
     }
 
     public boolean gpuMatrixMul(int widthA, int heightA, int widthB) {
-
-        //Providers.getInstance().register("193.205.230.23", 9998); // saturn
-        //Providers.getInstance().register("54.72.110.23", 9996); // AWS
-        Providers.getInstance().register("80.158.23.133",9998); // otc
-
         this.widthA = widthA;
         this.heightA = heightA;
         this.widthB = widthB;
@@ -97,7 +92,7 @@ public class MatrixMul extends Remoteable {
 
         try {
             exit_c=driver.cuInit(0);
-            if (exit_c==0) {
+            if (exit_c != 0) {
                 throw new RuntimeException(new CudaException(exit_c));
             }
             StringParam spCuContext = new StringParam();
