@@ -86,7 +86,7 @@ public class MatrixMul extends Remoteable {
 
         final float valB = 0.01f;
         int exit_c=0;
-        //CudaDrFrontend driver = new CudaDrFrontend("193.205.230.23", 9991);
+        //CudaDrFrontend driver = new CudaDrFrontend("193.205.230.23", 9998);
         Provider bestProvider=Providers.getInstance().getBest();
         CudaDrFrontend driver = new CudaDrFrontend(bestProvider.getHost(),bestProvider.getPort());
 
