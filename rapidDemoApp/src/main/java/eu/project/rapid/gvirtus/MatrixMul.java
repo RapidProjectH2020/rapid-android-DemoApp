@@ -98,14 +98,14 @@ public class MatrixMul extends Remoteable {
             StringParam spCuContext = new StringParam();
 
             exit_c=driver.cuCtxCreate(0, 0, spCuContext);
-            if (exit_c==0) {
+            if (exit_c != 0) {
                 throw new RuntimeException(new CudaException(exit_c));
             }
             String cuContext = spCuContext.value;
 
             IntParam ipDevice = new IntParam();
             exit_c=driver.cuDeviceGet(0, ipDevice);
-            if (exit_c==0) {
+            if (exit_c != 0) {
                 throw new RuntimeException(new CudaException(exit_c));
             }
 
@@ -139,7 +139,7 @@ public class MatrixMul extends Remoteable {
             exit_c=driver.cuModuleLoadDataEx(
                                 ptxSource, jitNumOptions, jitOptions, jitOptVals0,
                                 jitOptVals1, jitOptVals2, spModule);
-            if (exit_c==0) {
+            if (exit_c != 0) {
                 throw new RuntimeException(new CudaException(exit_c));
             }
             String cmodule = spModule.value;
@@ -147,7 +147,7 @@ public class MatrixMul extends Remoteable {
 
             StringParam spFunction = new StringParam();
             exit_c=driver.cuModuleGetFunction(cmodule, "matrixMul_bs32_32bit", spFunction);
-            if (exit_c==0) {
+            if (exit_c != 0) {
                 throw new RuntimeException(new CudaException(exit_c));
             }
             String cfunction = spFunction.value;
@@ -178,14 +178,14 @@ public class MatrixMul extends Remoteable {
 
             StringParam spD_A = new StringParam();
             exit_c=driver.cuMemAlloc(mem_size_A, spD_A);
-            if (exit_c==0) {
+            if (exit_c != 0) {
                 throw new RuntimeException(new CudaException(exit_c));
             }
             String d_A = spD_A.value;
 
             StringParam spD_B = new StringParam();
             exit_c=driver.cuMemAlloc(mem_size_B, spD_B);
-            if (exit_c==0) {
+            if (exit_c != 0) {
                 throw new RuntimeException(new CudaException(exit_c));
             }
             String d_B = spD_B.value;
@@ -202,7 +202,7 @@ public class MatrixMul extends Remoteable {
 
             StringParam spD_C = new StringParam();
             exit_c=driver.cuMemAlloc(mem_size_C, spD_C);
-            if (exit_c==0) {
+            if (exit_c != 0) {
                 throw new RuntimeException(new CudaException(exit_c));
             }
             String d_C = spD_C.value;
@@ -247,7 +247,7 @@ public class MatrixMul extends Remoteable {
 
             FloatArrayParam fapH_C = new FloatArrayParam();
             exit_c=driver.cuMemcpyDtoH(d_C, mem_size_C, fapH_C);
-            if (exit_c==0) {
+            if (exit_c != 0) {
                 throw new RuntimeException(new CudaException(exit_c));
             }
             h_C = fapH_C.values;
