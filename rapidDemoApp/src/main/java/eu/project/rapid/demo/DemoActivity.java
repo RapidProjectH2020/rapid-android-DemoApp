@@ -39,6 +39,8 @@ import eu.project.rapid.common.Clone;
 import eu.project.rapid.common.RapidConstants;
 import eu.project.rapid.common.RapidConstants.COMM_TYPE;
 import eu.project.rapid.gvirtus.MatrixMul;
+import eu.project.rapid.gvirtus4a.Provider;
+import eu.project.rapid.gvirtus4a.Providers;
 import eu.project.rapid.queens.NQueens;
 import eu.project.rapid.sudoku.Sudoku;
 import eu.project.rapid.synthBenchmark.JniTest;
@@ -332,6 +334,8 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
         protected Void doInBackground(Void... params) {
             int nrTests = 1;
 
+
+
             MatrixMul matrixMul = new MatrixMul(dfe);
             int wa = 8;
             int wb = 12;
@@ -422,5 +426,14 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
                 }
                 break;
         }
+    }
+
+    private void registerProviders() {
+        Providers providers=Providers.getInstance();
+        providers.unregister();
+        providers.register("80.158.23.133", 9998);
+        providers.register("54.72.110.23", 9998);
+        providers.register("193.205.230.23", 9998);
+        providers.setDefaultProvider(providers.getBest(0650));
     }
 }
