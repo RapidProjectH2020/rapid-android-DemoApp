@@ -39,7 +39,6 @@ import eu.project.rapid.common.Clone;
 import eu.project.rapid.common.RapidConstants;
 import eu.project.rapid.common.RapidConstants.COMM_TYPE;
 import eu.project.rapid.gvirtus.MatrixMul;
-import eu.project.rapid.gvirtus4a.Provider;
 import eu.project.rapid.gvirtus4a.Providers;
 import eu.project.rapid.queens.NQueens;
 import eu.project.rapid.sudoku.Sudoku;
@@ -342,8 +341,12 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
 
             for (int i = 0; i < nrTests; i++) {
                 Log.i(TAG, "------------ Started running GVirtuS with DFE.");
-                boolean result = matrixMul.gpuMatrixMul(wa, wb, wa);
-                Log.i(TAG, "Finished GVirtuS matrixMul with DFE: isResultValid=" + result);
+                try {
+                    boolean result = matrixMul.gpuMatrixMul(wa, wb, wa);
+                    Log.i(TAG, "Finished GVirtuS matrixMul with DFE: isResultValid=" + result);
+                } catch (Exception e) {
+                    Log.e(TAG, "CUDA offloading failed: " + e);
+                }
             }
 
             return null;

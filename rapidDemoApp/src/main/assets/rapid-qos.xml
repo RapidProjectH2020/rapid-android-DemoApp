@@ -10,10 +10,10 @@
             <QoS>
                 <term>cpu_util</term>
                 <operator>LT</operator>
-                <threshold>220</threshold>
+                <threshold>90</threshold>
                 <term>mem_util</term>
                 <operator>LT</operator>
-                <threshold>60</threshold>
+                <threshold>80</threshold>
             </QoS>
         </method>
     </class>
