@@ -143,6 +143,9 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
             dfe = DFE.getInstance(getPackageName(), getPackageManager(), this,
                     new Clone("", vmIp), commType);
         }
+
+        // Initialize the GPGPU providers
+        MatrixMul.registerProviders();
     }
 
     private class VmConnectionStatusUpdater implements Runnable {
@@ -431,19 +434,5 @@ public class DemoActivity extends Activity implements DFE.DfeCallback {
         }
     }
 
-    private void registerProviders() {
-        Providers providers=Providers.getInstance();
-        providers.unregister();
-        // OTC
-        providers.register("80.158.23.133", 9998);
-        // Amazon Web Services
-        providers.register("54.72.110.23", 9998);
-        // Silo
-        providers.register( "83.235.169.221",9998);
-        // UNP RAPID GPU AS
-        providers.register("193.205.230.23", 9998);
 
-        // Ask for the best provider and set it as default
-        providers.setDefaultProvider(providers.getBest(0650));
-    }
 }
